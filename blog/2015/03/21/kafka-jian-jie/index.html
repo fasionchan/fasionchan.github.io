@@ -5,14 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>用黑客的方式写博客 - 小站</title>
+  <title>Kafka简介 - 小站</title>
   <meta name="author" content="陈彦霏">
 
   
-  <meta name="description" content=" 开始写博客 1
-2
-# 新建post，标题为title
-rake new_post[&quot;title&quot;] ">
+  <meta name="description" content="Kafka是一个高吞吐的分布式消息系统，由Linkin公司开源，成为一个Apache项目。Kafka可以看做是一个快速、分布式、可扩展、可分区、可复制、持久化的日志服务。它提供了作为消息系统的实用功能，架构设计却是相当独特的。 发布-订阅模型 Kafka采用话题（topic）对消息进行分类； &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -21,7 +18,7 @@ rake new_post[&quot;title&quot;] ">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://fasionchan.github.io/blog/2015/01/18/yong-hei-ke-de-fang-shi-xie-bo-ke/">
+  <link rel="canonical" href="http://fasionchan.github.io/blog/2015/03/21/kafka-jian-jie/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="小站" type="application/atom+xml">
@@ -72,7 +69,7 @@ rake new_post[&quot;title&quot;] ">
   
   <header>
     
-      <h1 class="entry-title">用黑客的方式写博客</h1>
+      <h1 class="entry-title">Kafka简介</h1>
     
     
       <p class="meta">
@@ -81,23 +78,44 @@ rake new_post[&quot;title&quot;] ">
 
 
 
-<time class='entry-date' datetime='2015-01-18T15:34:34+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:34 pm</span></time>
+<time class='entry-date' datetime='2015-03-21T11:01:38+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2015</span></span> <span class='time'>11:01 am</span></time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p><img src="/images/gitpress.png"></p>
+<div class="entry-content"><p><a href="http://kafka.apache.org">Kafka</a>是一个高吞吐的分布式消息系统，由<a href="http://www.linkedin.com">Linkin</a>公司开源，成为一个<a href="https://www.apache.org">Apache</a>项目。Kafka可以看做是一个快速、分布式、可扩展、可分区、可复制、持久化的日志服务。它提供了作为消息系统的实用功能，架构设计却是相当独特的。</p>
 
-<h2>开始写博客</h2>
+<h2>发布-订阅模型</h2>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># 新建post，标题为title</span>
-</span><span class='line'>rake new_post<span class="o">[</span><span class="s2">&quot;title&quot;</span><span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
+<p><img src="/images/kafka-producer-consumer.png"></p>
 
+<ul>
+<li>Kafka采用话题（topic）对消息进行分类；</li>
+<li>向Kafka发布（Publish）消息的进程称为生产者（producer）；</li>
+<li>从Kafka订阅（Subscribe）消息的进程称为消费者（consumer）；</li>
+<li>Kafka集群可以由若干台服务器组成，称为代理（broker）；</li>
+</ul>
+
+
+<h2>话题和日志</h2>
+
+<p>话题是消息的分类名：生产者向某个话题发布消息；消费者从某个话题订阅消息。一个话题可以分为多个分区（partition），分区的作用：首先，当消息规模扩张到超过一台机器的处理能力时，可以把压力分散到多台机器；其次，分区也让应用并行处理消息成为可能。Kafka组织分区日志的方式如下：</p>
+
+<p><img src="/images/kafka-log-anatomy.png"></p>
+
+<p>发布到一个话题的消息写到该话题下某一分区，由消息所带的键（key）决定：<strong>键相同的所有消息落到同一个分区</strong>。每个分区都是一个有序不可变的消息序列，持续地追加到一个提交日志（commit log）。Kafka为分区中的每条消息分配了一个序号，称为偏移量（offset），唯一指定了每条消息在分区中的位置。</p>
+
+<p>Kafka根据配置周期保留周期内的所有消息，不管消息有没有被消费。例如，如果日志被配置成保留两天，那么一个消息发布后的两天内都是可供消费的，两天之后才会被清除以释放空间。</p>
+
+<p>Kafka维护的元数据只有消费者在日志中的位置，也就是偏移量（offset）。事实上，这个偏移量是由消费者控制的：正常情况下消费者在读消息的时候线性自增其偏移量。这样看来，消费者可以以任意顺序消费消息；也可以通过重置偏移量从新处理消息，这一点非常有用。</p>
+
+<p>这些特性决定了Kafka消费者将是非常灵活的：可以随时进入、随时离开而不会对集群或其他消费者产生影响。例如，可以使用Kafka提供的命令行工具来&#8221;tail&#8221;任何话题的内容而不用担心会影响到已经存在的消费者。</p>
+
+<h2>用法示例</h2>
+
+<p><img src="/images/kafka-usecase.png"></p>
 </div>
 
 
@@ -113,7 +131,7 @@ rake new_post[&quot;title&quot;] ">
 
 
 
-<time class='entry-date' datetime='2015-01-18T15:34:34+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:34 pm</span></time>
+<time class='entry-date' datetime='2015-03-21T11:01:38+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2015</span></span> <span class='time'>11:01 am</span></time>
       
 
 
@@ -121,7 +139,7 @@ rake new_post[&quot;title&quot;] ">
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://fasionchan.github.io/blog/2015/01/18/yong-hei-ke-de-fang-shi-xie-bo-ke/" data-via="fasionchan" data-counturl="http://fasionchan.github.io/blog/2015/01/18/yong-hei-ke-de-fang-shi-xie-bo-ke/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://fasionchan.github.io/blog/2015/03/21/kafka-jian-jie/" data-via="fasionchan" data-counturl="http://fasionchan.github.io/blog/2015/03/21/kafka-jian-jie/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -132,8 +150,8 @@ rake new_post[&quot;title&quot;] ">
     
     <p class="meta">
       
+        <a class="basic-alignment left" href="/blog/2015/02/18/xie-yu-chu-xi-ye/" title="Previous Post: 写于除夕夜">&laquo; 写于除夕夜</a>
       
-        <a class="basic-alignment right" href="/blog/2015/02/18/xie-yu-chu-xi-ye/" title="Next Post: 写于除夕夜">写于除夕夜 &raquo;</a>
       
     </p>
   </footer>
@@ -220,8 +238,8 @@ rake new_post[&quot;title&quot;] ">
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://fasionchan.github.io/blog/2015/01/18/yong-hei-ke-de-fang-shi-xie-bo-ke/';
-        var disqus_url = 'http://fasionchan.github.io/blog/2015/01/18/yong-hei-ke-de-fang-shi-xie-bo-ke/';
+        var disqus_identifier = 'http://fasionchan.github.io/blog/2015/03/21/kafka-jian-jie/';
+        var disqus_url = 'http://fasionchan.github.io/blog/2015/03/21/kafka-jian-jie/';
         var disqus_script = 'embed.js';
       
     (function () {
