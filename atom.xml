@@ -4,7 +4,7 @@
   <title><![CDATA[小站]]></title>
   <link href="http://fasionchan.github.io/atom.xml" rel="self"/>
   <link href="http://fasionchan.github.io/"/>
-  <updated>2015-03-21T12:33:20+08:00</updated>
+  <updated>2015-03-22T11:18:58+08:00</updated>
   <id>http://fasionchan.github.io/</id>
   <author>
     <name><![CDATA[陈彦霏]]></name>
@@ -12,6 +12,32 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[SSH高级用法]]></title>
+    <link href="http://fasionchan.github.io/blog/2015/03/22/ssh-gao-ji-yong-fa/"/>
+    <updated>2015-03-22T10:21:52+08:00</updated>
+    <id>http://fasionchan.github.io/blog/2015/03/22/ssh-gao-ji-yong-fa</id>
+    <content type="html"><![CDATA[<h2>代理传递</h2>
+
+<p>假设用ssh登陆管理两台机器A和B：把公钥部署上去，然后本地就可以不通过密码验证登陆上去。如果要把A机器上一个文件传到B机器上，那么，比较显然易见的方式是：先用scp把文件从A拉到本地，然后再从本地传到B。这显然比较繁琐，如果A能够ssh到B，那就方便很多。但不论是把本地私钥部署到A机器还是在A机器生产私钥都是不妥的，万一A被攻破，那么B也就会遭殃。</p>
+
+<p>这时候ssh代理传递（ssh agent forwarding）就派上用场了。通过代理传递，从本地ssh到机器A，那么在A就可以ssh到任何本地可以ssh的机器。假设这时ssh到B，A借助本地的私钥信息完成验证，而A上无须部署任何私钥。这个过程就像把本地的ssh私钥传递到机器A。</p>
+
+<h3>设置方法</h3>
+
+<p>只需要本地ssh配置文件~/.ssh/config加上如下配置：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>Host server1.example.com
+</span><span class='line'>    ForwardAgent yes
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个配置的含义是，本地ssh可以传递到<code>server1.example.com</code>上，也就是ssh到<code>server1.example.com</code>后，你可以在服务器上ssh到其他机器。这里需要注意的是：<code>server1.example.com</code>必须是跟你的ssh命令保持一致<code>ssh server1.example.com</code>！如果ssh使用的是IP，那么配置里面也必须填IP；如果把<code>example.com</code>设置成域，ssh使用机器名<code>server1</code>，那么配置文件也必须使用机器名，尽管指的都是同一台机器。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Kafka简介]]></title>
