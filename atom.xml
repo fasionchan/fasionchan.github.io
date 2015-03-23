@@ -4,7 +4,7 @@
   <title><![CDATA[小站]]></title>
   <link href="http://fasionchan.github.io/atom.xml" rel="self"/>
   <link href="http://fasionchan.github.io/"/>
-  <updated>2015-03-22T11:18:58+08:00</updated>
+  <updated>2015-03-23T19:50:34+08:00</updated>
   <id>http://fasionchan.github.io/</id>
   <author>
     <name><![CDATA[陈彦霏]]></name>
@@ -56,6 +56,9 @@
 <li>从Kafka订阅（Subscribe）消息的进程称为消费者（consumer）；</li>
 <li>Kafka集群可以由若干台服务器组成，称为代理（broker）；</li>
 </ul>
+
+
+<!--more-->
 
 
 <h2>话题和日志</h2>
