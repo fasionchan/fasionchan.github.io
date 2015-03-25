@@ -5,14 +5,15 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>用黑客的方式写博客 - 小站</title>
+  <title>随机文段生成 - 小站</title>
   <meta name="author" content="陈彦霏">
 
   
-  <meta name="description" content=" 开始写博客 1
+  <meta name="description" content="我们经常需要拷贝一些文字作为Demo填充，特别是做页面时，每次都到网上去找觉得挺麻烦的。很多时候我们也需要一个随机的信息流，比如模拟后台日志输出。Python下loremipsum就可以很好地完成这个工作，安装很简单：pip install loremipsum。使用示例如下： 1
 2
-# 新建post，标题为title
-rake new_post[&quot;title&quot;] ">
+3
+4
+5 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -21,7 +22,7 @@ rake new_post[&quot;title&quot;] ">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://fasionchan.github.io/blog/2015/01/18/yong-hei-ke-de-fang-shi-xie-bo-ke/">
+  <link rel="canonical" href="http://fasionchan.github.io/blog/2015/03/25/sui-ji-wen-duan-sheng-cheng/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="小站" type="application/atom+xml">
@@ -72,7 +73,7 @@ rake new_post[&quot;title&quot;] ">
   
   <header>
     
-      <h1 class="entry-title">用黑客的方式写博客</h1>
+      <h1 class="entry-title">随机文段生成</h1>
     
     
       <p class="meta">
@@ -81,22 +82,37 @@ rake new_post[&quot;title&quot;] ">
 
 
 
-<time class='entry-date' datetime='2015-01-18T15:34:34+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:34 pm</span></time>
+<time class='entry-date' datetime='2015-03-25T20:40:54+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:40 pm</span></time>
         
       </p>
     
   </header>
 
 
-<div class="entry-content"><p><img src="/images/gitpress.png"></p>
+<div class="entry-content"><p>我们经常需要拷贝一些文字作为Demo填充，特别是做页面时，每次都到网上去找觉得挺麻烦的。很多时候我们也需要一个随机的信息流，比如模拟后台日志输出。Python下<a href="https://pypi.python.org/pypi/loremipsum/">loremipsum</a>就可以很好地完成这个工作，安装很简单：<code>pip install loremipsum</code>。使用示例如下：</p>
 
-<h2>开始写博客</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># 新建post，标题为title</span>
-</span><span class='line'>rake new_post<span class="o">[</span><span class="s2">&quot;title&quot;</span><span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&gt;&gt;&gt; import loremipsum
+</span><span class='line'>&gt;&gt;&gt; dir(loremipsum)
+</span><span class='line'>['DictionaryError', 'Generator', 'SampleError', '_GENERATOR', '__all__', '__author__', '__builtins__', '__classifiers__', '__copyright__', '__doc__', '__docformat__', '__file__', '__keywords__', '__name__', '__package__', '__path__', '__version__', 'generate_paragraph', 'generate_paragraphs', 'generate_sentence', 'generate_sentences', 'generator', 'get_paragraph', 'get_paragraphs', 'get_sentence', 'get_sentences']
+</span><span class='line'>&gt;&gt;&gt;
+</span><span class='line'>&gt;&gt;&gt; # 生成一个随机句子
+</span><span class='line'>&gt;&gt;&gt; print loremipsum.get_sentence()
+</span><span class='line'>Purus neque fames vivamus.
+</span><span class='line'>&gt;&gt;&gt;
+</span><span class='line'>&gt;&gt;&gt; # 生成一个随机段落
+</span><span class='line'>&gt;&gt;&gt; print loremipsum.get_paragraph(10)
+</span><span class='line'>Lorem ipsum. Vitae massa aenean mi pulvinar montes tortor felis feugiat. Morbi risus. Etiam class tortor parturient volutpat dolor a integer mollis. Neque felis. Fusce ipsum massa dui purus penatibus phasellus fusce phasellus cursus. Felis augue nunc egestas natoque dictum dolor mus. Massa metus donec eni nibh habitasse ut tortor mi orci aliquet risus in. Lorem augue per tellus convallis facilisi eu purus suspendisse. Velit purus sem felis tincidunt cras. Fusce neque luctus magnis fusce. Class dolor egestas hac eleifend tincidunt. Lacus neque ligula sollicitudin facilisis tortor inceptos non id nunc.</span></code></pre></td></tr></table></div></figure>
 
 </div>
 
@@ -113,7 +129,7 @@ rake new_post[&quot;title&quot;] ">
 
 
 
-<time class='entry-date' datetime='2015-01-18T15:34:34+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:34 pm</span></time>
+<time class='entry-date' datetime='2015-03-25T20:40:54+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:40 pm</span></time>
       
 
 
@@ -121,7 +137,7 @@ rake new_post[&quot;title&quot;] ">
     
       <div class="sharing">
   
-  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://fasionchan.github.io/blog/2015/01/18/yong-hei-ke-de-fang-shi-xie-bo-ke/" data-via="fasionchan" data-counturl="http://fasionchan.github.io/blog/2015/01/18/yong-hei-ke-de-fang-shi-xie-bo-ke/" >Tweet</a>
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://fasionchan.github.io/blog/2015/03/25/sui-ji-wen-duan-sheng-cheng/" data-via="fasionchan" data-counturl="http://fasionchan.github.io/blog/2015/03/25/sui-ji-wen-duan-sheng-cheng/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -132,8 +148,8 @@ rake new_post[&quot;title&quot;] ">
     
     <p class="meta">
       
+        <a class="basic-alignment left" href="/blog/2015/03/22/ssh-gao-ji-yong-fa/" title="Previous Post: SSH高级用法">&laquo; SSH高级用法</a>
       
-        <a class="basic-alignment right" href="/blog/2015/02/18/xie-yu-chu-xi-ye/" title="Next Post: 写于除夕夜">写于除夕夜 &raquo;</a>
       
     </p>
   </footer>
@@ -228,8 +244,8 @@ rake new_post[&quot;title&quot;] ">
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://fasionchan.github.io/blog/2015/01/18/yong-hei-ke-de-fang-shi-xie-bo-ke/';
-        var disqus_url = 'http://fasionchan.github.io/blog/2015/01/18/yong-hei-ke-de-fang-shi-xie-bo-ke/';
+        var disqus_identifier = 'http://fasionchan.github.io/blog/2015/03/25/sui-ji-wen-duan-sheng-cheng/';
+        var disqus_url = 'http://fasionchan.github.io/blog/2015/03/25/sui-ji-wen-duan-sheng-cheng/';
         var disqus_script = 'embed.js';
       
     (function () {

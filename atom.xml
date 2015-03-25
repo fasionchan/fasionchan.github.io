@@ -4,7 +4,7 @@
   <title><![CDATA[小站]]></title>
   <link href="http://fasionchan.github.io/atom.xml" rel="self"/>
   <link href="http://fasionchan.github.io/"/>
-  <updated>2015-03-23T19:50:34+08:00</updated>
+  <updated>2015-03-25T20:57:56+08:00</updated>
   <id>http://fasionchan.github.io/</id>
   <author>
     <name><![CDATA[陈彦霏]]></name>
@@ -12,6 +12,39 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[随机文段生成]]></title>
+    <link href="http://fasionchan.github.io/blog/2015/03/25/sui-ji-wen-duan-sheng-cheng/"/>
+    <updated>2015-03-25T20:40:54+08:00</updated>
+    <id>http://fasionchan.github.io/blog/2015/03/25/sui-ji-wen-duan-sheng-cheng</id>
+    <content type="html"><![CDATA[<p>我们经常需要拷贝一些文字作为Demo填充，特别是做页面时，每次都到网上去找觉得挺麻烦的。很多时候我们也需要一个随机的信息流，比如模拟后台日志输出。Python下<a href="https://pypi.python.org/pypi/loremipsum/">loremipsum</a>就可以很好地完成这个工作，安装很简单：<code>pip install loremipsum</code>。使用示例如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&gt;&gt;&gt; import loremipsum
+</span><span class='line'>&gt;&gt;&gt; dir(loremipsum)
+</span><span class='line'>['DictionaryError', 'Generator', 'SampleError', '_GENERATOR', '__all__', '__author__', '__builtins__', '__classifiers__', '__copyright__', '__doc__', '__docformat__', '__file__', '__keywords__', '__name__', '__package__', '__path__', '__version__', 'generate_paragraph', 'generate_paragraphs', 'generate_sentence', 'generate_sentences', 'generator', 'get_paragraph', 'get_paragraphs', 'get_sentence', 'get_sentences']
+</span><span class='line'>&gt;&gt;&gt;
+</span><span class='line'>&gt;&gt;&gt; # 生成一个随机句子
+</span><span class='line'>&gt;&gt;&gt; print loremipsum.get_sentence()
+</span><span class='line'>Purus neque fames vivamus.
+</span><span class='line'>&gt;&gt;&gt;
+</span><span class='line'>&gt;&gt;&gt; # 生成一个随机段落
+</span><span class='line'>&gt;&gt;&gt; print loremipsum.get_paragraph(10)
+</span><span class='line'>Lorem ipsum. Vitae massa aenean mi pulvinar montes tortor felis feugiat. Morbi risus. Etiam class tortor parturient volutpat dolor a integer mollis. Neque felis. Fusce ipsum massa dui purus penatibus phasellus fusce phasellus cursus. Felis augue nunc egestas natoque dictum dolor mus. Massa metus donec eni nibh habitasse ut tortor mi orci aliquet risus in. Lorem augue per tellus convallis facilisi eu purus suspendisse. Velit purus sem felis tincidunt cras. Fusce neque luctus magnis fusce. Class dolor egestas hac eleifend tincidunt. Lacus neque ligula sollicitudin facilisis tortor inceptos non id nunc.</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[SSH高级用法]]></title>

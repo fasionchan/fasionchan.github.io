@@ -9,7 +9,11 @@
   <meta name="author" content="陈彦霏">
 
   
-  <meta name="description" content="代理传递 假设用ssh登陆管理两台机器A和B：把公钥部署上去，然后本地就可以不通过密码验证登陆上去。如果要把A机器上一个文件传到B机器上，那么，比较显然易见的方式是：先用scp把文件从A拉到本地，然后再从本地传到B。这显然比较繁琐，如果A能够ssh到B，那就方便很多。 &hellip;">
+  <meta name="description" content="我们经常需要拷贝一些文字作为Demo填充，特别是做页面时，每次都到网上去找觉得挺麻烦的。很多时候我们也需要一个随机的信息流，比如模拟后台日志输出。Python下loremipsum就可以很好地完成这个工作，安装很简单：pip install loremipsum。使用示例如下： 1
+2
+3
+4
+5 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +70,59 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/03/25/sui-ji-wen-duan-sheng-cheng/">随机文段生成</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-25T20:40:54+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:40 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>我们经常需要拷贝一些文字作为Demo填充，特别是做页面时，每次都到网上去找觉得挺麻烦的。很多时候我们也需要一个随机的信息流，比如模拟后台日志输出。Python下<a href="https://pypi.python.org/pypi/loremipsum/">loremipsum</a>就可以很好地完成这个工作，安装很简单：<code>pip install loremipsum</code>。使用示例如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&gt;&gt;&gt; import loremipsum
+</span><span class='line'>&gt;&gt;&gt; dir(loremipsum)
+</span><span class='line'>['DictionaryError', 'Generator', 'SampleError', '_GENERATOR', '__all__', '__author__', '__builtins__', '__classifiers__', '__copyright__', '__doc__', '__docformat__', '__file__', '__keywords__', '__name__', '__package__', '__path__', '__version__', 'generate_paragraph', 'generate_paragraphs', 'generate_sentence', 'generate_sentences', 'generator', 'get_paragraph', 'get_paragraphs', 'get_sentence', 'get_sentences']
+</span><span class='line'>&gt;&gt;&gt;
+</span><span class='line'>&gt;&gt;&gt; # 生成一个随机句子
+</span><span class='line'>&gt;&gt;&gt; print loremipsum.get_sentence()
+</span><span class='line'>Purus neque fames vivamus.
+</span><span class='line'>&gt;&gt;&gt;
+</span><span class='line'>&gt;&gt;&gt; # 生成一个随机段落
+</span><span class='line'>&gt;&gt;&gt; print loremipsum.get_paragraph(10)
+</span><span class='line'>Lorem ipsum. Vitae massa aenean mi pulvinar montes tortor felis feugiat. Morbi risus. Etiam class tortor parturient volutpat dolor a integer mollis. Neque felis. Fusce ipsum massa dui purus penatibus phasellus fusce phasellus cursus. Felis augue nunc egestas natoque dictum dolor mus. Massa metus donec eni nibh habitasse ut tortor mi orci aliquet risus in. Lorem augue per tellus convallis facilisi eu purus suspendisse. Velit purus sem felis tincidunt cras. Fusce neque luctus magnis fusce. Class dolor egestas hac eleifend tincidunt. Lacus neque ligula sollicitudin facilisis tortor inceptos non id nunc.</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -304,6 +361,10 @@
     <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2015/03/25/sui-ji-wen-duan-sheng-cheng/">随机文段生成</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2015/03/22/ssh-gao-ji-yong-fa/">SSH高级用法</a>
