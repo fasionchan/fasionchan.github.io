@@ -9,7 +9,7 @@
   <meta name="author" content="陈彦霏">
 
   
-  <meta name="description" content="代理传递 假设用ssh登陆管理两台机器A和B：把公钥部署上去，然后本地就可以不通过密码验证登陆上去。如果要把A机器上一个文件传到B机器上，那么，比较显然易见的方式是：先用scp把文件从A拉到本地，然后再从本地传到B。这显然比较繁琐，如果A能够ssh到B，那就方便很多。 &hellip;">
+  <meta name="description" content="Keep Alive 在某些网络环境下，SSH会话空闲一小段时间后就会断掉。可能是因为中间有个NAT网关，检查到空闲TCP连接后便无情Kill。一暂停操作SSH连接就断实在不能忍！ SSH有个配置选项，每隔一段时间就发一个空包使TCP连接保持活跃，这样连接就不会无故断掉了。这个选项就是： &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -85,7 +85,34 @@
   </header>
 
 
-<div class="entry-content"><h2>代理传递</h2>
+<div class="entry-content"><h2>Keep Alive</h2>
+
+<p>在某些网络环境下，SSH会话空闲一小段时间后就会断掉。可能是因为中间有个NAT网关，检查到空闲TCP连接后便无情Kill。一暂停操作SSH连接就断实在不能忍！</p>
+
+<p>SSH有个配置选项，每隔一段时间就发一个空包使TCP连接保持活跃，这样连接就不会无故断掉了。这个选项就是：<code>ServerAliveInterval</code>，配置值是一个整数，表示发送空包的周期，单位是秒。</p>
+
+<!--more-->
+
+
+<p>这个选项可以作为全局配置写在<code>/etc/ssh/ssh_config</code>，影响每个用户的每一个SSH连接：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>ServerAliveInterval 60
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>也可以作为用户配置写在当前用户的配置文件<code>~/.ssh/config</code>里（如果这个配置文件不存在，可以手动创建）：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>Host *
+</span><span class='line'>    ServerAliveInterval 60
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>Host</code>可以指定对哪些服务器应用该配置，<code>*</code>通配符可以匹配所有服务器，<code>*.hostname.com</code>则可以匹配所有名字以<code>.hostname.com</code>结尾的服务器。</p>
+
+<h2>代理传递</h2>
 
 <p>假设用ssh登陆管理两台机器A和B：把公钥部署上去，然后本地就可以不通过密码验证登陆上去。如果要把A机器上一个文件传到B机器上，那么，比较显然易见的方式是：先用scp把文件从A拉到本地，然后再从本地传到B。这显然比较繁琐，如果A能够ssh到B，那就方便很多。但不论是把本地私钥部署到A机器还是在A机器生产私钥都是不妥的，万一A被攻破，那么B也就会遭殃。</p>
 
@@ -103,6 +130,14 @@
 
 
 <p>这个配置的含义是，本地ssh可以传递到<code>server1.example.com</code>上，也就是ssh到<code>server1.example.com</code>后，你可以在服务器上ssh到其他机器。这里需要注意的是：<code>server1.example.com</code>必须是跟你的ssh命令保持一致<code>ssh server1.example.com</code>！如果ssh使用的是IP，那么配置里面也必须填IP；如果把<code>example.com</code>设置成域，ssh使用机器名<code>server1</code>，那么配置文件也必须使用机器名，尽管指的都是同一台机器。</p>
+
+<h2>反向代理</h2>
+
+<p>经常需要从家里连到公司内网的电脑，在没有VPN的情况下该怎么办呢？NAT技术解决了内网机器通过网关访问外网，但是在网关没有映射相关端口的情况下，从外网访问内网服务将是不可能的。</p>
+
+<p>本质上，SSH反向代理就是把一台机器的某个服务端口映射到另一台机器上。如果采用SSH反向代理，把内网机器<code>A</code>的SSH端口映射到外网机器<code>B</code>的某个端口，不就解决问题了么？那么，怎么配置SSH反向代理呢？</p>
+
+<p>在<code>A</code>机器上执行<code>ssh -fNR addrB:portB:addrA:portA user@addrB</code>，将在<code>B</code>机器地址<code>addrB</code>上开启<code>portB</code>端口，并将请求映射到本地（<code>A</code>机器）地址<code>addrA</code>上的<code>portA</code>端口。另外，<code>user</code>为<code>B</code>机器上的用户，<code>user@addrB</code>用来登录<code>B</code>机器。完成SSH反向代理后，访问<code>addrB</code>的<code>portB</code>端口即是访问<code>addrA</code>的<code>portA</code>端口。具体用法请参考<code>man ssh</code>文档。</p>
 </div>
 
 
@@ -161,6 +196,14 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/04/11/wei-guan-scrapy-pa-chong-kuang-jia/">围观Scrapy爬虫框架</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/27/http-ya-li-ce-shi-qian-zai-wen-ti-ruo-gan/">HTTP压力测试潜在问题若干</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/25/sui-ji-wen-duan-sheng-cheng/">随机文段生成</a>
       </li>
     
@@ -170,14 +213,6 @@
     
       <li class="post">
         <a href="/blog/2015/03/21/kafka-jian-jie/">Kafka简介</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/02/18/xie-yu-chu-xi-ye/">写于除夕夜</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/01/18/yong-hei-ke-de-fang-shi-xie-bo-ke/">用黑客的方式写博客</a>
       </li>
     
   </ul>

@@ -9,11 +9,7 @@
   <meta name="author" content="陈彦霏">
 
   
-  <meta name="description" content="我们经常需要拷贝一些文字作为Demo填充，特别是做页面时，每次都到网上去找觉得挺麻烦的。很多时候我们也需要一个随机的信息流，比如模拟后台日志输出。Python下loremipsum就可以很好地完成这个工作，安装很简单：pip install loremipsum。使用示例如下： 1
-2
-3
-4
-5 &hellip;">
+  <meta name="description" content="对于Scrapy这个爬虫框架，先前也是知道有这么个东西存在，仅此而已。最近在面试时，发现很多人写过Python爬虫采集数据，所用的框架几乎都是Scrapy。今天刚好闲着没事做，就来玩玩Scrapy呗。 简介 框架 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -70,6 +66,79 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/04/11/wei-guan-scrapy-pa-chong-kuang-jia/">围观Scrapy爬虫框架</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-04-11T11:22:24+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>11:22 am</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>对于Scrapy这个爬虫框架，先前也是知道有这么个东西存在，仅此而已。最近在面试时，发现很多人写过Python爬虫采集数据，所用的框架几乎都是Scrapy。今天刚好闲着没事做，就来玩玩Scrapy呗。</p>
+
+<h2>简介</h2>
+
+<h2>框架</h2>
+
+<p><img src="/images/scrapy.png"></p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2015/04/11/wei-guan-scrapy-pa-chong-kuang-jia/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/03/27/http-ya-li-ce-shi-qian-zai-wen-ti-ruo-gan/">HTTP压力测试潜在问题若干</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-27T16:56:02+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>27</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:56 pm</span></time>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>首先，用<code>ulimit -n</code>看看是不是文件描述符设置过小而被打满：发现设置值是<code>65536</code>，这是<code>10000</code>个并发不可能用满的。当然，大部分服务器上都是采用默认配置<code>1024</code>，这时就是罪魁祸首了。</p>
+
+<h2>backlog太小</h2>
+
+<p>各种可能的原因都查了查了，最后发现是由于底层套接字调用<code>listen</code>时<code>backlog</code>参数太小造成的！<code>listen</code>系统调用的作用是使TCP套接字进行监听状态，<code>backlog</code>是内核维持请求连接队列的个数限制（不包括已经被accept的连接）。我要测试的WEB接口是用基于<code>tornado</code>框架的，绑定端口时<code>backlog</code>默认参数是<code>128</code>，很快就被<code>10000</code>个请求给压满了，这就是<code>ab</code>各种超时的主要原因！调大这个参数后问题就解决了~</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -145,26 +214,18 @@
   </header>
 
 
-  <div class="entry-content"><h2>代理传递</h2>
+  <div class="entry-content"><h2>Keep Alive</h2>
 
-<p>假设用ssh登陆管理两台机器A和B：把公钥部署上去，然后本地就可以不通过密码验证登陆上去。如果要把A机器上一个文件传到B机器上，那么，比较显然易见的方式是：先用scp把文件从A拉到本地，然后再从本地传到B。这显然比较繁琐，如果A能够ssh到B，那就方便很多。但不论是把本地私钥部署到A机器还是在A机器生产私钥都是不妥的，万一A被攻破，那么B也就会遭殃。</p>
+<p>在某些网络环境下，SSH会话空闲一小段时间后就会断掉。可能是因为中间有个NAT网关，检查到空闲TCP连接后便无情Kill。一暂停操作SSH连接就断实在不能忍！</p>
 
-<p>这时候ssh代理传递（ssh agent forwarding）就派上用场了。通过代理传递，从本地ssh到机器A，那么在A就可以ssh到任何本地可以ssh的机器。假设这时ssh到B，A借助本地的私钥信息完成验证，而A上无须部署任何私钥。这个过程就像把本地的ssh私钥传递到机器A。</p>
+<p>SSH有个配置选项，每隔一段时间就发一个空包使TCP连接保持活跃，这样连接就不会无故断掉了。这个选项就是：<code>ServerAliveInterval</code>，配置值是一个整数，表示发送空包的周期，单位是秒。</p>
 
-<h3>设置方法</h3>
-
-<p>只需要本地ssh配置文件~/.ssh/config加上如下配置：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='text'><span class='line'>Host server1.example.com
-</span><span class='line'>    ForwardAgent yes
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这个配置的含义是，本地ssh可以传递到<code>server1.example.com</code>上，也就是ssh到<code>server1.example.com</code>后，你可以在服务器上ssh到其他机器。这里需要注意的是：<code>server1.example.com</code>必须是跟你的ssh命令保持一致<code>ssh server1.example.com</code>！如果ssh使用的是IP，那么配置里面也必须填IP；如果把<code>example.com</code>设置成域，ssh使用机器名<code>server1</code>，那么配置文件也必须使用机器名，尽管指的都是同一台机器。</p>
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2015/03/22/ssh-gao-ji-yong-fa/">Read on &rarr;</a>
+    </footer>
   
 
 
@@ -241,72 +302,12 @@
 
 <p>这部分不准备多写：在公司外透漏工作细节是不合适的。毕业后选择了运维方向，与开发不同，对运维来说，最重要的词是稳定、可靠和可控。这个职位总体工作强度不高，但是突发情况较多。我本身不是纯运维，而是运维开发，就是开发运维系统。尽管如此，平时多少还是要做一些运维操作，提心吊胆地享受命令行带给你的快感。借用领导的话：你做的好，没人会想起你；你搞出一次事故，大家就都知道这个运维不靠谱！</p>
 
-<p>百密必有一疏，不久前就因为偷懒搞出一次事故：那天跟同事接线上的消息队列测试服务，一直到晚上9点准备下班。测试队列必须删掉，避免数据积攒撑坏系统。好几十个队列不可能通过WEB页面一个个点点点删掉吧？就考虑用Python调用消息队列的WEB API去删。偷懒只调出Python控制台，拼URL，请求，遍历每个队列，匹配测试队列，打印确认。一步步都在预料之中，接下来可以发出删除请求了。一条条回翻前面的语句，可偏偏少翻了匹配测试队列那条if语句，结果是对每个队列都发起删除请求。看着线上队列一个个出现在我的终端时，马上退出，但是几百个队列已经有近一半被删掉了。这意味着相关系统已经开始丢数据了，整个人在那瞬间傻愣了一下，太紧张头脑短路了。稍微定了一下后开始处理受影响的各个系统，接消息队列的每个系统都受到影响！这个事故造成了大约一个小时的数据丢失，第一次敲键盘有一种手心冒汗的感觉。脚本化可以杜绝少敲点什么的风险，但就是偷懒选择了控制台，因为控制台更灵活，更方便调试。做什么重要操作都应该采用最安全的方式，而不是最方便的方式。</p>
-
-<p>Any way，经过一年勤勤恳恳工作，拿到一次职级提升的机会，现在的title已经是“资深系统运维工程师”了。但，我更希望是工资大大滴涨~</p>
-
-<h2>投资</h2>
-
-<p>觉得投资是现代人必须掌握的一项技能：财富的保值增值至少与积累一样重要。任何政府都有超发货币的欲望（变相税收且无成本），由此带来的通货膨胀稀释百姓手中的财富。试想十年前100元的购买力跟今天差别多大！</p>
-
-<p>说来惭愧，毕业至今，积蓄寥寥。第一年里换了电脑、手机，买Kindle、自行车等，就一个感觉——紧。再往前，2013年烧钱的毕业季，还好春节过后不久就硬着头皮先去公司实习，不然真心hold不住的（代价则是错过好多风景）。然后就是助学贷款以及押二付一的房租，借了一堆债。至于搞定这一切，已是2014年初了。</p>
-
-<p>起初图个方便，买了只货基了事，总比放银行好。后来买了一点P2P债权，15%的收益，也是比较省心。不少人看好美元资产，我也有意要做美股。念头年初就有，待到7月完成史考特账号申请，以及11月份拿到香港银行卡，已经小一年过去了。执行力在哪里！！！</p>
-
-<p>11月底，东拼西凑投了5万块（qiong）进去，还分了两处：2万多港币的港股以及4千多美金的美股。本儿小来去自如，但是佣金却吃掉利润的一大块。12月至1月初收益不错，账面有2千多的利润。但是1月中下旬几次亏损带走了前面的几乎所有利润，记得有一天晚上，忍痛止损，那笔交易亏了200多美金。期间，也经历过一个晚上赚一千多块的兴奋。慢慢地，平静下来，淡定许多。对比起初，一看实时行情就智商降低，失去理性；现在好很多了，不会急于买入，也不会急于卖出。2月收益也不多，基本填上1月几次亏损而已。算下来，入场近3个月，5万本金收了2千租金，年化收益率也就16%，这还是算上美元升值的，学习空间还很大。</p>
-
-<h3>国内经济基本面</h3>
-
-<p>本人对国内经济没有太大的信心：增速降了，房地产做不下去了，新增长点没看到，美联储也要放大招了（加息）。2014年后半年，在路上，在公园门口，在小区门口，举着牌子卖房的中介貌似多了不少。这说明，房地产已经慢慢变为买方市场。也可以认为：人们对房价是否能涨信心不足。至于信心降了多少，会有多少影响，小菜不才，不知道。但至少说明，前面有相当的风险。</p>
-
-<p>这就是去年A股大牛而我不敢进的原因——大涨背后没有一个良好的基本面做支撑，而接下来的光景，可能会更加艰难。上个月证监会对多家券商开出两融业务罚单，整顿两融业务，也印证了坊间关于杠杆牛市的传闻。不知道水多深，觉得还是继续观望算了：“眼看他起朱楼，眼看他宴宾客”。</p>
-
-<p>国内唯一的利好应该就是十八届三中全会释放出的改革信号，同时也已经在多个领域全面推动。习大大上台后，放了几个大招，打掉好几个大老虎。封建时代上来一个明君也可以打老虎，天下太平几年，后事未可知。靠英明领袖的反腐总是有局限的，利益集团阻碍改革的力量也是强劲的。衷心希望习大大和李大大能够顺利推动这次久违的改革，让反腐制度化，让改革的红利落地。</p>
-
-<h2>旅行</h2>
-
-<p>一直没怎么出去走：整年7天年假，怎么够用！而请假去旅游的成本很高，现在又是艰苦奋斗攻坚克难的阶段（调侃下官腔），就没这么出去玩儿。回家后，为释放空间把手机数据导入硬盘，照片记录了我这一年的足迹。如图已说明一切：这一年很宅！基本上就是广州和揭阳，两点成一线。另外俩孤点是：10月份去北京出差；12月份去台湾旅游。</p>
-
-<p><img src="/images/2014-nian-wo-de-zu-ji-iphoto.png"></p>
-
-<h3>北京</h3>
-
-<p>国庆后，跟老大们到北京出差——校园招聘面试。我的任务比较轻松，前两天一面过后就没我什么事了。在老大们在忙二面，挑人，发Offer时，我跑出去玩了一天！一天的时间并不多，逛了不少地方，基本上都是走马观花了：北海公园、景山公园、故宫以及南锣鼓巷胡同。这个次游览也算是计划外的事了，没什么准备，也发现北京好玩的地方太多了。不到长城非好汉，是的，没时间去！那天本来还想去恭王府的（近代的恭亲王奕欣大名赫赫），但是故宫太大，一进去一时半会出不来，就也没去成。</p>
-
-<p>哦，对了，说好的雾霾呢？出发前在墨迹上看还有，到机场那天晚上就逐渐消退了，我都无福消受，哈哈哈~</p>
-
-<p><img src="/images/bei-hai-gong-yuan-bai-ta.jpg"></p>
-
-<p><img src="/images/bei-hai-gong-yuan-liu-ying.jpg"></p>
-
-<h3>台湾</h3>
-
-<p>台湾行是公司组织的年度旅游，但其实应该感谢党，没有党给发的通行证，我是去不了的。说起通行证，真是一波三折：中秋回家顺手把通行证和护照给办了，以为妥妥了。后来得知个人签注去台湾要准备好多资料，好吧，认了：在职证明，各种户口本复印件和联络人身份证复印件。接着又得知，大揭阳发的个人签注只能去澎湖、花莲的若干山区……同事都说不如跟他们一起去日本了，但我觉得，只要党还给机会，我就要去台湾。打电话问了一下广州天河公安局，能不能在广州异地改签注。答案是可以，但首先要一年社保以及暂住证。社保Ok，联系房东要房产证复印件办暂住证，然后才搞定改签。感谢党，最后还是及时给我发了签注。</p>
-
-<p>台湾经济没有想象中发达，但是到处都很整洁，还是挺赞的~在那5天里一天至少走一个城市，一下子刷新我在广东留下的足迹记录。玩过的地方包括：国父纪念馆、101大楼、台北故宫、野柳风景区、台中禅寺、日月潭、阿里山、垦丁、高雄港和高雄梦时代。行程也是走马观花式，每天坐旅游大巴去一个景点，下车参观一会儿，走走看看，拍拍照就离开了。</p>
-
-<p>还好安排了两次夜市自由吃喝闲逛，才有机会深入体验台湾人民的生活（深入群众我党注）。台湾人民还是比较用心呀，好多好吃的都很好吃，也比较实惠。景区边的饭店也不会像国内那样就只想宰客，味道赞，服务到位。吃货到台湾就是吃吃吃：从北到南，我们几乎每天都吃猪脚，但是每一顿的风味都不一样；人均只要100的鱼虾蟹大餐；还有夜市里各种令人欲罢不能的海鲜！有机会还真想再去一次！</p>
-
-<p><img src="/images/101-da-lou.jpg"></p>
-
-<p><img src="/images/tai-bei-gu-gong.jpg"></p>
-
-<p><img src="/images/tai-zhong-chan-si.jpg"></p>
-
-<p><img src="/images/ri-yue-tan.jpg"></p>
-
-<p><img src="/images/gao-xiong-gang.jpg"></p>
-
-<h2>计划</h2>
-
-<ul>
-<li>读万卷书，现在时间实在太少，先完成正在读的这几本：《宇宙的琴弦》、《极简欧洲史》、《乱世中的大国崛起》、《利率史》、《民国课堂——大先生也挺逗》</li>
-<li>行万里路，从脚下开始，肇庆惠州，香港澳门这么近的地方还没去溜达过呢</li>
-<li>怀着对市场的敬畏学习投资和交易</li>
-</ul>
-
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2015/02/18/xie-yu-chu-xi-ye/">Read on &rarr;</a>
+    </footer>
   
 
 
@@ -335,16 +336,12 @@
 
   <div class="entry-content"><p><img src="/images/gitpress.png"></p>
 
-<h2>开始写博客</h2>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># 新建post，标题为title</span>
-</span><span class='line'>rake new_post<span class="o">[</span><span class="s2">&quot;title&quot;</span><span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2015/01/18/yong-hei-ke-de-fang-shi-xie-bo-ke/">Read on &rarr;</a>
+    </footer>
   
 
 
@@ -363,6 +360,14 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/04/11/wei-guan-scrapy-pa-chong-kuang-jia/">围观Scrapy爬虫框架</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/27/http-ya-li-ce-shi-qian-zai-wen-ti-ruo-gan/">HTTP压力测试潜在问题若干</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/25/sui-ji-wen-duan-sheng-cheng/">随机文段生成</a>
       </li>
     
@@ -372,14 +377,6 @@
     
       <li class="post">
         <a href="/blog/2015/03/21/kafka-jian-jie/">Kafka简介</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/02/18/xie-yu-chu-xi-ye/">写于除夕夜</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/01/18/yong-hei-ke-de-fang-shi-xie-bo-ke/">用黑客的方式写博客</a>
       </li>
     
   </ul>
