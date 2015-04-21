@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>小站</title>
+  <title>一元六次方程求解——迭代法 - 小站</title>
   <meta name="author" content="陈彦霏">
 
   
@@ -70,7 +70,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://fasionchan.github.io/">
+  <link rel="canonical" href="http://fasionchan.github.io/blog/2015/04/21/yi-yuan-liu-ci-fang-cheng-qiu-jie-die-dai-fa/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="小站" type="application/atom+xml">
@@ -116,15 +116,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2015/04/21/yi-yuan-liu-ci-fang-cheng-qiu-jie-die-dai-fa/">一元六次方程求解——迭代法</a></h1>
+      <h1 class="entry-title">一元六次方程求解——迭代法</h1>
     
     
       <p class="meta">
@@ -140,7 +137,7 @@
   </header>
 
 
-  <div class="entry-content"><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="entry-content"><figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -421,298 +418,54 @@
 </span></code></pre></td></tr></table></div></figure>
 
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/04/11/wei-guan-scrapy-pa-chong-kuang-jia/">围观Scrapy爬虫框架</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-04-11T11:22:24+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>11:22 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>对于Scrapy这个爬虫框架，先前也是知道有这么个东西存在，仅此而已。最近在面试时，发现很多人写过Python爬虫采集数据，所用的框架几乎都是Scrapy。今天刚好闲着没事做，就来玩玩Scrapy呗。</p>
-
-<h2>简介</h2>
-
-<h2>框架</h2>
-
-<p><img src="/images/scrapy.png"></p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/04/11/wei-guan-scrapy-pa-chong-kuang-jia/">Read on &rarr;</a>
-    </footer>
   
 
+<span class="byline author vcard">Posted by <span class="fn">陈彦霏</span></span>
 
-    </article>
-  
-  
-    <article>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/03/27/http-ya-li-ce-shi-qian-zai-wen-ti-ruo-gan/">HTTP压力测试潜在问题若干</a></h1>
-    
-    
-      <p class="meta">
-        
 
 
 
 
-<time class='entry-date' datetime='2015-03-27T16:56:02+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>27</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:56 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>首先，用<code>ulimit -n</code>看看是不是文件描述符设置过小而被打满：发现设置值是<code>65536</code>，这是<code>10000</code>个并发不可能用满的。当然，大部分服务器上都是采用默认配置<code>1024</code>，这时就是罪魁祸首了。</p>
-
-<h2>backlog太小</h2>
-
-<p>各种可能的原因都查了查了，最后发现是由于底层套接字调用<code>listen</code>时<code>backlog</code>参数太小造成的！<code>listen</code>系统调用的作用是使TCP套接字进行监听状态，<code>backlog</code>是内核维持请求连接队列的个数限制（不包括已经被accept的连接）。我要测试的WEB接口是用基于<code>tornado</code>框架的，绑定端口时<code>backlog</code>默认参数是<code>128</code>，很快就被<code>10000</code>个请求给压满了，这就是<code>ab</code>各种超时的主要原因！调大这个参数后问题就解决了~</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
+<time class='entry-date' datetime='2015-04-21T13:27:46+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2015</span></span> <span class='time'>1:27 pm</span></time>
       
-  <header>
+
+
+    </p>
     
-      <h1 class="entry-title"><a href="/blog/2015/03/25/sui-ji-wen-duan-sheng-cheng/">随机文段生成</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-03-25T20:40:54+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:40 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>我们经常需要拷贝一些文字作为Demo填充，特别是做页面时，每次都到网上去找觉得挺麻烦的。很多时候我们也需要一个随机的信息流，比如模拟后台日志输出。Python下<a href="https://pypi.python.org/pypi/loremipsum/">loremipsum</a>就可以很好地完成这个工作，安装很简单：<code>pip install loremipsum</code>。使用示例如下：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>&gt;&gt;&gt; import loremipsum
-</span><span class='line'>&gt;&gt;&gt; dir(loremipsum)
-</span><span class='line'>['DictionaryError', 'Generator', 'SampleError', '_GENERATOR', '__all__', '__author__', '__builtins__', '__classifiers__', '__copyright__', '__doc__', '__docformat__', '__file__', '__keywords__', '__name__', '__package__', '__path__', '__version__', 'generate_paragraph', 'generate_paragraphs', 'generate_sentence', 'generate_sentences', 'generator', 'get_paragraph', 'get_paragraphs', 'get_sentence', 'get_sentences']
-</span><span class='line'>&gt;&gt;&gt;
-</span><span class='line'>&gt;&gt;&gt; # 生成一个随机句子
-</span><span class='line'>&gt;&gt;&gt; print loremipsum.get_sentence()
-</span><span class='line'>Purus neque fames vivamus.
-</span><span class='line'>&gt;&gt;&gt;
-</span><span class='line'>&gt;&gt;&gt; # 生成一个随机段落
-</span><span class='line'>&gt;&gt;&gt; print loremipsum.get_paragraph(10)
-</span><span class='line'>Lorem ipsum. Vitae massa aenean mi pulvinar montes tortor felis feugiat. Morbi risus. Etiam class tortor parturient volutpat dolor a integer mollis. Neque felis. Fusce ipsum massa dui purus penatibus phasellus fusce phasellus cursus. Felis augue nunc egestas natoque dictum dolor mus. Massa metus donec eni nibh habitasse ut tortor mi orci aliquet risus in. Lorem augue per tellus convallis facilisi eu purus suspendisse. Velit purus sem felis tincidunt cras. Fusce neque luctus magnis fusce. Class dolor egestas hac eleifend tincidunt. Lacus neque ligula sollicitudin facilisis tortor inceptos non id nunc.</span></code></pre></td></tr></table></div></figure>
-
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://fasionchan.github.io/blog/2015/04/21/yi-yuan-liu-ci-fang-cheng-qiu-jie-die-dai-fa/" data-via="fasionchan" data-counturl="http://fasionchan.github.io/blog/2015/04/21/yi-yuan-liu-ci-fang-cheng-qiu-jie-die-dai-fa/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
 </div>
-  
-  
 
-
-    </article>
-  
-  
-    <article>
+    
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/03/22/ssh-gao-ji-yong-fa/">SSH高级用法</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-03-22T10:21:52+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>22</span><span class='date-suffix'>nd</span>, <span class='date-year'>2015</span></span> <span class='time'>10:21 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>Keep Alive</h2>
-
-<p>在某些网络环境下，SSH会话空闲一小段时间后就会断掉。可能是因为中间有个NAT网关，检查到空闲TCP连接后便无情Kill。一暂停操作SSH连接就断实在不能忍！</p>
-
-<p>SSH有个配置选项，每隔一段时间就发一个空包使TCP连接保持活跃，这样连接就不会无故断掉了。这个选项就是：<code>ServerAliveInterval</code>，配置值是一个整数，表示发送空包的周期，单位是秒。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/03/22/ssh-gao-ji-yong-fa/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
+        <a class="basic-alignment left" href="/blog/2015/04/11/wei-guan-scrapy-pa-chong-kuang-jia/" title="Previous Post: 围观Scrapy爬虫框架">&laquo; 围观Scrapy爬虫框架</a>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/03/21/kafka-jian-jie/">Kafka简介</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-03-21T11:01:38+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2015</span></span> <span class='time'>11:01 am</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><a href="http://kafka.apache.org">Kafka</a>是一个高吞吐的分布式消息系统，由<a href="http://www.linkedin.com">Linkin</a>公司开源，成为一个<a href="https://www.apache.org">Apache</a>项目。Kafka可以看做是一个快速、分布式、可扩展、可分区、可复制、持久化的日志服务。它提供了作为消息系统的实用功能，架构设计却是相当独特的。</p>
-
-<h2>发布-订阅模型</h2>
-
-<p><img src="/images/kafka-producer-consumer.png"></p>
-
-<ul>
-<li>Kafka采用话题（topic）对消息进行分类；</li>
-<li>向Kafka发布（Publish）消息的进程称为生产者（producer）；</li>
-<li>从Kafka订阅（Subscribe）消息的进程称为消费者（consumer）；</li>
-<li>Kafka集群可以由若干台服务器组成，称为代理（broker）；</li>
-</ul>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/03/21/kafka-jian-jie/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/02/18/xie-yu-chu-xi-ye/">写于除夕夜</a></h1>
-    
-    
-      <p class="meta">
-        
+    </p>
+  </footer>
+</article>
 
-
-
-
-<time class='entry-date' datetime='2015-02-18T20:03:26+08:00'><span class='date'><span class='date-month'>Feb</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:03 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>工作</h2>
-
-<p>这部分不准备多写：在公司外透漏工作细节是不合适的。毕业后选择了运维方向，与开发不同，对运维来说，最重要的词是稳定、可靠和可控。这个职位总体工作强度不高，但是突发情况较多。我本身不是纯运维，而是运维开发，就是开发运维系统。尽管如此，平时多少还是要做一些运维操作，提心吊胆地享受命令行带给你的快感。借用领导的话：你做的好，没人会想起你；你搞出一次事故，大家就都知道这个运维不靠谱！</p>
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/02/18/xie-yu-chu-xi-ye/">Read on &rarr;</a>
-    </footer>
-  
 
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/01/18/yong-hei-ke-de-fang-shi-xie-bo-ke/">用黑客的方式写博客</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-01-18T15:34:34+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:34 pm</span></time>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><img src="/images/gitpress.png"></p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/01/18/yong-hei-ke-de-fang-shi-xie-bo-ke/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
-</div>
 <aside class="sidebar">
   
     <section>
@@ -778,6 +531,7 @@
   
 </aside>
 
+
     </div>
   </div>
   <footer role="contentinfo"><p>
@@ -792,7 +546,10 @@
       var disqus_shortname = 'fasionchan';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://fasionchan.github.io/blog/2015/04/21/yi-yuan-liu-ci-fang-cheng-qiu-jie-die-dai-fa/';
+        var disqus_url = 'http://fasionchan.github.io/blog/2015/04/21/yi-yuan-liu-ci-fang-cheng-qiu-jie-die-dai-fa/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
