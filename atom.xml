@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[小站]]></title>
-  <link href="http://fasionchan.github.io/atom.xml" rel="self"/>
-  <link href="http://fasionchan.github.io/"/>
-  <updated>2015-11-23T13:08:13+08:00</updated>
-  <id>http://fasionchan.github.io/</id>
+  <link href="http://blog.fasionchan.com/atom.xml" rel="self"/>
+  <link href="http://blog.fasionchan.com/"/>
+  <updated>2016-12-05T19:57:54+08:00</updated>
+  <id>http://blog.fasionchan.com/</id>
   <author>
     <name><![CDATA[陈彦霏]]></name>
     
@@ -14,17 +14,26 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Linux Wen Jian Miao Shu Fu]]></title>
+    <link href="http://blog.fasionchan.com/blog/2016/09/20/linux-wen-jian-miao-shu-fu/"/>
+    <updated>2016-09-20T00:00:00+08:00</updated>
+    <id>http://blog.fasionchan.com/blog/2016/09/20/linux-wen-jian-miao-shu-fu</id>
+    <content type="html"><![CDATA[<h1>Linux文件描述符</h1>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[围观Scrapy爬虫框架]]></title>
-    <link href="http://fasionchan.github.io/blog/2015/04/11/wei-guan-scrapy-pa-chong-kuang-jia/"/>
+    <link href="http://blog.fasionchan.com/blog/2015/04/11/wei-guan-scrapy-pa-chong-kuang-jia/"/>
     <updated>2015-04-11T11:22:24+08:00</updated>
-    <id>http://fasionchan.github.io/blog/2015/04/11/wei-guan-scrapy-pa-chong-kuang-jia</id>
+    <id>http://blog.fasionchan.com/blog/2015/04/11/wei-guan-scrapy-pa-chong-kuang-jia</id>
     <content type="html"><![CDATA[<p>对于Scrapy这个爬虫框架，先前也是知道有这么个东西存在，仅此而已。最近在面试时，发现很多人写过Python爬虫采集数据，所用的框架几乎都是Scrapy。今天刚好闲着没事做，就来玩玩Scrapy呗。</p>
 
 <h2>简介</h2>
 
 <h2>框架</h2>
 
-<p><img src="http://fasionchan.github.io/images/scrapy.png"></p>
+<p><img src="http://blog.fasionchan.com/images/scrapy.png"></p>
 
 <!--more-->
 
@@ -41,9 +50,9 @@
   
   <entry>
     <title type="html"><![CDATA[HTTP压力测试潜在问题若干]]></title>
-    <link href="http://fasionchan.github.io/blog/2015/03/27/http-ya-li-ce-shi-qian-zai-wen-ti-ruo-gan/"/>
+    <link href="http://blog.fasionchan.com/blog/2015/03/27/http-ya-li-ce-shi-qian-zai-wen-ti-ruo-gan/"/>
     <updated>2015-03-27T16:56:02+08:00</updated>
-    <id>http://fasionchan.github.io/blog/2015/03/27/http-ya-li-ce-shi-qian-zai-wen-ti-ruo-gan</id>
+    <id>http://blog.fasionchan.com/blog/2015/03/27/http-ya-li-ce-shi-qian-zai-wen-ti-ruo-gan</id>
     <content type="html"><![CDATA[<p>首先，用<code>ulimit -n</code>看看是不是文件描述符设置过小而被打满：发现设置值是<code>65536</code>，这是<code>10000</code>个并发不可能用满的。当然，大部分服务器上都是采用默认配置<code>1024</code>，这时就是罪魁祸首了。</p>
 
 <h2>backlog太小</h2>
@@ -54,9 +63,9 @@
   
   <entry>
     <title type="html"><![CDATA[随机文段生成]]></title>
-    <link href="http://fasionchan.github.io/blog/2015/03/25/sui-ji-wen-duan-sheng-cheng/"/>
+    <link href="http://blog.fasionchan.com/blog/2015/03/25/sui-ji-wen-duan-sheng-cheng/"/>
     <updated>2015-03-25T20:40:54+08:00</updated>
-    <id>http://fasionchan.github.io/blog/2015/03/25/sui-ji-wen-duan-sheng-cheng</id>
+    <id>http://blog.fasionchan.com/blog/2015/03/25/sui-ji-wen-duan-sheng-cheng</id>
     <content type="html"><![CDATA[<p>我们经常需要拷贝一些文字作为Demo填充，特别是做页面时，每次都到网上去找觉得挺麻烦的。很多时候我们也需要一个随机的信息流，比如模拟后台日志输出。Python下<a href="https://pypi.python.org/pypi/loremipsum/">loremipsum</a>就可以很好地完成这个工作，安装很简单：<code>pip install loremipsum</code>。使用示例如下：</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -87,9 +96,9 @@
   
   <entry>
     <title type="html"><![CDATA[SSH高级用法]]></title>
-    <link href="http://fasionchan.github.io/blog/2015/03/22/ssh-gao-ji-yong-fa/"/>
+    <link href="http://blog.fasionchan.com/blog/2015/03/22/ssh-gao-ji-yong-fa/"/>
     <updated>2015-03-22T10:21:52+08:00</updated>
-    <id>http://fasionchan.github.io/blog/2015/03/22/ssh-gao-ji-yong-fa</id>
+    <id>http://blog.fasionchan.com/blog/2015/03/22/ssh-gao-ji-yong-fa</id>
     <content type="html"><![CDATA[<h2>Keep Alive</h2>
 
 <p>在某些网络环境下，SSH会话空闲一小段时间后就会断掉。可能是因为中间有个NAT网关，检查到空闲TCP连接后便无情Kill。一暂停操作SSH连接就断实在不能忍！</p>
@@ -148,14 +157,14 @@
   
   <entry>
     <title type="html"><![CDATA[Kafka简介]]></title>
-    <link href="http://fasionchan.github.io/blog/2015/03/21/kafka-jian-jie/"/>
+    <link href="http://blog.fasionchan.com/blog/2015/03/21/kafka-jian-jie/"/>
     <updated>2015-03-21T11:01:38+08:00</updated>
-    <id>http://fasionchan.github.io/blog/2015/03/21/kafka-jian-jie</id>
+    <id>http://blog.fasionchan.com/blog/2015/03/21/kafka-jian-jie</id>
     <content type="html"><![CDATA[<p><a href="http://kafka.apache.org">Kafka</a>是一个高吞吐的分布式消息系统，由<a href="http://www.linkedin.com">Linkin</a>公司开源，成为一个<a href="https://www.apache.org">Apache</a>项目。Kafka可以看做是一个快速、分布式、可扩展、可分区、可复制、持久化的日志服务。它提供了作为消息系统的实用功能，架构设计却是相当独特的。</p>
 
 <h2>发布-订阅模型</h2>
 
-<p><img src="http://fasionchan.github.io/images/kafka-producer-consumer.png"></p>
+<p><img src="http://blog.fasionchan.com/images/kafka-producer-consumer.png"></p>
 
 <ul>
 <li>Kafka采用话题（topic）对消息进行分类；</li>
@@ -172,7 +181,7 @@
 
 <p>话题是消息的分类名：生产者向某个话题发布消息；消费者从某个话题订阅消息。一个话题可以分为多个分区（partition），分区的作用：首先，当消息规模扩张到超过一台机器的处理能力时，可以把压力分散到多台机器；其次，分区也让应用并行处理消息成为可能。Kafka组织分区日志的方式如下：</p>
 
-<p><img src="http://fasionchan.github.io/images/kafka-log-anatomy.png"></p>
+<p><img src="http://blog.fasionchan.com/images/kafka-log-anatomy.png"></p>
 
 <p>发布到一个话题的消息写到该话题下某一分区，由消息所带的键（key）决定：<strong>键相同的所有消息落到同一个分区</strong>。每个分区都是一个有序不可变的消息序列，持续地追加到一个提交日志（commit log）。Kafka为分区中的每条消息分配了一个序号，称为偏移量（offset），唯一指定了每条消息在分区中的位置。</p>
 
@@ -184,15 +193,15 @@
 
 <h2>用法示例</h2>
 
-<p><img src="http://fasionchan.github.io/images/kafka-usecase.png"></p>
+<p><img src="http://blog.fasionchan.com/images/kafka-usecase.png"></p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[写于除夕夜]]></title>
-    <link href="http://fasionchan.github.io/blog/2015/02/18/xie-yu-chu-xi-ye/"/>
+    <link href="http://blog.fasionchan.com/blog/2015/02/18/xie-yu-chu-xi-ye/"/>
     <updated>2015-02-18T20:03:26+08:00</updated>
-    <id>http://fasionchan.github.io/blog/2015/02/18/xie-yu-chu-xi-ye</id>
+    <id>http://blog.fasionchan.com/blog/2015/02/18/xie-yu-chu-xi-ye</id>
     <content type="html"><![CDATA[<h2>工作</h2>
 
 <p>这部分不准备多写：在公司外透漏工作细节是不合适的。毕业后选择了运维方向，与开发不同，对运维来说，最重要的词是稳定、可靠和可控。这个职位总体工作强度不高，但是突发情况较多。我本身不是纯运维，而是运维开发，就是开发运维系统。尽管如此，平时多少还是要做一些运维操作，提心吊胆地享受命令行带给你的快感。借用领导的话：你做的好，没人会想起你；你搞出一次事故，大家就都知道这个运维不靠谱！</p>
@@ -226,7 +235,7 @@
 
 <p>一直没怎么出去走：整年7天年假，怎么够用！而请假去旅游的成本很高，现在又是艰苦奋斗攻坚克难的阶段（调侃下官腔），就没这么出去玩儿。回家后，为释放空间把手机数据导入硬盘，照片记录了我这一年的足迹。如图已说明一切：这一年很宅！基本上就是广州和揭阳，两点成一线。另外俩孤点是：10月份去北京出差；12月份去台湾旅游。</p>
 
-<p><img src="http://fasionchan.github.io/images/2014-nian-wo-de-zu-ji-iphoto.png"></p>
+<p><img src="http://blog.fasionchan.com/images/2014-nian-wo-de-zu-ji-iphoto.png"></p>
 
 <h3>北京</h3>
 
@@ -234,9 +243,9 @@
 
 <p>哦，对了，说好的雾霾呢？出发前在墨迹上看还有，到机场那天晚上就逐渐消退了，我都无福消受，哈哈哈~</p>
 
-<p><img src="http://fasionchan.github.io/images/bei-hai-gong-yuan-bai-ta.jpg"></p>
+<p><img src="http://blog.fasionchan.com/images/bei-hai-gong-yuan-bai-ta.jpg"></p>
 
-<p><img src="http://fasionchan.github.io/images/bei-hai-gong-yuan-liu-ying.jpg"></p>
+<p><img src="http://blog.fasionchan.com/images/bei-hai-gong-yuan-liu-ying.jpg"></p>
 
 <h3>台湾</h3>
 
@@ -246,15 +255,15 @@
 
 <p>还好安排了两次夜市自由吃喝闲逛，才有机会深入体验台湾人民的生活（深入群众我党注）。台湾人民还是比较用心呀，好多好吃的都很好吃，也比较实惠。景区边的饭店也不会像国内那样就只想宰客，味道赞，服务到位。吃货到台湾就是吃吃吃：从北到南，我们几乎每天都吃猪脚，但是每一顿的风味都不一样；人均只要100的鱼虾蟹大餐；还有夜市里各种令人欲罢不能的海鲜！有机会还真想再去一次！</p>
 
-<p><img src="http://fasionchan.github.io/images/101-da-lou.jpg"></p>
+<p><img src="http://blog.fasionchan.com/images/101-da-lou.jpg"></p>
 
-<p><img src="http://fasionchan.github.io/images/tai-bei-gu-gong.jpg"></p>
+<p><img src="http://blog.fasionchan.com/images/tai-bei-gu-gong.jpg"></p>
 
-<p><img src="http://fasionchan.github.io/images/tai-zhong-chan-si.jpg"></p>
+<p><img src="http://blog.fasionchan.com/images/tai-zhong-chan-si.jpg"></p>
 
-<p><img src="http://fasionchan.github.io/images/ri-yue-tan.jpg"></p>
+<p><img src="http://blog.fasionchan.com/images/ri-yue-tan.jpg"></p>
 
-<p><img src="http://fasionchan.github.io/images/gao-xiong-gang.jpg"></p>
+<p><img src="http://blog.fasionchan.com/images/gao-xiong-gang.jpg"></p>
 
 <h2>计划</h2>
 
@@ -269,10 +278,10 @@
   
   <entry>
     <title type="html"><![CDATA[用黑客的方式写博客]]></title>
-    <link href="http://fasionchan.github.io/blog/2015/01/18/yong-hei-ke-de-fang-shi-xie-bo-ke/"/>
+    <link href="http://blog.fasionchan.com/blog/2015/01/18/yong-hei-ke-de-fang-shi-xie-bo-ke/"/>
     <updated>2015-01-18T15:34:34+08:00</updated>
-    <id>http://fasionchan.github.io/blog/2015/01/18/yong-hei-ke-de-fang-shi-xie-bo-ke</id>
-    <content type="html"><![CDATA[<p><img src="http://fasionchan.github.io/images/gitpress.png"></p>
+    <id>http://blog.fasionchan.com/blog/2015/01/18/yong-hei-ke-de-fang-shi-xie-bo-ke</id>
+    <content type="html"><![CDATA[<p><img src="http://blog.fasionchan.com/images/gitpress.png"></p>
 
 <!--more-->
 

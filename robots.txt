@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: 
 
-Sitemap: http://fasionchan.github.io/sitemap.xml 
+Sitemap: http://blog.fasionchan.com/sitemap.xml 

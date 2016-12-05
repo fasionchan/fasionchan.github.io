@@ -1,55 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://fasionchan.github.io/blog/2015/04/11/wei-guan-scrapy-pa-chong-kuang-jia/</loc>
+    <loc>http://blog.fasionchan.com/blog/2016/09/20/linux-wen-jian-miao-shu-fu/</loc>
+    <lastmod>2016-09-20T00:00:00+08:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>http://blog.fasionchan.com/blog/2015/04/11/wei-guan-scrapy-pa-chong-kuang-jia/</loc>
     <lastmod>2015-04-11T11:22:24+08:00</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>http://fasionchan.github.io/blog/2015/03/27/http-ya-li-ce-shi-qian-zai-wen-ti-ruo-gan/</loc>
+    <loc>http://blog.fasionchan.com/blog/2015/03/27/http-ya-li-ce-shi-qian-zai-wen-ti-ruo-gan/</loc>
     <lastmod>2015-03-27T16:56:02+08:00</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>http://fasionchan.github.io/blog/2015/03/25/sui-ji-wen-duan-sheng-cheng/</loc>
+    <loc>http://blog.fasionchan.com/blog/2015/03/25/sui-ji-wen-duan-sheng-cheng/</loc>
     <lastmod>2015-03-25T20:40:54+08:00</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>http://fasionchan.github.io/blog/2015/03/22/ssh-gao-ji-yong-fa/</loc>
+    <loc>http://blog.fasionchan.com/blog/2015/03/22/ssh-gao-ji-yong-fa/</loc>
     <lastmod>2015-03-22T10:21:52+08:00</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>http://fasionchan.github.io/blog/2015/03/21/kafka-jian-jie/</loc>
+    <loc>http://blog.fasionchan.com/blog/2015/03/21/kafka-jian-jie/</loc>
     <lastmod>2015-03-21T11:01:38+08:00</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>http://fasionchan.github.io/blog/2015/02/18/xie-yu-chu-xi-ye/</loc>
+    <loc>http://blog.fasionchan.com/blog/2015/02/18/xie-yu-chu-xi-ye/</loc>
     <lastmod>2015-02-18T20:03:26+08:00</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>http://fasionchan.github.io/blog/2015/01/18/yong-hei-ke-de-fang-shi-xie-bo-ke/</loc>
+    <loc>http://blog.fasionchan.com/blog/2015/01/18/yong-hei-ke-de-fang-shi-xie-bo-ke/</loc>
     <lastmod>2015-01-18T15:34:34+08:00</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>http://fasionchan.github.io/blog/archives/</loc>
-    <lastmod>2015-11-23T13:08:13+08:00</lastmod>
+    <loc>http://blog.fasionchan.com/blog/archives/</loc>
+    <lastmod>2016-12-05T19:57:54+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>http://fasionchan.github.io/</loc>
-    <lastmod>2015-11-23T13:08:13+08:00</lastmod>
+    <loc>http://blog.fasionchan.com/</loc>
+    <lastmod>2016-12-05T19:57:54+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>http://fasionchan.github.io/books/</loc>
-    <lastmod>2015-11-23T13:08:13+08:00</lastmod>
+    <loc>http://blog.fasionchan.com/books/</loc>
+    <lastmod>2016-12-05T19:57:54+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
