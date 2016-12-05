@@ -4,7 +4,7 @@
   <title><![CDATA[小站]]></title>
   <link href="http://blog.fasionchan.com/atom.xml" rel="self"/>
   <link href="http://blog.fasionchan.com/"/>
-  <updated>2016-12-05T19:57:54+08:00</updated>
+  <updated>2016-12-05T21:48:59+08:00</updated>
   <id>http://blog.fasionchan.com/</id>
   <author>
     <name><![CDATA[陈彦霏]]></name>
@@ -14,11 +14,90 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Linux Wen Jian Miao Shu Fu]]></title>
+    <title type="html"><![CDATA[Linux文件描述符]]></title>
     <link href="http://blog.fasionchan.com/blog/2016/09/20/linux-wen-jian-miao-shu-fu/"/>
-    <updated>2016-09-20T00:00:00+08:00</updated>
+    <updated>2016-09-20T22:16:26+08:00</updated>
     <id>http://blog.fasionchan.com/blog/2016/09/20/linux-wen-jian-miao-shu-fu</id>
-    <content type="html"><![CDATA[<h1>Linux文件描述符</h1>
+    <content type="html"><![CDATA[<p>在<a href="http://www.jianshu.com/p/5357d72ef17d">Linux通用I/O模型</a>中，<code>I/O</code>操作系列函数(系统调用)都是围绕一个叫做文件描述符的整数展开。这不禁让人产生疑问：这个整数代表什么？一个数值代表一个文件吗？随便传一个整数进去调用可以吗？</p>
+
+<p>解答以上疑问，需要更深入学习——文件描述符(File Descriptor)。</p>
+
+<h1>图解</h1>
+
+<p>理解具体情况，需要了解由内核维护的3个数据结构：</p>
+
+<ul>
+<li>进程级<strong>文件描述符表</strong>(file descriptor table)</li>
+<li>系统级<strong>打开文件表</strong>(open file table)</li>
+<li>文件系统<strong>i-node表</strong>(i-node table)</li>
+</ul>
+
+
+<p>这3个数据结构之间的关系如下图所示：</p>
+
+<p>Error processing input, expected syntax: {% img [class name(s)] [http[s]:/]/path/to/image [width [height]] [title text | &ldquo;title text&rdquo; [&ldquo;alt text&rdquo;]] %}</p>
+
+<h2>文件描述符表</h2>
+
+<p>内核为每个进程维护一个<strong>文件描述符表</strong>，该表每一条目都记录了单个文件描述符的相关信息，包括：</p>
+
+<ul>
+<li><strong>控制标志</strong>(flags)，目前内核仅定义了一个，即<code>close-on-exec</code></li>
+<li><strong>打开文件描述体指针</strong></li>
+</ul>
+
+
+<h2>打开文件表</h2>
+
+<p>内核对所有打开的文件维护一个系统级别的<strong>打开文件描述表</strong>(open file description table)，简称<strong>打开文件表</strong>。表中条目称为<strong>打开文件描述体</strong>(open file description)，存储了与一个打开文件相关的全部信息，包括：</p>
+
+<ul>
+<li><strong>文件偏移量</strong>(file offset)，调用<code>read()</code>和<code>write()</code>更新，调用<code>lseek()</code>直接修改</li>
+<li><strong>访问模式</strong>，由<code>open()</code>调用设置，例如：只读、只写或读写等</li>
+<li><strong><code>i-node</code>对象指针</strong></li>
+</ul>
+
+
+<h2>i-node表</h2>
+
+<p>每个文件系统会为存储于其上的所有文件(包括目录)维护一个<code>i-node</code>表，单个<code>i-node</code>包含以下信息：</p>
+
+<ul>
+<li><strong>文件类型</strong>(file type)，可以是常规文件、目录、套接字或<code>FIFO</code></li>
+<li><strong>访问权限</strong></li>
+<li><strong>文件锁列表</strong>(file locks)</li>
+<li><strong>文件大小</strong></li>
+<li>等等</li>
+</ul>
+
+
+<p><code>i-node</code>存储在磁盘设备上，内核在内存中维护了一个副本，这里的<strong><code>i-node</code>表</strong>为后者。副本除了原有信息，还包括：引用计数(从打开文件描述体)、所在设备号以及一些临时属性，例如文件锁。</p>
+
+<h1>场景解析</h1>
+
+<p>上图中，详细描述了两个进程诸多文件描述符，以及相互关系。</p>
+
+<h2>文件描述符复制</h2>
+
+<p>在进程<code>A</code>中，文件描述符1和文件描述符20都指向同一个打开文件描述体(标号23)。这很可能是通过调用<code>dup()</code>系列函数形成的。</p>
+
+<p>文件描述符复制，在某些场景下非常有用，比如：标准输入/输出重定向。在<code>shell</code>下，完成这个操作非常简单，大部分人都会，但是极少人思考过背后的原理。</p>
+
+<p>大概描述一下需要的几个步骤，以标准输出(文件描述符为1)重定向为例：</p>
+
+<ol>
+<li>打开目标文件，返回文件描述符n；</li>
+<li>关闭文件描述符1；</li>
+<li>调用<code>dup</code>将文件描述符n复制到1；</li>
+<li>关闭文件描述符n；</li>
+</ol>
+
+
+<h2>子进程继承文件描述符</h2>
+
+<p>进程<code>A</code>的文件描述符2和进程<code>B</code>的文件描述符2都指向同一个打开文件描述体(标号23)。这种情形很可能发生在调用<code>fork()</code>派生子进程之后，比如<code>A</code>调用<code>fork()</code>派生出<code>B</code>。这时，<code>B</code>作为子进程，从父进程<code>A</code>继承了文件描述符表，其中包括图中标明的文件描述符2。这就是<code>子进程继承父进程打开的文件</code>这句话的由来。</p>
+
+<p>当然了，进程<code>A</code>通过<code>Unix</code>套接字将一个文件描述符传递给<code>B</code>也会出现类似的情形，但一般文件描述符数值是不一样的。同时为2要非常凑巧才发生。</p>
 ]]></content>
   </entry>
   
@@ -294,6 +373,10 @@
 </span><span class='line'>rake new_post<span class="o">[</span><span class="s2">&quot;title&quot;</span><span class="o">]</span>
 </span></code></pre></td></tr></table></div></figure>
 
+
+<h2>常见问题</h2>
+
+<p>自定义域名配置<code>CNAME</code>不生效，查了很久发现是<code>Jekyll</code>失效引起的。</p>
 ]]></content>
   </entry>
   
