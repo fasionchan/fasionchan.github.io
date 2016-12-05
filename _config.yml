@@ -2,9 +2,9 @@
 #      Main Configs       #
 # ----------------------- #
 
-url: http://fasionchan.github.io
+url: http://blog.fasionchan.com
 title: "小站"
-subtitle: "读万卷书，行万里路。"
+subtitle: "读万卷书，行万里路，品万味肴。"
 author: "陈彦霏"
 simple_search: https://www.google.com/search
 description:
@@ -74,7 +74,7 @@ twitter_user: "fasionchan"
 twitter_tweet_button: true
 
 # Google +1
-google_plus_one: false
+google_plus_one: true
 google_plus_one_size: medium
 
 # Google Plus Profile
@@ -91,7 +91,7 @@ delicious_user:
 delicious_count: 3
 
 # Disqus Comments
-disqus_short_name:
+disqus_short_name: "fasionchan"
 disqus_show_comment_count: false
 
 # Google Analytics
