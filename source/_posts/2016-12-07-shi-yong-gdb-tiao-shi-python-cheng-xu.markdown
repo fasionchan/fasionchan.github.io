@@ -1,9 +1,9 @@
 ---
 layout: post
 title: "使用gdb调试Python程序"
-date: 2016-12-08 19:55:29 +0800
+date: 2016-12-07 22:51:29 +0800
 comments: true
-categories: Python
+categories: gdb Python
 ---
 
 最近在为一个监控系统开发`agent`，需要支持`Linux`、`FreeBSD`及`Windows`等操作系统。复杂的线上环境，带来了一系列诡异的问题，尽管代码上线前在为数不少的测试机器验证过。
