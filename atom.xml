@@ -4,7 +4,7 @@
   <title><![CDATA[小站]]></title>
   <link href="http://blog.fasionchan.com/atom.xml" rel="self"/>
   <link href="http://blog.fasionchan.com/"/>
-  <updated>2016-12-08T19:59:06+08:00</updated>
+  <updated>2016-12-08T22:35:55+08:00</updated>
   <id>http://blog.fasionchan.com/</id>
   <author>
     <name><![CDATA[陈彦霏]]></name>
@@ -14,10 +14,77 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Mac下Ruby安装小结]]></title>
+    <link href="http://blog.fasionchan.com/blog/2016/12/08/mac-xia-ruby-an-zhuang-xiao-jie/"/>
+    <updated>2016-12-08T22:29:43+08:00</updated>
+    <id>http://blog.fasionchan.com/blog/2016/12/08/mac-xia-ruby-an-zhuang-xiao-jie</id>
+    <content type="html"><![CDATA[<p>最近，重新拿起博客，发现已有一年多没有动过的<code>Octopress</code>跑步起来了，囧。并不意外，每次<code>Mac</code>一升级，总有一些东西会挂掉，久而久之习惯了。</p>
+
+<p>如何让<code>Octopress</code>重新跑起来呢？重新看安装文档，大头只是安装一个<code>ruby</code>而已。但是，由于对<code>ruby</code>并不熟悉，中间还是踩了个大坑。因此，有必要记一下，免得以后再犯。</p>
+
+<!--more-->
+
+
+<h1>安装rbenv</h1>
+
+<p><code>rbenv</code>是什么鬼？</p>
+
+<p>我们知道，系统本来已经有一个<code>ruby</code>了，不信命令行运行<code>which ruby</code>看看。这个是系统自带的，一般版本都是极其老的。然而，我们在用一些软件环境时，却是需要某个特定版本的<code>ruby</code>的。这时，你可以选择重新编译一个，然后进行安装。问题是，安装到系统这个动作太暴力了，影响范围略大，可能会搞挂其他东西。如果可以安装多个版本的<code>ruby</code>，与系统独立，按需使用，那敢情好。<code>rbenv</code>就是这样的工具~</p>
+
+<p>好吧，那么要怎么安装呢？<code>Mac</code>下，一般用<code>brew</code>安装软件，<code>rbenv</code>也不例外：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>brew update
+</span><span class='line'>brew install rbenv
+</span><span class='line'>brew install ruby-build</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>安装ruby</h1>
+
+<p><code>rbenv</code>完成安装后，<code>ruby</code>的安装就没有任何难度了：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>rbenv install 1.9.3-p0
+</span><span class='line'>rbenv local 1.9.3-p0
+</span><span class='line'>rbenv rehash</span></code></pre></td></tr></table></div></figure>
+
+
+<p>好吧，这么说来，写这篇文章有什么意义呢？别急，下面不是还有<strong>坑</strong>一节嘛~</p>
+
+<h1>坑</h1>
+
+<p>上面的安装步骤正确操作完，我发现<code>ruby</code>缺不是用<code>rbenv local</code>选定的版本！我运行<code>which ruby</code>看到还是用系统的，什么鬼！</p>
+
+<p>确定<code>rbenv</code>没生效，但暂时不知道为什么。我猜<code>rbenv</code>应该是通过<code>PATH</code>环境变量生效的，但是看了一下并没有什么变化。<code>rbenv help</code>也看不到任何关于生效的内容，无奈只能<code>Google</code>了。</p>
+
+<p><code>F*ck!</code>确实需要做点什么才能生效，<code>rbenv init</code>就是需要做的内容，但是<code>rbenv help</code>一个字也没提？</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ rbenv init
+</span><span class='line'># Load rbenv automatically by appending
+</span><span class='line'># the following to ~/.bashrc:
+</span><span class='line'>
+</span><span class='line'>eval "$(rbenv init -)"
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><code>shell</code>下运行<code>eval "$(rbenv init -)"</code>后，再运行<code>which ruby</code>就看到确实生效了！这个操作最好根据指引放到<code>.bashrc</code>里，这样就不要要每次都要运行一遍。</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[使用gdb调试Python程序]]></title>
-    <link href="http://blog.fasionchan.com/blog/2016/12/08/shi-yong-gdb-tiao-shi-python-cheng-xu/"/>
-    <updated>2016-12-08T19:55:29+08:00</updated>
-    <id>http://blog.fasionchan.com/blog/2016/12/08/shi-yong-gdb-tiao-shi-python-cheng-xu</id>
+    <link href="http://blog.fasionchan.com/blog/2016/12/07/shi-yong-gdb-tiao-shi-python-cheng-xu/"/>
+    <updated>2016-12-07T22:51:29+08:00</updated>
+    <id>http://blog.fasionchan.com/blog/2016/12/07/shi-yong-gdb-tiao-shi-python-cheng-xu</id>
     <content type="html"><![CDATA[<p>最近在为一个监控系统开发<code>agent</code>，需要支持<code>Linux</code>、<code>FreeBSD</code>及<code>Windows</code>等操作系统。复杂的线上环境，带来了一系列诡异的问题，尽管代码上线前在为数不少的测试机器验证过。</p>
 
 <p><code>Python</code>程序吐<code>coredump</code>文件怎么办？很多人都会想到<code>gdb</code>加载<code>coredump</code>文件，然后查看信号及堆栈信息，以此分析原因。堆栈信息在调试中非常有用，但是别忘了，你写的是<code>Python</code>代码，但是<code>gdb</code>给你的是<code>C</code>堆栈信息！似乎没啥鸟用！难道要撸<code>Python</code>源码然后分析各种核心数据结构吗？有什么方式可以查看到<code>Python</code>堆栈信息吗？</p>

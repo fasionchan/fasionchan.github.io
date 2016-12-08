@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Python | 小站]]></title>
   <link href="http://blog.fasionchan.com/blog/categories/python/atom.xml" rel="self"/>
   <link href="http://blog.fasionchan.com/"/>
-  <updated>2016-12-08T19:59:06+08:00</updated>
+  <updated>2016-12-08T22:35:55+08:00</updated>
   <id>http://blog.fasionchan.com/</id>
   <author>
     <name><![CDATA[陈彦霏]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[使用gdb调试Python程序]]></title>
-    <link href="http://blog.fasionchan.com/blog/2016/12/08/shi-yong-gdb-tiao-shi-python-cheng-xu/"/>
-    <updated>2016-12-08T19:55:29+08:00</updated>
-    <id>http://blog.fasionchan.com/blog/2016/12/08/shi-yong-gdb-tiao-shi-python-cheng-xu</id>
+    <link href="http://blog.fasionchan.com/blog/2016/12/07/shi-yong-gdb-tiao-shi-python-cheng-xu/"/>
+    <updated>2016-12-07T22:51:29+08:00</updated>
+    <id>http://blog.fasionchan.com/blog/2016/12/07/shi-yong-gdb-tiao-shi-python-cheng-xu</id>
     <content type="html"><![CDATA[<p>最近在为一个监控系统开发<code>agent</code>，需要支持<code>Linux</code>、<code>FreeBSD</code>及<code>Windows</code>等操作系统。复杂的线上环境，带来了一系列诡异的问题，尽管代码上线前在为数不少的测试机器验证过。</p>
 
 <p><code>Python</code>程序吐<code>coredump</code>文件怎么办？很多人都会想到<code>gdb</code>加载<code>coredump</code>文件，然后查看信号及堆栈信息，以此分析原因。堆栈信息在调试中非常有用，但是别忘了，你写的是<code>Python</code>代码，但是<code>gdb</code>给你的是<code>C</code>堆栈信息！似乎没啥鸟用！难道要撸<code>Python</code>源码然后分析各种核心数据结构吗？有什么方式可以查看到<code>Python</code>堆栈信息吗？</p>
