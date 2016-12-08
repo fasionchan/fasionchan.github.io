@@ -3,12 +3,15 @@ layout: post
 title: "Linux文件描述符"
 date: 2016-09-20 22:16:26 +0800
 comments: true
-categories: 
+categories: Linux
+keywords: linux, file descriptor, 文件描述符
 ---
 
 在[Linux通用I/O模型](http://www.jianshu.com/p/5357d72ef17d)中，`I/O`操作系列函数(系统调用)都是围绕一个叫做文件描述符的整数展开。这不禁让人产生疑问：这个整数代表什么？一个数值代表一个文件吗？随便传一个整数进去调用可以吗？
 
 解答以上疑问，需要更深入学习——文件描述符(File Descriptor)。
+
+<!--more-->
 
 # 图解
 
