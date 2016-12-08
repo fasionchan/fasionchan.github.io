@@ -9,7 +9,7 @@
   <meta name="author" content="陈彦霏">
 
   
-  <meta name="description" content="在Linux通用I/O模型中，I/O操作系列函数(系统调用)都是围绕一个叫做文件描述符的整数展开。这不禁让人产生疑问：这个整数代表什么？一个数值代表一个文件吗？随便传一个整数进去调用可以吗？ 解答以上疑问，需要更深入学习——文件描述符(File Descriptor)。 ">
+  <meta name="description" content="最近在为一个监控系统开发agent，需要支持Linux、FreeBSD及Windows等操作系统。复杂的线上环境，带来了一系列诡异的问题，尽管代码上线前在为数不少的测试机器验证过。 Python程序吐coredump文件怎么办？很多人都会想到gdb加载coredump文件，然后查看信号及堆栈信息， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +66,49 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/12/08/shi-yong-gdb-tiao-shi-python-cheng-xu/">使用gdb调试Python程序</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-12-08T19:55:29+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>7:55 pm</span></time>
+        
+        
+           | <a href="/blog/2016/12/08/shi-yong-gdb-tiao-shi-python-cheng-xu/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>最近在为一个监控系统开发<code>agent</code>，需要支持<code>Linux</code>、<code>FreeBSD</code>及<code>Windows</code>等操作系统。复杂的线上环境，带来了一系列诡异的问题，尽管代码上线前在为数不少的测试机器验证过。</p>
+
+<p><code>Python</code>程序吐<code>coredump</code>文件怎么办？很多人都会想到<code>gdb</code>加载<code>coredump</code>文件，然后查看信号及堆栈信息，以此分析原因。堆栈信息在调试中非常有用，但是别忘了，你写的是<code>Python</code>代码，但是<code>gdb</code>给你的是<code>C</code>堆栈信息！似乎没啥鸟用！难道要撸<code>Python</code>源码然后分析各种核心数据结构吗？有什么方式可以查看到<code>Python</code>堆栈信息吗？</p>
+
+<p>还遇到过另一个问题，一个<code>Python</code>进程突然间陷入死循环，所有其他线程都调度不到。遇到这种情况，首先可能需要知道死循环到底在干什么。如何获悉呢？可能用<code>strace</code>跟一下系统调用可以看出一点端倪。但是一个堆栈信息更为具体更有说服力，就算是只有<code>C</code>堆栈信息有时也是足以说明问题的。</p>
+
+<p><code>gdb</code>就可以解决以上难题(其实远不止)，接下来，我们一起看看具体要怎么操作吧~</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2016/12/08/shi-yong-gdb-tiao-shi-python-cheng-xu/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -420,6 +463,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/12/08/shi-yong-gdb-tiao-shi-python-cheng-xu/">使用gdb调试Python程序</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/09/20/linux-wen-jian-miao-shu-fu/">Linux文件描述符</a>
       </li>
     
@@ -433,10 +480,6 @@
     
       <li class="post">
         <a href="/blog/2015/03/25/sui-ji-wen-duan-sheng-cheng/">随机文段生成</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/03/22/ssh-gao-ji-yong-fa/">SSH高级用法</a>
       </li>
     
   </ul>
