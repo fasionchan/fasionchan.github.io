@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Mac | 小站]]></title>
   <link href="http://blog.fasionchan.com/blog/categories/mac/atom.xml" rel="self"/>
   <link href="http://blog.fasionchan.com/"/>
-  <updated>2016-12-08T22:35:55+08:00</updated>
+  <updated>2016-12-09T19:01:19+08:00</updated>
   <id>http://blog.fasionchan.com/</id>
   <author>
     <name><![CDATA[陈彦霏]]></name>
@@ -18,7 +18,7 @@
     <link href="http://blog.fasionchan.com/blog/2016/12/08/mac-xia-ruby-an-zhuang-xiao-jie/"/>
     <updated>2016-12-08T22:29:43+08:00</updated>
     <id>http://blog.fasionchan.com/blog/2016/12/08/mac-xia-ruby-an-zhuang-xiao-jie</id>
-    <content type="html"><![CDATA[<p>最近，重新拿起博客，发现已有一年多没有动过的<code>Octopress</code>跑步起来了，囧。并不意外，每次<code>Mac</code>一升级，总有一些东西会挂掉，久而久之习惯了。</p>
+    <content type="html"><![CDATA[<p>最近，重新拿起博客，发现已有一年多没有动过的<code>Octopress</code>跑不起来了，囧。并不意外，每次<code>Mac</code>一升级，总有一些东西会挂掉，久而久之习惯了。</p>
 
 <p>如何让<code>Octopress</code>重新跑起来呢？重新看安装文档，大头只是安装一个<code>ruby</code>而已。但是，由于对<code>ruby</code>并不熟悉，中间还是踩了个大坑。因此，有必要记一下，免得以后再犯。</p>
 
@@ -29,7 +29,7 @@
 
 <p><code>rbenv</code>是什么鬼？</p>
 
-<p>我们知道，系统本来已经有一个<code>ruby</code>了，不信命令行运行<code>which ruby</code>看看。这个是系统自带的，一般版本都是极其老的。然而，我们在用一些软件环境时，却是需要某个特定版本的<code>ruby</code>的。这时，你可以选择重新编译一个，然后进行安装。问题是，安装到系统这个动作太暴力了，影响范围略大，可能会搞挂其他东西。如果可以安装多个版本的<code>ruby</code>，与系统独立，按需使用，那敢情好。<code>rbenv</code>就是这样的工具~</p>
+<p>我们知道，系统本来已经有一个<code>ruby</code>了，不信命令行运行<code>which ruby</code>看看。这个是系统自带的，一般版本都是极其老的。然而，我们在用一些软件环境时，却是需要某个特定版本<code>ruby</code>的。这时，你可以选择重新编译一个，然后进行安装。问题是，安装到系统这个动作太暴力了，影响范围略大，可能会搞挂其他东西。如果可以安装多个版本的<code>ruby</code>，与系统独立，按需使用，那敢情好。<code>rbenv</code>就是这样的工具~</p>
 
 <p>好吧，那么要怎么安装呢？<code>Mac</code>下，一般用<code>brew</code>安装软件，<code>rbenv</code>也不例外：</p>
 

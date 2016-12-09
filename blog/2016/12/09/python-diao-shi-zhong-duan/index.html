@@ -1,0 +1,446 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Python调试终端 - 小站</title>
+  <meta name="author" content="陈彦霏">
+
+  
+  <meta name="description" content="后端服务程序开发运营过程中，难免会遇到一些BUG疑难杂症，是日志输出等调试手段无法定位的。
+如有有一个工具，可以连上服务程序，查询服务中间状态或者修改程序变量，势必加速问题定位及解决。 本模块就是您想要的工具~ 安装 模块代码已经在github上开源：libase.server.console， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://blog.fasionchan.com/blog/2016/12/09/python-diao-shi-zhong-duan/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="小站" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//cdn.staticfile.org/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">小站</a></h1>
+  
+    <h2>读万卷书，行万里路，品万味肴。</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="blog.fasionchan.com">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/books">Books</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Python调试终端</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-12-09T18:58:43+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>6:58 pm</span></time>
+        
+        
+           | <a href="#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>后端服务程序开发运营过程中，难免会遇到一些BUG疑难杂症，是日志输出等调试手段无法定位的。
+如有有一个工具，可以连上服务程序，查询服务中间状态或者修改程序变量，势必加速问题定位及解决。</p>
+
+<p>本模块就是您想要的工具~</p>
+
+<!--more-->
+
+
+<h1>安装</h1>
+
+<p>模块代码已经在<code>github</code>上开源：<a href="https://github.com/fasionchan/libase/blob/master/libase/server/console.py">libase.server.console</a>，可以直接把代码<code>clone</code>下来安装。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ git clone https://github.com/fasionchan/libase.git
+</span><span class='line'>$ cd libase
+</span><span class='line'>$ python setup.py install</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当然了，<code>libase</code>也已经发布到<a href="https://pypi.python.org/pypi">PyPI</a>上了。因此，更方便的安装方式是使用<code>pip</code>：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>pip install libase</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>服务接入</h1>
+
+<p>需要远程调试的程序可以用<code>start_console_server</code>快捷启动一个远程调试终端服务。
+然后，使用<code>pyconsole</code>命令便可以连上该程序，并初始化一个<code>Python</code>控制台用于调试了。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>import time
+</span><span class='line'>
+</span><span class='line'>from libase.server.console import start_console_server
+</span><span class='line'>
+</span><span class='line'>counter = 0
+</span><span class='line'>
+</span><span class='line'>start_console_server()
+</span><span class='line'>
+</span><span class='line'>while True:
+</span><span class='line'>    print counter
+</span><span class='line'>    counter += 1
+</span><span class='line'>    time.sleep(1)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>例子是一个计算程序，使用<code>start_console_server</code>接入远程调试终端服务，端口为默认值<code>4444</code>。</p>
+
+<h3>连接调试</h3>
+
+<p><code>libase</code>提供一个用于连接远程调试终端的程序<code>pyconsole</code>，以访问上述程序为例：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>$ pyconsole 4444
+</span><span class='line'>Python 2.7.3 (default, Jan  2 2013, 13:56:14)
+</span><span class='line'>[GCC 4.7.2] on linux2
+</span><span class='line'>Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+</span><span class='line'>(ConsoleProxy)
+</span><span class='line'>&gt;&gt;&gt; print main.counter
+</span><span class='line'>93
+</span><span class='line'>&gt;&gt;&gt; main.counter = 0
+</span><span class='line'>&gt;&gt;&gt; print main.counter
+</span><span class='line'>1
+</span><span class='line'>&gt;&gt;&gt; print main.counter
+</span><span class='line'>2
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>注意到，默认已经将进程的<code>__main__</code>模块引入到当前名字空间，名为<code>main</code>，其效果等同于在<code>pyconsole</code>中执行<code>import __main__ as main</code>。</p>
+
+<h1>高级用法</h1>
+
+<h2>接口文档</h2>
+
+<h3>start_console_server</h3>
+
+<p><strong>start_console_server(port=4444, addr=&lsquo;localhost&rsquo;, &lsquo;code&rsquo;=&lsquo;&rsquo;)</strong></p>
+
+<p>接入远程调试终端服务，返回一个<code>ConsoleServer</code>对象。</p>
+
+<ul>
+<li>port 远程调试终端服务监听的端口，默认为<code>4444</code></li>
+<li>addr 远程调试终端服务监听的地址，可以为<code>IP</code>或者机器名，默认为<code>localhost</code></li>
+<li>code 初始化代码，可用于预先引入一些对象到终端所在名字空间</li>
+</ul>
+
+
+<h3>run_console_proxy</h3>
+
+<p><strong>run_console_proxy(port=4444, addr=&lsquo;localhost&rsquo;)</strong></p>
+
+<p>以给定地址端口信息，连上接入远程调试终端的服务，并启动一个<code>Python</code>控制台。</p>
+
+<ul>
+<li>port 远程调试终端所在端口，默认为<code>4444</code></li>
+<li>addr 远程调试中断所在机器地址，可以是<code>IP</code>或者机器名，默认为<code>localhost</code></li>
+</ul>
+
+
+<h2>工具命令</h2>
+
+<h3>pyconsole</h3>
+
+<p>用法：pyconsole [port] [addr]</p>
+
+<ul>
+<li>port 远程调试终端所在端口，默认为<code>4444</code></li>
+<li>addr 远程调试中断所在机器地址，可以是<code>IP</code>或者机器名，默认为<code>localhost</code></li>
+</ul>
+
+
+<p>该命令，只是把<code>run_console_proxy</code>命令化，实现如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'>import sys
+</span><span class='line'>import rlcompleter
+</span><span class='line'>
+</span><span class='line'>from libase.server.console import run_console_proxy
+</span><span class='line'>
+</span><span class='line'>if __name__ == &#39;__main__&#39;:
+</span><span class='line'>    run_console_proxy(*sys.argv[1:])
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">陈彦霏</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2016-12-09T18:58:43+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>6:58 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/python/'>python</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.fasionchan.com/blog/2016/12/09/python-diao-shi-zhong-duan/" data-via="fasionchan" data-counturl="http://blog.fasionchan.com/blog/2016/12/09/python-diao-shi-zhong-duan/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2016/12/08/mac-xia-ruby-an-zhuang-xiao-jie/" title="Previous Post: Mac下Ruby安装小结">&laquo; Mac下Ruby安装小结</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+
+  <section>
+    <h1>评论</h1>
+    <div id="comments" aria-live="polite"><div class="ds-thread" data-thread-key="/blog/2016/12/09/python-diao-shi-zhong-duan/" data-title="Python调试终端" data-url="http://blog.fasionchan.com/blog/2016/12/09/python-diao-shi-zhong-duan/"></div>
+<script type="text/javascript">
+	var duoshuoQuery = {short_name:"fasionchan"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+</script>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/12/09/python-diao-shi-zhong-duan/">Python调试终端</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/12/08/mac-xia-ruby-an-zhuang-xiao-jie/">Mac下Ruby安装小结</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/12/07/shi-yong-gdb-tiao-shi-python-cheng-xu/">使用gdb调试Python程序</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/09/20/linux-wen-jian-miao-shu-fu/">Linux文件描述符</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/04/11/wei-guan-scrapy-pa-chong-kuang-jia/">围观Scrapy爬虫框架</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/fasionchan">@fasionchan</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'fasionchan',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 - 陈彦霏 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'fasionchan';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.fasionchan.com/blog/2016/12/09/python-diao-shi-zhong-duan/';
+        var disqus_url = 'http://blog.fasionchan.com/blog/2016/12/09/python-diao-shi-zhong-duan/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?3478328787268b1d31f689bce95b4e2f";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</body>
+</html>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: Python | 小站]]></title>
-  <link href="http://blog.fasionchan.com/blog/categories/python/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Gdb | 小站]]></title>
+  <link href="http://blog.fasionchan.com/blog/categories/gdb/atom.xml" rel="self"/>
   <link href="http://blog.fasionchan.com/"/>
   <updated>2016-12-09T19:01:19+08:00</updated>
   <id>http://blog.fasionchan.com/</id>
@@ -12,128 +12,6 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
-  
-  <entry>
-    <title type="html"><![CDATA[Python调试终端]]></title>
-    <link href="http://blog.fasionchan.com/blog/2016/12/09/python-diao-shi-zhong-duan/"/>
-    <updated>2016-12-09T18:58:43+08:00</updated>
-    <id>http://blog.fasionchan.com/blog/2016/12/09/python-diao-shi-zhong-duan</id>
-    <content type="html"><![CDATA[<p>后端服务程序开发运营过程中，难免会遇到一些BUG疑难杂症，是日志输出等调试手段无法定位的。
-如有有一个工具，可以连上服务程序，查询服务中间状态或者修改程序变量，势必加速问题定位及解决。</p>
-
-<p>本模块就是您想要的工具~</p>
-
-<!--more-->
-
-
-<h1>安装</h1>
-
-<p>模块代码已经在<code>github</code>上开源：<a href="https://github.com/fasionchan/libase/blob/master/libase/server/console.py">libase.server.console</a>，可以直接把代码<code>clone</code>下来安装。</p>
-
-<pre><code>$ git clone https://github.com/fasionchan/libase.git
-$ cd libase
-$ python setup.py install
-</code></pre>
-
-<p>当然了，<code>libase</code>也已经发布到<a href="https://pypi.python.org/pypi">PyPI</a>上了。因此，更方便的安装方式是使用<code>pip</code>：</p>
-
-<pre><code>pip install libase
-</code></pre>
-
-<h1>服务接入</h1>
-
-<p>需要远程调试的程序可以用<code>start_console_server</code>快捷启动一个远程调试终端服务。
-然后，使用<code>pyconsole</code>命令便可以连上该程序，并初始化一个<code>Python</code>控制台用于调试了。</p>
-
-<pre><code>import time
-
-from libase.server.console import start_console_server
-
-counter = 0
-
-start_console_server()
-
-while True:
-    print counter
-    counter += 1
-    time.sleep(1)
-</code></pre>
-
-<p>例子是一个计算程序，使用<code>start_console_server</code>接入远程调试终端服务，端口为默认值<code>4444</code>。</p>
-
-<h3>连接调试</h3>
-
-<p><code>libase</code>提供一个用于连接远程调试终端的程序<code>pyconsole</code>，以访问上述程序为例：</p>
-
-<pre><code class="html">$ pyconsole 4444
-Python 2.7.3 (default, Jan  2 2013, 13:56:14)
-[GCC 4.7.2] on linux2
-Type "help", "copyright", "credits" or "license" for more information.
-(ConsoleProxy)
-&gt;&gt;&gt; print main.counter
-93
-&gt;&gt;&gt; main.counter = 0
-&gt;&gt;&gt; print main.counter
-1
-&gt;&gt;&gt; print main.counter
-2
-</code></pre>
-
-<p>注意到，默认已经将进程的<code>__main__</code>模块引入到当前名字空间，名为<code>main</code>，其效果等同于在<code>pyconsole</code>中执行<code>import __main__ as main</code>。</p>
-
-<h1>高级用法</h1>
-
-<h2>接口文档</h2>
-
-<h3>start_console_server</h3>
-
-<p><strong>start_console_server(port=4444, addr=&lsquo;localhost&rsquo;, &lsquo;code&rsquo;=&lsquo;&rsquo;)</strong></p>
-
-<p>接入远程调试终端服务，返回一个<code>ConsoleServer</code>对象。</p>
-
-<ul>
-<li>port 远程调试终端服务监听的端口，默认为<code>4444</code></li>
-<li>addr 远程调试终端服务监听的地址，可以为<code>IP</code>或者机器名，默认为<code>localhost</code></li>
-<li>code 初始化代码，可用于预先引入一些对象到终端所在名字空间</li>
-</ul>
-
-
-<h3>run_console_proxy</h3>
-
-<p><strong>run_console_proxy(port=4444, addr=&lsquo;localhost&rsquo;)</strong></p>
-
-<p>以给定地址端口信息，连上接入远程调试终端的服务，并启动一个<code>Python</code>控制台。</p>
-
-<ul>
-<li>port 远程调试终端所在端口，默认为<code>4444</code></li>
-<li>addr 远程调试中断所在机器地址，可以是<code>IP</code>或者机器名，默认为<code>localhost</code></li>
-</ul>
-
-
-<h2>工具命令</h2>
-
-<h3>pyconsole</h3>
-
-<p>用法：pyconsole [port] [addr]</p>
-
-<ul>
-<li>port 远程调试终端所在端口，默认为<code>4444</code></li>
-<li>addr 远程调试中断所在机器地址，可以是<code>IP</code>或者机器名，默认为<code>localhost</code></li>
-</ul>
-
-
-<p>该命令，只是把<code>run_console_proxy</code>命令化，实现如下：</p>
-
-<pre><code>import sys
-import rlcompleter
-
-from libase.server.console import run_console_proxy
-
-if __name__ == '__main__':
-    run_console_proxy(*sys.argv[1:])
-</code></pre>
-]]></content>
-  </entry>
   
   <entry>
     <title type="html"><![CDATA[使用gdb调试Python程序]]></title>
