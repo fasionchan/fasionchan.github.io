@@ -9,11 +9,21 @@
   <meta name="author" content="陈彦霏">
 
   
-  <meta name="description" content=" 开始写博客 1
+  <meta name="description" content="开始写博客 1
 2
 # 新建post，标题为title
-rake new_post[&quot;title&quot;] 常见问题 自定义域名配置CNAME不生效，查了很久发现是Jekyll失效引起的。
-">
+rake new_post[&quot;title&quot;] 常用语法 关键字 1
+2
+3
+4
+5
+6
+7
+8
+---
+layout: post
+title: &quot;Linux文件描述符&quot;
+date: 2016-09- &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -106,6 +116,36 @@ rake new_post[&quot;title&quot;] 常见问题 自定义域名配置CNAME不生�
 </span></code></pre></td></tr></table></div></figure>
 
 
+<h2>常用语法</h2>
+
+<h3>关键字</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>---
+</span><span class='line'>layout: post
+</span><span class='line'>title: <span class="s2">&quot;Linux文件描述符&quot;</span>
+</span><span class='line'>date: 2016-09-20 22:16:26 +0800
+</span><span class='line'>comments: <span class="nb">true</span>
+</span><span class='line'>categories: Linux
+</span><span class='line'>keywords: linux, file descriptor, 文件描述符
+</span><span class='line'>---
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>图片</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="o">{</span>% img /images/bei-hai-gong-yuan-bai-ta.jpg %<span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
 <h2>常见问题</h2>
 
 <p>自定义域名配置<code>CNAME</code>不生效，查了很久发现是<code>Jekyll</code>失效引起的。</p>
@@ -195,11 +235,11 @@ rake new_post[&quot;title&quot;] 常见问题 自定义域名配置CNAME不生�
       </li>
     
       <li class="post">
-        <a href="/blog/2016/09/20/linux-wen-jian-miao-shu-fu/">Linux文件描述符</a>
+        <a href="/blog/2016/11/07/yi-wen-shen-ru-li-jie-linux-tcp-backlog/">[译文]深入理解Linux TCP Backlog</a>
       </li>
     
       <li class="post">
-        <a href="/blog/2015/04/11/wei-guan-scrapy-pa-chong-kuang-jia/">围观Scrapy爬虫框架</a>
+        <a href="/blog/2016/09/20/linux-wen-jian-miao-shu-fu/">Linux文件描述符</a>
       </li>
     
   </ul>
