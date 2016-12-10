@@ -17,6 +17,27 @@ categories:
 rake new_post["title"]
 ```
 
+## 常用语法
+
+### 关键字
+
+```
+---
+layout: post
+title: "Linux文件描述符"
+date: 2016-09-20 22:16:26 +0800
+comments: true
+categories: Linux
+keywords: linux, file descriptor, 文件描述符
+---
+```
+
+### 图片
+
+```
+{% img /images/bei-hai-gong-yuan-bai-ta.jpg %}
+```
+
 ## 常见问题
 
 自定义域名配置`CNAME`不生效，查了很久发现是`Jekyll`失效引起的。
