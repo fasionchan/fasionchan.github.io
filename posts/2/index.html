@@ -9,7 +9,7 @@
   <meta name="author" content="陈彦霏">
 
   
-  <meta name="description" content="Kafka是一个高吞吐的分布式消息系统，由Linkin公司开源，成为一个Apache项目。Kafka可以看做是一个快速、分布式、可扩展、可分区、可复制、持久化的日志服务。它提供了作为消息系统的实用功能，架构设计却是相当独特的。 发布-订阅模型 Kafka采用话题（topic）对消息进行分类； &hellip;">
+  <meta name="description" content="Keep Alive 在某些网络环境下，SSH会话空闲一小段时间后就会断掉。可能是因为中间有个NAT网关，检查到空闲TCP连接后便无情Kill。一暂停操作SSH连接就断实在不能忍！ SSH有个配置选项，每隔一段时间就发一个空包使TCP连接保持活跃，这样连接就不会无故断掉了。这个选项就是： &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +66,47 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/03/22/ssh-gao-ji-yong-fa/">SSH高级用法</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-22T10:21:52+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>22</span><span class='date-suffix'>nd</span>, <span class='date-year'>2015</span></span> <span class='time'>10:21 am</span></time>
+        
+        
+           | <a href="/blog/2015/03/22/ssh-gao-ji-yong-fa/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>Keep Alive</h2>
+
+<p>在某些网络环境下，SSH会话空闲一小段时间后就会断掉。可能是因为中间有个NAT网关，检查到空闲TCP连接后便无情Kill。一暂停操作SSH连接就断实在不能忍！</p>
+
+<p>SSH有个配置选项，每隔一段时间就发一个空包使TCP连接保持活跃，这样连接就不会无故断掉了。这个选项就是：<code>ServerAliveInterval</code>，配置值是一个整数，表示发送空包的周期，单位是秒。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2015/03/22/ssh-gao-ji-yong-fa/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -207,6 +248,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/12/11/geng-you-ya-di-zao-ce-shi-shu-ju/">更优雅地造测试数据</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/12/09/python-diao-shi-zhong-duan/">Python调试终端</a>
       </li>
     
@@ -220,10 +265,6 @@
     
       <li class="post">
         <a href="/blog/2016/11/07/yi-wen-shen-ru-li-jie-linux-tcp-backlog/">[译文]深入理解Linux TCP Backlog</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/10/23/zi-ji-fa-bu-python-bao/">自己发布Python包</a>
       </li>
     
   </ul>

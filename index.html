@@ -9,8 +9,7 @@
   <meta name="author" content="陈彦霏">
 
   
-  <meta name="description" content="后端服务程序开发运营过程中，难免会遇到一些BUG疑难杂症，是日志输出等调试手段无法定位的。
-如有有一个工具，可以连上服务程序，查询服务中间状态或者修改程序变量，势必加速问题定位及解决。 本模块就是您想要的工具~ ">
+  <meta name="description" content="开发系统时，经常需要一些伪数据用于测试。举个例子，设计一个学生管理系统，测试注册功能，总需要一些用户信息吧。我猜大部分人都会填：用户aaaa，密码1111，手机号码1111……感觉略无追求~ 那么有没有办法造一个看上是真的数据呢？肯定是有的——人是活的嘛~ 自己造很累，有没有不需要大脑的方法的？ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -67,6 +66,47 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2016/12/11/geng-you-ya-di-zao-ce-shi-shu-ju/">更优雅地造测试数据</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-12-11T11:43:52+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>11:43 am</span></time>
+        
+        
+           | <a href="/blog/2016/12/11/geng-you-ya-di-zao-ce-shi-shu-ju/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>开发系统时，经常需要一些伪数据用于测试。举个例子，设计一个学生管理系统，测试注册功能，总需要一些用户信息吧。我猜大部分人都会填：用户<code>aaaa</code>，密码<code>1111</code>，手机号码<code>1111</code>……感觉略无追求~</p>
+
+<p>那么有没有办法造一个看上是真的数据呢？肯定是有的——人是活的嘛~</p>
+
+<p>自己造很累，有没有不需要大脑的方法的？还真有，这就是本文要介绍的一个<code>Python</code>模块——<a href="https://pypi.python.org/pypi/fake-factory">Faker</a>。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2016/12/11/geng-you-ya-di-zao-ce-shi-shu-ju/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -442,47 +482,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/03/22/ssh-gao-ji-yong-fa/">SSH高级用法</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-03-22T10:21:52+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>22</span><span class='date-suffix'>nd</span>, <span class='date-year'>2015</span></span> <span class='time'>10:21 am</span></time>
-        
-        
-           | <a href="/blog/2015/03/22/ssh-gao-ji-yong-fa/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>Keep Alive</h2>
-
-<p>在某些网络环境下，SSH会话空闲一小段时间后就会断掉。可能是因为中间有个NAT网关，检查到空闲TCP连接后便无情Kill。一暂停操作SSH连接就断实在不能忍！</p>
-
-<p>SSH有个配置选项，每隔一段时间就发一个空包使TCP连接保持活跃，这样连接就不会无故断掉了。这个选项就是：<code>ServerAliveInterval</code>，配置值是一个整数，表示发送空包的周期，单位是秒。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/03/22/ssh-gao-ji-yong-fa/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -498,6 +497,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/12/11/geng-you-ya-di-zao-ce-shi-shu-ju/">更优雅地造测试数据</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/12/09/python-diao-shi-zhong-duan/">Python调试终端</a>
       </li>
     
@@ -511,10 +514,6 @@
     
       <li class="post">
         <a href="/blog/2016/11/07/yi-wen-shen-ru-li-jie-linux-tcp-backlog/">[译文]深入理解Linux TCP Backlog</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/10/23/zi-ji-fa-bu-python-bao/">自己发布Python包</a>
       </li>
     
   </ul>

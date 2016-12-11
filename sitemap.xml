@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://blog.fasionchan.com/blog/2016/12/11/geng-you-ya-di-zao-ce-shi-shu-ju/</loc>
+    <lastmod>2016-12-11T11:43:52+08:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>http://blog.fasionchan.com/blog/2016/12/09/python-diao-shi-zhong-duan/</loc>
     <lastmod>2016-12-09T18:58:43+08:00</lastmod>
     <priority>0.8</priority>
@@ -67,19 +72,19 @@
   </url>
   <url>
     <loc>http://blog.fasionchan.com/blog/archives/</loc>
-    <lastmod>2016-12-11T11:09:59+08:00</lastmod>
+    <lastmod>2016-12-11T11:47:44+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://blog.fasionchan.com/</loc>
-    <lastmod>2016-12-11T11:09:59+08:00</lastmod>
+    <lastmod>2016-12-11T11:47:44+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>http://blog.fasionchan.com/books/</loc>
-    <lastmod>2016-12-11T11:09:59+08:00</lastmod>
+    <lastmod>2016-12-11T11:47:44+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
