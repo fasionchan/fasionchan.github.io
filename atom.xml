@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[小站]]></title>
+  <title><![CDATA[fasionchan]]></title>
   <link href="http://blog.fasionchan.com/atom.xml" rel="self"/>
   <link href="http://blog.fasionchan.com/"/>
-  <updated>2016-12-10T20:57:17+08:00</updated>
+  <updated>2016-12-11T10:18:30+08:00</updated>
   <id>http://blog.fasionchan.com/</id>
   <author>
     <name><![CDATA[陈彦霏]]></name>
@@ -610,6 +610,142 @@
 <p><code>Stevens</code>建议的解决方案是简单地调大<code>backlog</code>。但有个问题是，应用程序在调优<code>backlog</code>参数时，不仅需要考虑自身对新连接的处理逻辑，还需要考虑网络状况，包括往返时间等。Linux实现实际上分成两部分：应用程序只负责调解<code>backlog</code>参数，确保<code>accept</code>调用足够快以免<code>accept</code>队列被塞满；系统管理员则根据网络状况调节<code>/proc/sys/net/ipv4/tcp_max_syn_backlog</code>，各司其职。</p>
 
 <p>本文译自：<a href="http://veithen.github.io/2014/01/01/how-tcp-backlog-works-in-linux.html">How TCP backlog works in Linux</a>。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[自己发布Python包]]></title>
+    <link href="http://blog.fasionchan.com/blog/2016/10/23/zi-ji-fa-bu-python-bao/"/>
+    <updated>2016-10-23T18:50:04+08:00</updated>
+    <id>http://blog.fasionchan.com/blog/2016/10/23/zi-ji-fa-bu-python-bao</id>
+    <content type="html"><![CDATA[<h1>注册</h1>
+
+<p>先在<code>Python</code>官网注册一个账号，地址是：<a href="https://pypi.python.org/pypi">https://pypi.python.org/pypi</a>。</p>
+
+<!--more-->
+
+
+<h1>配置</h1>
+
+<p>账号注册后，就可以用其来登记新建的<code>Python</code>包，以及上传包更新。上传新包一般由<code>twine</code>命令完成，<code>twine</code>需要知道<code>Python</code>仓库地址以及账号信息。因此，可以将这些信息写在配置文件<code>~/.pypirc</code>里，这样运行命令时便不需要再次输入了。配置如何写呢？以<code>foo</code>为用户名，<code>bar</code>为密码为例：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>[distutils]
+</span><span class='line'>index-servers=pypi
+</span><span class='line'>
+</span><span class='line'>[pypi]
+</span><span class='line'>repository = https://pypi.python.org/pypi
+</span><span class='line'>username = foo
+</span><span class='line'>password = bar</span></code></pre></td></tr></table></div></figure>
+
+
+<p>其中，密码也可以不写进配置，这样每次运行<code>twine</code>时，将提示输入密码。</p>
+
+<h1>准备</h1>
+
+<p>编写<code>Python</code>包的过程，这里就不细说了。本文的重点是怎么将自己的<code>Python</code>包发布出去，然后可以用<code>pip</code>命令安装。</p>
+
+<p><code>Python</code>包的实现方式可以参考。其实无非就是规划好目录结构，然后编写<code>setup.py</code>文件：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#!/usr/bin/env python
+</span><span class='line'># -*- encoding=utf8 -*-
+</span><span class='line'>
+</span><span class='line'>'''
+</span><span class='line'>FileName:   setup.py
+</span><span class='line'>Author:     Fasion Chan
+</span><span class='line'>@contact:   fasionchan@gmail.com
+</span><span class='line'>@version:   $Id$
+</span><span class='line'>
+</span><span class='line'>Description:
+</span><span class='line'>
+</span><span class='line'>Changelog:
+</span><span class='line'>
+</span><span class='line'>'''
+</span><span class='line'>
+</span><span class='line'>VERSION = '1.0'
+</span><span class='line'>
+</span><span class='line'>from setuptools import (
+</span><span class='line'>    setup,
+</span><span class='line'>    )
+</span><span class='line'>
+</span><span class='line'>setup(
+</span><span class='line'>    name='libase',
+</span><span class='line'>    version=VERSION,
+</span><span class='line'>    author='Fasion Chan',
+</span><span class='line'>    author_email='fasionchan@gmail.com',
+</span><span class='line'>    packages=[
+</span><span class='line'>        'libase',
+</span><span class='line'>        ],
+</span><span class='line'>    scripts=[
+</span><span class='line'>        ],
+</span><span class='line'>    package_data={
+</span><span class='line'>        },
+</span><span class='line'>    install_requires=[
+</span><span class='line'>        ],
+</span><span class='line'>    )</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>登记</h1>
+
+<p>运行命令<code>python setup.py egg_info</code>生成包信息，找到<code>xxxx.egg_info</code>目录下<code>PKG-INFO</code>文件，在<code>Python</code>官网<a href="https://pypi.python.org/pypi?%3Aaction=submit_form">提交表单</a>上传即可。</p>
+
+<h1>构建</h1>
+
+<p>运行命令<code>python setup.py sdist</code>进行构建并打包。完成之后，在<code>dist</code>目录下可以看到形如<code>xxxx-1.0.tar.gz</code>的压缩包。</p>
+
+<h1>上传</h1>
+
+<p>运行命令<code>twine upload dist/*</code>便可将构建的所有包上传，这时便大功告成了！</p>
+
+<h1>应用</h1>
+
+<p>运行命令<code>pip install xxxx</code>便可以安装你发布的<code>Python</code>包了！你可以发布任何你想发布的东西，任何人也可以安装任何你发布的东西，成就感杠杠的有木有！</p>
+
+<p>我们提倡自由分享的精神，有用的代码无私奉献出来可以节约很多人很多时间！<code>Life is short, use Python!</code></p>
+
+<p>当然了，努力提升自己，分享高质量代码，不要坑别人哦~</p>
 ]]></content>
   </entry>
   
