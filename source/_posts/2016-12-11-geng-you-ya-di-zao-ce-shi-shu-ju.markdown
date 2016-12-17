@@ -27,7 +27,7 @@ pip install Faker
 
 生成数据前需要先初始化一个生成器，有两种方式可以完成：①用`faker.Factory.create()`；②用`faker.Faker()`。
 
-```
+``` python 快速入手
 from faker import Factory
 fake = Factory.create()
 
@@ -47,7 +47,7 @@ fake.text()
 
 看看自动化的威力！批量生成，每次都是随机的哦！
 
-```
+``` python 批量生成
 for _ in range(0, 10):
     print fake.name()
 
@@ -69,7 +69,7 @@ for _ in range(0, 10):
 
 但是，重点来了——`Faker`还支持本地化，真是天地良心！一起来看看怎么生成中文信息吧：
 
-```
+``` python 本地化
 from faker import Factory
 fake = Factory.create('zh_CN')
 
@@ -108,7 +108,7 @@ for _ in range(0, 10):
 
 `Faker`已经提供了足够丰富的信息生成，包括名字、手机号、邮箱地址、邮编等等。尽管如此，可能还是没有办法满足你的需求。这时，你可以自己动手，丰衣足食。下面，我们通过一个例子看看怎么扩展`Faker`的功能吧：
 
-```
+``` python 功能扩展
 from faker import Faker
 fake = Faker()
 
@@ -131,7 +131,7 @@ fake.foo()
 
 `Faker`随机生成由`random.Random`驱动。其中，`.random`属性返回`random.Random`对象。通过对该对象的操作，可以实现自定义的行为。
 
-```
+``` python 随机对象
 from faker import Faker
 fake = Faker()
 fake.random
@@ -140,7 +140,7 @@ fake.random.getstate()
 
 那么，可以实现什么自定义呢？举个例子，我们可以设置`seed`。`seed`在随机数生成逻辑中什么作用，估计大家都清楚。比如，通过给定`seed`可以控制每次生成的内容都是一样的：
 
-```
+``` python 设置seed
 from faker import Faker
 fake = Faker()
 faker.random.seed(4321)
@@ -150,7 +150,7 @@ print fake.name()
 
 还有等价写法哦：
 
-```
+``` python 设置seed
 from faker import Faker
 fake = Faker()
 fake.seed(4321)
@@ -164,7 +164,7 @@ print fake.name()
 
 有时想在`shell`或者其他程序中生成一些伪数据，是不是一定要写一个`Python`脚本呢？别急——`Faker`提供了一个命令行工具，估计可以应对大部分场景了：
 
-```
+``` bash
 $ faker address
 968 Bahringer Garden Apt. 722Kristinaland, NJ 09890
 
