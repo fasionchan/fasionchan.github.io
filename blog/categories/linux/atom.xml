@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Linux | fasionchan]]></title>
   <link href="http://blog.fasionchan.com/blog/categories/linux/atom.xml" rel="self"/>
   <link href="http://blog.fasionchan.com/"/>
-  <updated>2016-12-11T11:47:44+08:00</updated>
+  <updated>2016-12-17T21:42:05+08:00</updated>
   <id>http://blog.fasionchan.com/</id>
   <author>
     <name><![CDATA[陈彦霏]]></name>
@@ -215,6 +215,162 @@
 <p>进程<code>A</code>的文件描述符2和进程<code>B</code>的文件描述符2都指向同一个打开文件描述体(标号23)。这种情形很可能发生在调用<code>fork()</code>派生子进程之后，比如<code>A</code>调用<code>fork()</code>派生出<code>B</code>。这时，<code>B</code>作为子进程，从父进程<code>A</code>继承了文件描述符表，其中包括图中标明的文件描述符2。这就是<code>子进程继承父进程打开的文件</code>这句话的由来。</p>
 
 <p>当然了，进程<code>A</code>通过<code>Unix</code>套接字将一个文件描述符传递给<code>B</code>也会出现类似的情形，但一般文件描述符数值是不一样的。同时为2要非常凑巧才发生。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Linux通用IO模型]]></title>
+    <link href="http://blog.fasionchan.com/blog/2016/09/17/linux-tong-yong-io-mo-xing/"/>
+    <updated>2016-09-17T21:54:29+08:00</updated>
+    <id>http://blog.fasionchan.com/blog/2016/09/17/linux-tong-yong-io-mo-xing</id>
+    <content type="html"><![CDATA[<p>学习<code>Linux</code>系统编程，文件I/O是一个不错的切入点。首先，日常操作中或多或少都使用过文件，有一定的概念；其次，文件I/O可以由几个最最基础的系统调用完成，降低入门理解难度。</p>
+
+<h1>基础系统调用</h1>
+
+<p><code>Linux</code>下<code>I/O</code>操作是通用化的，不仅仅可以用来操作文件输入输出，还可以用来操作管道、<code>FIFO</code>、<code>socket</code>、终端设备等。将设备抽象成一个文件，用<code>I/O</code>操作控制设备是类<code>Unix</code>系统一大特色。</p>
+
+<p>最最基础的<code>I/O</code>操作系统调用包括：</p>
+
+<ul>
+<li><strong>fd = open(pathname, flags, mode)</strong></li>
+<li><strong>rlen = read(fd, buf, count)</strong></li>
+<li><strong>wlen = write(fd, buf, count)</strong></li>
+<li><strong>status = close(fd)</strong></li>
+</ul>
+
+
+<p>注意到，相关系统调用都围绕文件描述符<code>fd</code>展开。文件描述符在下节详细介绍。</p>
+
+<p>另外，需要特别提示一下，系统调用函数接口（其实是库函数封装）可以通过<code>man</code>命令查看详细的参数、返回值及用法说明。比如，终端下运行<code>man read</code>，就可以看到<code>read</code>这个系统调用的相关文档说明：</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/2740477-bb2610e81244463b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="man open" /></p>
+
+<h1>文件描述符</h1>
+
+<p><code>I/O</code>操作系统调用都以文件描述符(一个非负整数)，指代打开的文件。每个进程都有一个打开文件表，可以理解成一个数组，文件描述符可以理解成数组的下标。相关<code>I/O</code>操作系统调用以文件描述符为参数，便可以通过数组访问定位到指定的文件对象，进而进行<code>I/O</code>操作。</p>
+
+<p>一般情况下，进程的标准输入输出由3个特定的文件描述符指定，列举如下：</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">文件描述符</th>
+<th style="text-align:left;">用途</th>
+<th style="text-align:left;">POSIX名称</th>
+<th style="text-align:left;">stdio流</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">0</td>
+<td style="text-align:left;">标准输入</td>
+<td style="text-align:left;">STDIN_FILENO</td>
+<td style="text-align:left;">stdin</td>
+</tr>
+<tr>
+<td style="text-align:left;">1</td>
+<td style="text-align:left;">标准输出</td>
+<td style="text-align:left;">STDOUT_FILENO</td>
+<td style="text-align:left;">stdout</td>
+</tr>
+<tr>
+<td style="text-align:left;">2</td>
+<td style="text-align:left;">标准错误</td>
+<td style="text-align:left;">STDERR_FILENO</td>
+<td style="text-align:left;">stderr</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>正常情况下，程序在开始运行之前，由<code>shell</code>准备好这3个文件描述符。更准确的说法是，程序继承了<code>shell</code>文件描述符的副本，一般是指向<code>shell</code>所在的终端。当然了，可以通过在<code>shell</code>中对输入/输出进行重定向或者在程序启动后关闭并重新打开文件描述符，修改文件描述符指向。</p>
+
+<h1>实战案例</h1>
+
+<h2>读文件</h2>
+
+<p>首先，通过一个例子，探索一下如何通过<code>I/O</code>操作系统调用读取文件内容并输出：</p>
+
+<pre><code>#include &lt;stdio.h&gt;
+#include &lt;fcntl.h&gt;
+
+int
+main(int argc, char *argv[])
+{
+    // 打开文件
+    int fd = open("a.txt", O_RDONLY);
+    if (-1 == fd)
+    {
+        perror("fail to open a.txt");
+        return -1;
+    }
+
+    // 准备缓冲区并读文件
+    char buf[1024];
+    int rlen = read(fd, buf, sizeof(buf)-1);
+    if (-1 == rlen)
+    {
+        perror("fail to read a.txt");
+        return -2;
+    }
+
+    // 输出内容
+    buf[rlen] = '\0';
+    printf("read %d bytes, which is:\n", rlen);
+    printf("%s\n", buf);
+
+    // 关闭文件
+    int status = close(fd);
+    if (-1 == status)
+    {
+        perror("fail to close a.txt");
+        return -3;
+    }
+
+    return 0;
+}
+</code></pre>
+
+<h2>写文件</h2>
+
+<pre><code>#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;fcntl.h&gt;
+
+int
+main(int argc, char *argv[])
+{
+    // 打开文件
+    int fd = open("a.txt", O_WRONLY);
+    if (-1 == fd)
+    {
+        perror("fail to open a.txt");
+        return -1;
+    }
+
+    // 准备数据并写到文件
+    char data[] = "hello, this is line written by write syscall\n";
+    int wlen = write(fd, data, strlen(data));
+    if (-1 == wlen)
+    {
+        perror("fail to read a.txt");
+        return -2;
+    }
+
+    // 输出成功写入字节数
+    printf("write %d bytes of %d total\n", wlen, strlen(data));
+
+    // 关闭文件
+    int status = close(fd);
+    if (-1 == status)
+    {
+        perror("fail to close a.txt");
+        return -3;
+    }
+
+    return 0;
+}
+</code></pre>
 ]]></content>
   </entry>
   

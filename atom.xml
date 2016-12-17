@@ -4,7 +4,7 @@
   <title><![CDATA[fasionchan]]></title>
   <link href="http://blog.fasionchan.com/atom.xml" rel="self"/>
   <link href="http://blog.fasionchan.com/"/>
-  <updated>2016-12-11T11:47:44+08:00</updated>
+  <updated>2016-12-17T21:42:05+08:00</updated>
   <id>http://blog.fasionchan.com/</id>
   <author>
     <name><![CDATA[陈彦霏]]></name>
@@ -14,9 +14,141 @@
 
   
   <entry>
+    <title type="html"><![CDATA[打造炫酷的开发环境]]></title>
+    <link href="http://blog.fasionchan.com/blog/2016/12/17/da-zao-xuan-ku-de-kai-fa-huan-jing/"/>
+    <updated>2016-12-17T21:20:34+08:00</updated>
+    <id>http://blog.fasionchan.com/blog/2016/12/17/da-zao-xuan-ku-de-kai-fa-huan-jing</id>
+    <content type="html"><![CDATA[<p>无图无真相，这篇文章的主要目的是打造如下所示的终端开发环境，涉及<code>terminal</code>、<code>shell</code>以及<code>editor</code>等，着重于配色。</p>
+
+<p><img src="http://blog.fasionchan.com/images/zsh.png"></p>
+
+<!--more-->
+
+
+<p><code>terminal</code>不必多说，<code>iTerm2</code>是<code>Mac</code>下的不二选择，不解释了。如果你在<code>windows</code>上开发，推荐使用<code>Putty</code>，当然了跟<code>iTerm2</code>不是同个级别的东西。</p>
+
+<p>关于<code>shell</code>，我之前一直在<code>bash</code>上瞎折腾，认为最普适的就是最好的。毕竟在绝大多数机器环境上，<code>bash</code>唾手可得，不需要额外安装。但是，<code>bash</code>没有足够丰富的现成配置方案可用，自己山寨要花很多精力而且效果也不是很好。<code>zsh</code>就不一样，名字就透着<code>shell</code>终结者的意思。<code>zsh</code>比<code>bash</code>要好用，而且有现成的配置方案，特别是<code>oh-my-zsh</code>，非常好用。</p>
+
+<p><img src="http://blog.fasionchan.com/images/vim.png"></p>
+
+<p>关于<code>editor</code>，向来都有<code>vim</code>或<code>emacs</code>的争议。我只使用过<code>vim</code>，也没法评论。争议是没有必要的，如果都没用过，选一个学一下就是；如果用过其中之一，维持现状即可；想两个都体验一下也行，找到适合自己的才是最重要的。我习惯使用<code>vim</code>，下文便以<code>vim</code>为例好了。</p>
+
+<h1>iTerm2</h1>
+
+<p><code>iTerm2</code>是<code>Mac</code>下一款优秀的终端软件，功能比内置的<code>iTerm</code>强很多。关键是，这款应用还是免费的！赶紧到<a href="https://www%0A.iterm2.com/">www.iterm2.com</a>下载吧！安装后，它是这个样子的：</p>
+
+<p><img src="http://blog.fasionchan.com/images/iterm2-default.png"></p>
+
+<p>呃，颜色货不对版呀！对的，这是<code>iTerm2</code>默认的颜色，别心急，接下来我们来调整配色方案。</p>
+
+<h2>配色</h2>
+
+<p><a href="http://ethanschoonover.com/solarized">solarized</a>是一套好看又不伤眼的配置方案，很多人推荐，目前托管在<a href="https://github.com/altercation/solarized">github</a>上。接下来，我们看看怎么给<code>iTerm2</code>加上<code>solarized</code>配色。</p>
+
+<p>首先，将<code>solarized</code>下载到本地：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>git clone git@github.com:altercation/solarized.git</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到，里面包罗万象，这里我们要使用的是<code>iterm2-colors-solarized</code>目录下的，包括<code>Solarized Dark.itermcolors</code>和<code>Solarized Light.itermcolors</code>两个配置文件。</p>
+
+<p><img src="http://blog.fasionchan.com/images/iterm2-color.png"></p>
+
+<p>打开<code>Preferences-&gt;Profiles-&gt;Color</code>面板，在<code>Color Presets</code>中将以上两个配置方案导入，然后选择<code>Solarized Dark</code>或者<code>Solarized Light</code>即可。一般推荐使用<code>Solarized Dark</code>，<code>Solarized Light</code>有种亮瞎的感觉。配色搞定后，终端是这样子的：</p>
+
+<p><img src="http://blog.fasionchan.com/images/iterm2-solarized.png"></p>
+
+<p>看着这样柔和的颜色，眼睛就不会很容易就累了。</p>
+
+<h1>zsh</h1>
+
+<p><code>shell</code>提示符高亮及<code>git</code>代码状态展示是怎么实现的呢？这就要说到强大的<code>zsh</code>了。不废话，<code>Mac</code>下应该是内置的了；<code>Linux</code>下运行<code>apt-get install zsh</code>即可安装；<code>Windows</code>下烫烫烫烫烫。</p>
+
+<h2>配置</h2>
+
+<p>接下来，用<a href="https://github.com/robbyrussell/oh-my-zsh">oh-my-zsh</a>来武装<code>zsh</code>，一行命令搞定：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>主题</h2>
+
+<p><code>oh-my-zsh</code>中提供了多套主题可供选择，有不同的输出样式及配色。默认应该是<a href="https://github.com/robbyrussell/oh-my-zsh/wiki/Themes#robbyrussell">robbyrussell</a>，感觉中规中矩没啥亮点。翻看了一下，发现了<a href="https://github.com/robbyrussell/oh-my-zsh/wiki/Themes#agnoster">agnoster</a>主题，感觉非常入眼。</p>
+
+<p>接下来，编辑<code>~/.zshrc</code>，找到变量<code>ZSH_THEME</code>将其赋值改为<code>agnoster</code>即可。操作完毕，发现离目标很近了：</p>
+
+<p><img src="http://blog.fasionchan.com/images/zsh-font-fault.png"></p>
+
+<p>除了有些字体显示异常，什么鬼？</p>
+
+<h2>字体</h2>
+
+<p>为了显示正常，需要安装<code>powerline</code>字体，方法如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>git clone git@github.com:powerline/fonts.git
+</span><span class='line'>cd fonts
+</span><span class='line'>./install</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后，在<code>iTerm2-&gt;Preferences-&gt;Profiles-&gt;Text</code>面板中将<code>Non-ASCII Font</code>改成<code>Roboto Mono Powerline</code>，显示就正常了！</p>
+
+<p><img src="http://blog.fasionchan.com/images/iterm2-text.png"></p>
+
+<h1>vim</h1>
+
+<p> <code>vim</code>配置这个话题有点大，包括：代码静态检查、高亮、文件树等等。理论上，通过插件，可以将<code>vim</code>打造成一个<code>IDE</code>，后续有空专门介绍一下。这节聚焦在：<code>vim</code>配色主题。</p>
+
+<p>这里还是使用<code>solarized</code>配色方案：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>mkdir -p ~/.vim/colors
+</span><span class='line'>cd solarized
+</span><span class='line'>cp vim-colors-solarized/colors/solarized.vim ~/.vim/colors/</span></code></pre></td></tr></table></div></figure>
+
+
+<p>编辑<code>~/.vimrc</code>文件，加上：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>syntax enable
+</span><span class='line'>set background=dark
+</span><span class='line'>colorscheme solarized</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样，打开<code>vim</code>看到的就是文件开头图片显示的效果了。</p>
+
+<h1>自动化配置</h1>
+
+<p>如果只在自己的电脑上配置，手工操作一遍是没有问题的。但是，现实是，每个人可能都有多个不同的开发环境：自己的<code>PC</code>、公司的<code>PC</code>、线上的机器等等。每台机器都这样手工配置一遍，繁琐而且容易出错，感觉不敢想。</p>
+
+<p>程序猿是一种有懒癌的动物，一件事情绝不重复做第二遍。如果，可以将以上配置操作脚本化，在一个新的机器环境，跑一下脚本就搞定一切，那多好！这就是我维护一个<code>conf</code>代码仓库的初衷。</p>
+
+<p><code>conf</code>提供一个脚本，<code>install</code>用来按照各种配置。比如，运行以下命令，<code>zsh</code>和<code>vim</code>的配置就安装完毕了。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd conf
+</span><span class='line'>./install zsh
+</span><span class='line'>./install vim</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当然了，<code>conf</code>完全是按照我个人的喜好定制的，可能并不适合你。尽管如此，你可以参考它打造属于自己的自动化配置工具。<strong>时间应该用来做有趣的事情，而不是浪费在简单的重复中</strong>。</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[更优雅地造测试数据]]></title>
     <link href="http://blog.fasionchan.com/blog/2016/12/11/geng-you-ya-di-zao-ce-shi-shu-ju/"/>
-    <updated>2016-12-11T11:43:52+08:00</updated>
+    <updated>2016-12-11T09:57:52+08:00</updated>
     <id>http://blog.fasionchan.com/blog/2016/12/11/geng-you-ya-di-zao-ce-shi-shu-ju</id>
     <content type="html"><![CDATA[<p>开发系统时，经常需要一些伪数据用于测试。举个例子，设计一个学生管理系统，测试注册功能，总需要一些用户信息吧。我猜大部分人都会填：用户<code>aaaa</code>，密码<code>1111</code>，手机号码<code>1111</code>……感觉略无追求~</p>
 
@@ -39,7 +171,7 @@
 
 <p>生成数据前需要先初始化一个生成器，有两种方式可以完成：①用<code>faker.Factory.create()</code>；②用<code>faker.Faker()</code>。</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>快速入手</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -54,26 +186,27 @@
 <span class='line-number'>13</span>
 <span class='line-number'>14</span>
 <span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>from faker import Factory
-</span><span class='line'>fake = Factory.create()
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">from</span> <span class="nn">faker</span> <span class="kn">import</span> <span class="n">Factory</span>
+</span><span class='line'><span class="n">fake</span> <span class="o">=</span> <span class="n">Factory</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
 </span><span class='line'>
-</span><span class='line'># OR
-</span><span class='line'>from faker import Faker
-</span><span class='line'>fake = Faker()
+</span><span class='line'><span class="c"># OR</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">faker</span> <span class="kn">import</span> <span class="n">Faker</span>
+</span><span class='line'><span class="n">fake</span> <span class="o">=</span> <span class="n">Faker</span><span class="p">()</span>
 </span><span class='line'>
-</span><span class='line'>fake.name()
-</span><span class='line'># 'Lucy Cechtelar'
+</span><span class='line'><span class="n">fake</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
+</span><span class='line'><span class="c"># &#39;Lucy Cechtelar&#39;</span>
 </span><span class='line'>
-</span><span class='line'>fake.address()
-</span><span class='line'># "426 Jordy Lodge# Cartwrightshire, SC 88120-6700"
+</span><span class='line'><span class="n">fake</span><span class="o">.</span><span class="n">address</span><span class="p">()</span>
+</span><span class='line'><span class="c"># &quot;426 Jordy Lodge# Cartwrightshire, SC 88120-6700&quot;</span>
 </span><span class='line'>
-</span><span class='line'>fake.text()
-</span><span class='line'># Sint velit eveniet. Rerum atque repellat voluptatem quia rerum. Numquam excepturi# beatae sint laudantium consequatur. Magni occaecati itaque sint et sit tempore. Nesciunt# amet quidem. Iusto deleniti cum autem ad quia aperiam.# A consectetur quos aliquam. In iste aliquid et aut similique suscipit. Consequatur qui# quaerat iste minus hic expedita. Consequuntur error magni et laboriosam. Aut aspernatur# voluptatem sit aliquam. Dolores voluptatum est.# Aut molestias et maxime. Fugit autem facilis quos vero. Eius quibusdam possimus est.# Ea quaerat et quisquam. Deleniti sunt quam. Adipisci consequatur id in occaecati.# Et sint et. Ut ducimus quod nemo ab voluptatum.</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'><span class="n">fake</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+</span><span class='line'><span class="c"># Sint velit eveniet. Rerum atque repellat voluptatem quia rerum. Numquam excepturi# beatae sint laudantium consequatur. Magni occaecati itaque sint et sit tempore. Nesciunt# amet quidem. Iusto deleniti cum autem ad quia aperiam.# A consectetur quos aliquam. In iste aliquid et aut similique suscipit. Consequatur qui# quaerat iste minus hic expedita. Consequuntur error magni et laboriosam. Aut aspernatur# voluptatem sit aliquam. Dolores voluptatum est.# Aut molestias et maxime. Fugit autem facilis quos vero. Eius quibusdam possimus est.# Ea quaerat et quisquam. Deleniti sunt quam. Adipisci consequatur id in occaecati.# Et sint et. Ut ducimus quod nemo ab voluptatum.</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>看看自动化的威力！批量生成，每次都是随机的哦！</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>批量生成</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -86,19 +219,20 @@
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>for _ in range(0, 10):
-</span><span class='line'>    print fake.name()
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">print</span> <span class="n">fake</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
 </span><span class='line'>
-</span><span class='line'># Adaline Reichel
-</span><span class='line'># Dr. Santa Prosacco DVM
-</span><span class='line'># Noemy Vandervort V
-</span><span class='line'># Lexi O'Conner
-</span><span class='line'># Gracie Weber
-</span><span class='line'># Roscoe Johns
-</span><span class='line'># Emmett Lebsack
-</span><span class='line'># Keegan Thiel
-</span><span class='line'># Wellington Koelpin II
-</span><span class='line'># Ms. Karley Kiehn V</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'><span class="c"># Adaline Reichel</span>
+</span><span class='line'><span class="c"># Dr. Santa Prosacco DVM</span>
+</span><span class='line'><span class="c"># Noemy Vandervort V</span>
+</span><span class='line'><span class="c"># Lexi O&#39;Conner</span>
+</span><span class='line'><span class="c"># Gracie Weber</span>
+</span><span class='line'><span class="c"># Roscoe Johns</span>
+</span><span class='line'><span class="c"># Emmett Lebsack</span>
+</span><span class='line'><span class="c"># Keegan Thiel</span>
+</span><span class='line'><span class="c"># Wellington Koelpin II</span>
+</span><span class='line'><span class="c"># Ms. Karley Kiehn V</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <h1>本地化</h1>
@@ -107,7 +241,7 @@
 
 <p>但是，重点来了——<code>Faker</code>还支持本地化，真是天地良心！一起来看看怎么生成中文信息吧：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>本地化</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -137,36 +271,37 @@
 <span class='line-number'>28</span>
 <span class='line-number'>29</span>
 <span class='line-number'>30</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>from faker import Factory
-</span><span class='line'>fake = Factory.create('zh_CN')
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">from</span> <span class="nn">faker</span> <span class="kn">import</span> <span class="n">Factory</span>
+</span><span class='line'><span class="n">fake</span> <span class="o">=</span> <span class="n">Factory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s">&#39;zh_CN&#39;</span><span class="p">)</span>
 </span><span class='line'>
-</span><span class='line'>for _ in range(0, 10):
-</span><span class='line'>    print fake.name()
+</span><span class='line'><span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">print</span> <span class="n">fake</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
 </span><span class='line'>
-</span><span class='line'># 於涛
-</span><span class='line'># 万静
-</span><span class='line'># 孙秀荣
-</span><span class='line'># 丘辉
-</span><span class='line'># 方玉
-</span><span class='line'># 虞建国
-</span><span class='line'># 丘丽丽
-</span><span class='line'># 郭杨
-</span><span class='line'># 江欣
-</span><span class='line'># 狐龙
+</span><span class='line'><span class="c"># 於涛</span>
+</span><span class='line'><span class="c"># 万静</span>
+</span><span class='line'><span class="c"># 孙秀荣</span>
+</span><span class='line'><span class="c"># 丘辉</span>
+</span><span class='line'><span class="c"># 方玉</span>
+</span><span class='line'><span class="c"># 虞建国</span>
+</span><span class='line'><span class="c"># 丘丽丽</span>
+</span><span class='line'><span class="c"># 郭杨</span>
+</span><span class='line'><span class="c"># 江欣</span>
+</span><span class='line'><span class="c"># 狐龙</span>
 </span><span class='line'>
-</span><span class='line'>for _ in range(0, 10):
-</span><span class='line'>    print fake.address()
+</span><span class='line'><span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">print</span> <span class="n">fake</span><span class="o">.</span><span class="n">address</span><span class="p">()</span>
 </span><span class='line'>
-</span><span class='line'># 杰市戚路d座 855521
-</span><span class='line'># 丽华市魏街e座 800775
-</span><span class='line'># 坤市莘路P座 376919
-</span><span class='line'># 秀云市温街s座 518607
-</span><span class='line'># 晨市季街Z座 931186
-</span><span class='line'># 丽市夹路N座 670627
-</span><span class='line'># 坤市漆街k座 968075
-</span><span class='line'># 瑞市於街z座 168689
-</span><span class='line'># 金凤市雍路E座 148292
-</span><span class='line'># 晨市黎路R座 916369</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'><span class="c"># 杰市戚路d座 855521</span>
+</span><span class='line'><span class="c"># 丽华市魏街e座 800775</span>
+</span><span class='line'><span class="c"># 坤市莘路P座 376919</span>
+</span><span class='line'><span class="c"># 秀云市温街s座 518607</span>
+</span><span class='line'><span class="c"># 晨市季街Z座 931186</span>
+</span><span class='line'><span class="c"># 丽市夹路N座 670627</span>
+</span><span class='line'><span class="c"># 坤市漆街k座 968075</span>
+</span><span class='line'><span class="c"># 瑞市於街z座 168689</span>
+</span><span class='line'><span class="c"># 金凤市雍路E座 148292</span>
+</span><span class='line'><span class="c"># 晨市黎路R座 916369</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <h1>高级用法</h1>
@@ -175,7 +310,7 @@
 
 <p><code>Faker</code>已经提供了足够丰富的信息生成，包括名字、手机号、邮箱地址、邮编等等。尽管如此，可能还是没有办法满足你的需求。这时，你可以自己动手，丰衣足食。下面，我们通过一个例子看看怎么扩展<code>Faker</code>的功能吧：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>功能扩展</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -191,64 +326,68 @@
 <span class='line-number'>14</span>
 <span class='line-number'>15</span>
 <span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>from faker import Faker
-</span><span class='line'>fake = Faker()
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">from</span> <span class="nn">faker</span> <span class="kn">import</span> <span class="n">Faker</span>
+</span><span class='line'><span class="n">fake</span> <span class="o">=</span> <span class="n">Faker</span><span class="p">()</span>
 </span><span class='line'>
-</span><span class='line'># first, import a similar Provider or use the default one
-</span><span class='line'>from faker.providers import BaseProvider
-</span><span class='line'># create new provider class
-</span><span class='line'>class MyProvider(BaseProvider):
-</span><span class='line'>    def foo(self):
-</span><span class='line'>        return 'bar'
+</span><span class='line'><span class="c"># first, import a similar Provider or use the default one</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">faker.providers</span> <span class="kn">import</span> <span class="n">BaseProvider</span>
+</span><span class='line'><span class="c"># create new provider class</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">MyProvider</span><span class="p">(</span><span class="n">BaseProvider</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">return</span> <span class="s">&#39;bar&#39;</span>
 </span><span class='line'>
-</span><span class='line'># then add new provider to faker instance
-</span><span class='line'>fake.add_provider(MyProvider)
+</span><span class='line'><span class="c"># then add new provider to faker instance</span>
+</span><span class='line'><span class="n">fake</span><span class="o">.</span><span class="n">add_provider</span><span class="p">(</span><span class="n">MyProvider</span><span class="p">)</span>
 </span><span class='line'>
-</span><span class='line'># now you can use:
-</span><span class='line'>fake.foo()
-</span><span class='line'>&gt; 'bar'</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'><span class="c"># now you can use:</span>
+</span><span class='line'><span class="n">fake</span><span class="o">.</span><span class="n">foo</span><span class="p">()</span>
+</span><span class='line'><span class="o">&gt;</span> <span class="s">&#39;bar&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <h2>随机控制</h2>
 
 <p><code>Faker</code>随机生成由<code>random.Random</code>驱动。其中，<code>.random</code>属性返回<code>random.Random</code>对象。通过对该对象的操作，可以实现自定义的行为。</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>随机对象</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>from faker import Faker
-</span><span class='line'>fake = Faker()
-</span><span class='line'>fake.random
-</span><span class='line'>fake.random.getstate()</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">from</span> <span class="nn">faker</span> <span class="kn">import</span> <span class="n">Faker</span>
+</span><span class='line'><span class="n">fake</span> <span class="o">=</span> <span class="n">Faker</span><span class="p">()</span>
+</span><span class='line'><span class="n">fake</span><span class="o">.</span><span class="n">random</span>
+</span><span class='line'><span class="n">fake</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">getstate</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>那么，可以实现什么自定义呢？举个例子，我们可以设置<code>seed</code>。<code>seed</code>在随机数生成逻辑中什么作用，估计大家都清楚。比如，通过给定<code>seed</code>可以控制每次生成的内容都是一样的：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>设置seed</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>from faker import Faker
-</span><span class='line'>fake = Faker()
-</span><span class='line'>faker.random.seed(4321)
-</span><span class='line'>print fake.name()
-</span><span class='line'># Margaret Boehm</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">from</span> <span class="nn">faker</span> <span class="kn">import</span> <span class="n">Faker</span>
+</span><span class='line'><span class="n">fake</span> <span class="o">=</span> <span class="n">Faker</span><span class="p">()</span>
+</span><span class='line'><span class="n">faker</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">4321</span><span class="p">)</span>
+</span><span class='line'><span class="k">print</span> <span class="n">fake</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
+</span><span class='line'><span class="c"># Margaret Boehm</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>还有等价写法哦：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>设置seed</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>from faker import Faker
-</span><span class='line'>fake = Faker()
-</span><span class='line'>fake.seed(4321)
-</span><span class='line'>print fake.name()
-</span><span class='line'># Margaret Boehm</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">from</span> <span class="nn">faker</span> <span class="kn">import</span> <span class="n">Faker</span>
+</span><span class='line'><span class="n">fake</span> <span class="o">=</span> <span class="n">Faker</span><span class="p">()</span>
+</span><span class='line'><span class="n">fake</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">4321</span><span class="p">)</span>
+</span><span class='line'><span class="k">print</span> <span class="n">fake</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
+</span><span class='line'><span class="c"># Margaret Boehm</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>注意到，不同的两次运行，只要<code>seed</code>一样，生成出来的信息就是一样的。</p>
@@ -257,7 +396,7 @@
 
 <p>有时想在<code>shell</code>或者其他程序中生成一些伪数据，是不是一定要写一个<code>Python</code>脚本呢？别急——<code>Faker</code>提供了一个命令行工具，估计可以应对大部分场景了：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -276,25 +415,26 @@
 <span class='line-number'>17</span>
 <span class='line-number'>18</span>
 <span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ faker address
-</span><span class='line'>968 Bahringer Garden Apt. 722Kristinaland, NJ 09890
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>faker address
+</span><span class='line'><span class="m">968</span> Bahringer Garden Apt. 722Kristinaland, NJ 09890
 </span><span class='line'>
-</span><span class='line'>$ faker -l de_DE address
-</span><span class='line'>Samira-Niemeier-Allee 5694812 Biedenkopf
+</span><span class='line'><span class="nv">$ </span>faker -l de_DE address
+</span><span class='line'>Samira-Niemeier-Allee <span class="m">5694812</span> Biedenkopf
 </span><span class='line'>
-</span><span class='line'>$ faker profile ssn,birthdate
-</span><span class='line'>{'ssn': u'628-10-1085', 'birthdate': '2008-03-29'}
+</span><span class='line'><span class="nv">$ </span>faker profile ssn,birthdate
+</span><span class='line'><span class="o">{</span><span class="s1">&#39;ssn&#39;</span>: u<span class="s1">&#39;628-10-1085&#39;</span>, <span class="s1">&#39;birthdate&#39;</span>: <span class="s1">&#39;2008-03-29&#39;</span><span class="o">}</span>
 </span><span class='line'>
-</span><span class='line'>$ faker -r=3 -s=";" name
-</span><span class='line'>Willam Kertzmann;
-</span><span class='line'>Josiah Maggio;
-</span><span class='line'>Gayla Schmitt;
+</span><span class='line'><span class="nv">$ </span>faker -r<span class="o">=</span><span class="m">3</span> -s<span class="o">=</span><span class="s2">&quot;;&quot;</span> name
+</span><span class='line'>Willam Kertzmann<span class="p">;</span>
+</span><span class='line'>Josiah Maggio<span class="p">;</span>
+</span><span class='line'>Gayla Schmitt<span class="p">;</span>
 </span><span class='line'>
-</span><span class='line'>$ faker -h
-</span><span class='line'>usage: faker [-h] [--version] [-o output] [-l LOCALE] [-r REPEAT] [-s SEP]
-</span><span class='line'>             [-i [INCLUDE [INCLUDE ...]]]
-</span><span class='line'>             [fake] [fake argument [fake argument ...]]
-</span><span class='line'>...</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'><span class="nv">$ </span>faker -h
+</span><span class='line'>usage: faker <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--version<span class="o">]</span> <span class="o">[</span>-o output<span class="o">]</span> <span class="o">[</span>-l LOCALE<span class="o">]</span> <span class="o">[</span>-r REPEAT<span class="o">]</span> <span class="o">[</span>-s SEP<span class="o">]</span>
+</span><span class='line'>             <span class="o">[</span>-i <span class="o">[</span>INCLUDE <span class="o">[</span>INCLUDE ...<span class="o">]]]</span>
+</span><span class='line'>             <span class="o">[</span>fake<span class="o">]</span> <span class="o">[</span>fake argument <span class="o">[</span>fake argument ...<span class="o">]]</span>
+</span><span class='line'>...
+</span></code></pre></td></tr></table></div></figure>
 
 ]]></content>
   </entry>
@@ -1123,6 +1263,237 @@
 <p>进程<code>A</code>的文件描述符2和进程<code>B</code>的文件描述符2都指向同一个打开文件描述体(标号23)。这种情形很可能发生在调用<code>fork()</code>派生子进程之后，比如<code>A</code>调用<code>fork()</code>派生出<code>B</code>。这时，<code>B</code>作为子进程，从父进程<code>A</code>继承了文件描述符表，其中包括图中标明的文件描述符2。这就是<code>子进程继承父进程打开的文件</code>这句话的由来。</p>
 
 <p>当然了，进程<code>A</code>通过<code>Unix</code>套接字将一个文件描述符传递给<code>B</code>也会出现类似的情形，但一般文件描述符数值是不一样的。同时为2要非常凑巧才发生。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Linux通用IO模型]]></title>
+    <link href="http://blog.fasionchan.com/blog/2016/09/17/linux-tong-yong-io-mo-xing/"/>
+    <updated>2016-09-17T21:54:29+08:00</updated>
+    <id>http://blog.fasionchan.com/blog/2016/09/17/linux-tong-yong-io-mo-xing</id>
+    <content type="html"><![CDATA[<p>学习<code>Linux</code>系统编程，文件I/O是一个不错的切入点。首先，日常操作中或多或少都使用过文件，有一定的概念；其次，文件I/O可以由几个最最基础的系统调用完成，降低入门理解难度。</p>
+
+<h1>基础系统调用</h1>
+
+<p><code>Linux</code>下<code>I/O</code>操作是通用化的，不仅仅可以用来操作文件输入输出，还可以用来操作管道、<code>FIFO</code>、<code>socket</code>、终端设备等。将设备抽象成一个文件，用<code>I/O</code>操作控制设备是类<code>Unix</code>系统一大特色。</p>
+
+<p>最最基础的<code>I/O</code>操作系统调用包括：</p>
+
+<ul>
+<li><strong>fd = open(pathname, flags, mode)</strong></li>
+<li><strong>rlen = read(fd, buf, count)</strong></li>
+<li><strong>wlen = write(fd, buf, count)</strong></li>
+<li><strong>status = close(fd)</strong></li>
+</ul>
+
+
+<p>注意到，相关系统调用都围绕文件描述符<code>fd</code>展开。文件描述符在下节详细介绍。</p>
+
+<p>另外，需要特别提示一下，系统调用函数接口（其实是库函数封装）可以通过<code>man</code>命令查看详细的参数、返回值及用法说明。比如，终端下运行<code>man read</code>，就可以看到<code>read</code>这个系统调用的相关文档说明：</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/2740477-bb2610e81244463b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="man open" /></p>
+
+<h1>文件描述符</h1>
+
+<p><code>I/O</code>操作系统调用都以文件描述符(一个非负整数)，指代打开的文件。每个进程都有一个打开文件表，可以理解成一个数组，文件描述符可以理解成数组的下标。相关<code>I/O</code>操作系统调用以文件描述符为参数，便可以通过数组访问定位到指定的文件对象，进而进行<code>I/O</code>操作。</p>
+
+<p>一般情况下，进程的标准输入输出由3个特定的文件描述符指定，列举如下：</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">文件描述符</th>
+<th style="text-align:left;">用途</th>
+<th style="text-align:left;">POSIX名称</th>
+<th style="text-align:left;">stdio流</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">0</td>
+<td style="text-align:left;">标准输入</td>
+<td style="text-align:left;">STDIN_FILENO</td>
+<td style="text-align:left;">stdin</td>
+</tr>
+<tr>
+<td style="text-align:left;">1</td>
+<td style="text-align:left;">标准输出</td>
+<td style="text-align:left;">STDOUT_FILENO</td>
+<td style="text-align:left;">stdout</td>
+</tr>
+<tr>
+<td style="text-align:left;">2</td>
+<td style="text-align:left;">标准错误</td>
+<td style="text-align:left;">STDERR_FILENO</td>
+<td style="text-align:left;">stderr</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>正常情况下，程序在开始运行之前，由<code>shell</code>准备好这3个文件描述符。更准确的说法是，程序继承了<code>shell</code>文件描述符的副本，一般是指向<code>shell</code>所在的终端。当然了，可以通过在<code>shell</code>中对输入/输出进行重定向或者在程序启动后关闭并重新打开文件描述符，修改文件描述符指向。</p>
+
+<h1>实战案例</h1>
+
+<h2>读文件</h2>
+
+<p>首先，通过一个例子，探索一下如何通过<code>I/O</code>操作系统调用读取文件内容并输出：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#include &lt;stdio.h&gt;
+</span><span class='line'>#include &lt;fcntl.h&gt;
+</span><span class='line'>
+</span><span class='line'>int
+</span><span class='line'>main(int argc, char *argv[])
+</span><span class='line'>{
+</span><span class='line'>    // 打开文件
+</span><span class='line'>    int fd = open("a.txt", O_RDONLY);
+</span><span class='line'>    if (-1 == fd)
+</span><span class='line'>    {
+</span><span class='line'>        perror("fail to open a.txt");
+</span><span class='line'>        return -1;
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    // 准备缓冲区并读文件
+</span><span class='line'>    char buf[1024];
+</span><span class='line'>    int rlen = read(fd, buf, sizeof(buf)-1);
+</span><span class='line'>    if (-1 == rlen)
+</span><span class='line'>    {
+</span><span class='line'>        perror("fail to read a.txt");
+</span><span class='line'>        return -2;
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    // 输出内容
+</span><span class='line'>    buf[rlen] = '\0';
+</span><span class='line'>    printf("read %d bytes, which is:\n", rlen);
+</span><span class='line'>    printf("%s\n", buf);
+</span><span class='line'>
+</span><span class='line'>    // 关闭文件
+</span><span class='line'>    int status = close(fd);
+</span><span class='line'>    if (-1 == status)
+</span><span class='line'>    {
+</span><span class='line'>        perror("fail to close a.txt");
+</span><span class='line'>        return -3;
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    return 0;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>写文件</h2>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>#include &lt;stdio.h&gt;
+</span><span class='line'>#include &lt;string.h&gt;
+</span><span class='line'>#include &lt;fcntl.h&gt;
+</span><span class='line'>
+</span><span class='line'>int
+</span><span class='line'>main(int argc, char *argv[])
+</span><span class='line'>{
+</span><span class='line'>    // 打开文件
+</span><span class='line'>    int fd = open("a.txt", O_WRONLY);
+</span><span class='line'>    if (-1 == fd)
+</span><span class='line'>    {
+</span><span class='line'>        perror("fail to open a.txt");
+</span><span class='line'>        return -1;
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    // 准备数据并写到文件
+</span><span class='line'>    char data[] = "hello, this is line written by write syscall\n";
+</span><span class='line'>    int wlen = write(fd, data, strlen(data));
+</span><span class='line'>    if (-1 == wlen)
+</span><span class='line'>    {
+</span><span class='line'>        perror("fail to read a.txt");
+</span><span class='line'>        return -2;
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    // 输出成功写入字节数
+</span><span class='line'>    printf("write %d bytes of %d total\n", wlen, strlen(data));
+</span><span class='line'>
+</span><span class='line'>    // 关闭文件
+</span><span class='line'>    int status = close(fd);
+</span><span class='line'>    if (-1 == status)
+</span><span class='line'>    {
+</span><span class='line'>        perror("fail to close a.txt");
+</span><span class='line'>        return -3;
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    return 0;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
 ]]></content>
   </entry>
   

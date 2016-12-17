@@ -78,7 +78,7 @@
 
 
 
-<time class='entry-date' datetime='2016-12-11T11:43:52+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>11:43 am</span></time>
+<time class='entry-date' datetime='2016-12-11T09:57:52+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>9:57 am</span></time>
         
         
            | <a href="#comments">Comments</a>
@@ -109,7 +109,7 @@
 
 <p>生成数据前需要先初始化一个生成器，有两种方式可以完成：①用<code>faker.Factory.create()</code>；②用<code>faker.Faker()</code>。</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>快速入手</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -124,26 +124,27 @@
 <span class='line-number'>13</span>
 <span class='line-number'>14</span>
 <span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>from faker import Factory
-</span><span class='line'>fake = Factory.create()
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">from</span> <span class="nn">faker</span> <span class="kn">import</span> <span class="n">Factory</span>
+</span><span class='line'><span class="n">fake</span> <span class="o">=</span> <span class="n">Factory</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
 </span><span class='line'>
-</span><span class='line'># OR
-</span><span class='line'>from faker import Faker
-</span><span class='line'>fake = Faker()
+</span><span class='line'><span class="c"># OR</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">faker</span> <span class="kn">import</span> <span class="n">Faker</span>
+</span><span class='line'><span class="n">fake</span> <span class="o">=</span> <span class="n">Faker</span><span class="p">()</span>
 </span><span class='line'>
-</span><span class='line'>fake.name()
-</span><span class='line'># 'Lucy Cechtelar'
+</span><span class='line'><span class="n">fake</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
+</span><span class='line'><span class="c"># &#39;Lucy Cechtelar&#39;</span>
 </span><span class='line'>
-</span><span class='line'>fake.address()
-</span><span class='line'># "426 Jordy Lodge# Cartwrightshire, SC 88120-6700"
+</span><span class='line'><span class="n">fake</span><span class="o">.</span><span class="n">address</span><span class="p">()</span>
+</span><span class='line'><span class="c"># &quot;426 Jordy Lodge# Cartwrightshire, SC 88120-6700&quot;</span>
 </span><span class='line'>
-</span><span class='line'>fake.text()
-</span><span class='line'># Sint velit eveniet. Rerum atque repellat voluptatem quia rerum. Numquam excepturi# beatae sint laudantium consequatur. Magni occaecati itaque sint et sit tempore. Nesciunt# amet quidem. Iusto deleniti cum autem ad quia aperiam.# A consectetur quos aliquam. In iste aliquid et aut similique suscipit. Consequatur qui# quaerat iste minus hic expedita. Consequuntur error magni et laboriosam. Aut aspernatur# voluptatem sit aliquam. Dolores voluptatum est.# Aut molestias et maxime. Fugit autem facilis quos vero. Eius quibusdam possimus est.# Ea quaerat et quisquam. Deleniti sunt quam. Adipisci consequatur id in occaecati.# Et sint et. Ut ducimus quod nemo ab voluptatum.</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'><span class="n">fake</span><span class="o">.</span><span class="n">text</span><span class="p">()</span>
+</span><span class='line'><span class="c"># Sint velit eveniet. Rerum atque repellat voluptatem quia rerum. Numquam excepturi# beatae sint laudantium consequatur. Magni occaecati itaque sint et sit tempore. Nesciunt# amet quidem. Iusto deleniti cum autem ad quia aperiam.# A consectetur quos aliquam. In iste aliquid et aut similique suscipit. Consequatur qui# quaerat iste minus hic expedita. Consequuntur error magni et laboriosam. Aut aspernatur# voluptatem sit aliquam. Dolores voluptatum est.# Aut molestias et maxime. Fugit autem facilis quos vero. Eius quibusdam possimus est.# Ea quaerat et quisquam. Deleniti sunt quam. Adipisci consequatur id in occaecati.# Et sint et. Ut ducimus quod nemo ab voluptatum.</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>看看自动化的威力！批量生成，每次都是随机的哦！</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>批量生成</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -156,19 +157,20 @@
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>for _ in range(0, 10):
-</span><span class='line'>    print fake.name()
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">print</span> <span class="n">fake</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
 </span><span class='line'>
-</span><span class='line'># Adaline Reichel
-</span><span class='line'># Dr. Santa Prosacco DVM
-</span><span class='line'># Noemy Vandervort V
-</span><span class='line'># Lexi O'Conner
-</span><span class='line'># Gracie Weber
-</span><span class='line'># Roscoe Johns
-</span><span class='line'># Emmett Lebsack
-</span><span class='line'># Keegan Thiel
-</span><span class='line'># Wellington Koelpin II
-</span><span class='line'># Ms. Karley Kiehn V</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'><span class="c"># Adaline Reichel</span>
+</span><span class='line'><span class="c"># Dr. Santa Prosacco DVM</span>
+</span><span class='line'><span class="c"># Noemy Vandervort V</span>
+</span><span class='line'><span class="c"># Lexi O&#39;Conner</span>
+</span><span class='line'><span class="c"># Gracie Weber</span>
+</span><span class='line'><span class="c"># Roscoe Johns</span>
+</span><span class='line'><span class="c"># Emmett Lebsack</span>
+</span><span class='line'><span class="c"># Keegan Thiel</span>
+</span><span class='line'><span class="c"># Wellington Koelpin II</span>
+</span><span class='line'><span class="c"># Ms. Karley Kiehn V</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <h1>本地化</h1>
@@ -177,7 +179,7 @@
 
 <p>但是，重点来了——<code>Faker</code>还支持本地化，真是天地良心！一起来看看怎么生成中文信息吧：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>本地化</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -207,36 +209,37 @@
 <span class='line-number'>28</span>
 <span class='line-number'>29</span>
 <span class='line-number'>30</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>from faker import Factory
-</span><span class='line'>fake = Factory.create('zh_CN')
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">from</span> <span class="nn">faker</span> <span class="kn">import</span> <span class="n">Factory</span>
+</span><span class='line'><span class="n">fake</span> <span class="o">=</span> <span class="n">Factory</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s">&#39;zh_CN&#39;</span><span class="p">)</span>
 </span><span class='line'>
-</span><span class='line'>for _ in range(0, 10):
-</span><span class='line'>    print fake.name()
+</span><span class='line'><span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">print</span> <span class="n">fake</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
 </span><span class='line'>
-</span><span class='line'># 於涛
-</span><span class='line'># 万静
-</span><span class='line'># 孙秀荣
-</span><span class='line'># 丘辉
-</span><span class='line'># 方玉
-</span><span class='line'># 虞建国
-</span><span class='line'># 丘丽丽
-</span><span class='line'># 郭杨
-</span><span class='line'># 江欣
-</span><span class='line'># 狐龙
+</span><span class='line'><span class="c"># 於涛</span>
+</span><span class='line'><span class="c"># 万静</span>
+</span><span class='line'><span class="c"># 孙秀荣</span>
+</span><span class='line'><span class="c"># 丘辉</span>
+</span><span class='line'><span class="c"># 方玉</span>
+</span><span class='line'><span class="c"># 虞建国</span>
+</span><span class='line'><span class="c"># 丘丽丽</span>
+</span><span class='line'><span class="c"># 郭杨</span>
+</span><span class='line'><span class="c"># 江欣</span>
+</span><span class='line'><span class="c"># 狐龙</span>
 </span><span class='line'>
-</span><span class='line'>for _ in range(0, 10):
-</span><span class='line'>    print fake.address()
+</span><span class='line'><span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">print</span> <span class="n">fake</span><span class="o">.</span><span class="n">address</span><span class="p">()</span>
 </span><span class='line'>
-</span><span class='line'># 杰市戚路d座 855521
-</span><span class='line'># 丽华市魏街e座 800775
-</span><span class='line'># 坤市莘路P座 376919
-</span><span class='line'># 秀云市温街s座 518607
-</span><span class='line'># 晨市季街Z座 931186
-</span><span class='line'># 丽市夹路N座 670627
-</span><span class='line'># 坤市漆街k座 968075
-</span><span class='line'># 瑞市於街z座 168689
-</span><span class='line'># 金凤市雍路E座 148292
-</span><span class='line'># 晨市黎路R座 916369</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'><span class="c"># 杰市戚路d座 855521</span>
+</span><span class='line'><span class="c"># 丽华市魏街e座 800775</span>
+</span><span class='line'><span class="c"># 坤市莘路P座 376919</span>
+</span><span class='line'><span class="c"># 秀云市温街s座 518607</span>
+</span><span class='line'><span class="c"># 晨市季街Z座 931186</span>
+</span><span class='line'><span class="c"># 丽市夹路N座 670627</span>
+</span><span class='line'><span class="c"># 坤市漆街k座 968075</span>
+</span><span class='line'><span class="c"># 瑞市於街z座 168689</span>
+</span><span class='line'><span class="c"># 金凤市雍路E座 148292</span>
+</span><span class='line'><span class="c"># 晨市黎路R座 916369</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <h1>高级用法</h1>
@@ -245,7 +248,7 @@
 
 <p><code>Faker</code>已经提供了足够丰富的信息生成，包括名字、手机号、邮箱地址、邮编等等。尽管如此，可能还是没有办法满足你的需求。这时，你可以自己动手，丰衣足食。下面，我们通过一个例子看看怎么扩展<code>Faker</code>的功能吧：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>功能扩展</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -261,64 +264,68 @@
 <span class='line-number'>14</span>
 <span class='line-number'>15</span>
 <span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>from faker import Faker
-</span><span class='line'>fake = Faker()
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">from</span> <span class="nn">faker</span> <span class="kn">import</span> <span class="n">Faker</span>
+</span><span class='line'><span class="n">fake</span> <span class="o">=</span> <span class="n">Faker</span><span class="p">()</span>
 </span><span class='line'>
-</span><span class='line'># first, import a similar Provider or use the default one
-</span><span class='line'>from faker.providers import BaseProvider
-</span><span class='line'># create new provider class
-</span><span class='line'>class MyProvider(BaseProvider):
-</span><span class='line'>    def foo(self):
-</span><span class='line'>        return 'bar'
+</span><span class='line'><span class="c"># first, import a similar Provider or use the default one</span>
+</span><span class='line'><span class="kn">from</span> <span class="nn">faker.providers</span> <span class="kn">import</span> <span class="n">BaseProvider</span>
+</span><span class='line'><span class="c"># create new provider class</span>
+</span><span class='line'><span class="k">class</span> <span class="nc">MyProvider</span><span class="p">(</span><span class="n">BaseProvider</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">return</span> <span class="s">&#39;bar&#39;</span>
 </span><span class='line'>
-</span><span class='line'># then add new provider to faker instance
-</span><span class='line'>fake.add_provider(MyProvider)
+</span><span class='line'><span class="c"># then add new provider to faker instance</span>
+</span><span class='line'><span class="n">fake</span><span class="o">.</span><span class="n">add_provider</span><span class="p">(</span><span class="n">MyProvider</span><span class="p">)</span>
 </span><span class='line'>
-</span><span class='line'># now you can use:
-</span><span class='line'>fake.foo()
-</span><span class='line'>&gt; 'bar'</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'><span class="c"># now you can use:</span>
+</span><span class='line'><span class="n">fake</span><span class="o">.</span><span class="n">foo</span><span class="p">()</span>
+</span><span class='line'><span class="o">&gt;</span> <span class="s">&#39;bar&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <h2>随机控制</h2>
 
 <p><code>Faker</code>随机生成由<code>random.Random</code>驱动。其中，<code>.random</code>属性返回<code>random.Random</code>对象。通过对该对象的操作，可以实现自定义的行为。</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>随机对象</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>from faker import Faker
-</span><span class='line'>fake = Faker()
-</span><span class='line'>fake.random
-</span><span class='line'>fake.random.getstate()</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">from</span> <span class="nn">faker</span> <span class="kn">import</span> <span class="n">Faker</span>
+</span><span class='line'><span class="n">fake</span> <span class="o">=</span> <span class="n">Faker</span><span class="p">()</span>
+</span><span class='line'><span class="n">fake</span><span class="o">.</span><span class="n">random</span>
+</span><span class='line'><span class="n">fake</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">getstate</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>那么，可以实现什么自定义呢？举个例子，我们可以设置<code>seed</code>。<code>seed</code>在随机数生成逻辑中什么作用，估计大家都清楚。比如，通过给定<code>seed</code>可以控制每次生成的内容都是一样的：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>设置seed</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>from faker import Faker
-</span><span class='line'>fake = Faker()
-</span><span class='line'>faker.random.seed(4321)
-</span><span class='line'>print fake.name()
-</span><span class='line'># Margaret Boehm</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">from</span> <span class="nn">faker</span> <span class="kn">import</span> <span class="n">Faker</span>
+</span><span class='line'><span class="n">fake</span> <span class="o">=</span> <span class="n">Faker</span><span class="p">()</span>
+</span><span class='line'><span class="n">faker</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">4321</span><span class="p">)</span>
+</span><span class='line'><span class="k">print</span> <span class="n">fake</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
+</span><span class='line'><span class="c"># Margaret Boehm</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>还有等价写法哦：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>设置seed</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>from faker import Faker
-</span><span class='line'>fake = Faker()
-</span><span class='line'>fake.seed(4321)
-</span><span class='line'>print fake.name()
-</span><span class='line'># Margaret Boehm</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">from</span> <span class="nn">faker</span> <span class="kn">import</span> <span class="n">Faker</span>
+</span><span class='line'><span class="n">fake</span> <span class="o">=</span> <span class="n">Faker</span><span class="p">()</span>
+</span><span class='line'><span class="n">fake</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">4321</span><span class="p">)</span>
+</span><span class='line'><span class="k">print</span> <span class="n">fake</span><span class="o">.</span><span class="n">name</span><span class="p">()</span>
+</span><span class='line'><span class="c"># Margaret Boehm</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>注意到，不同的两次运行，只要<code>seed</code>一样，生成出来的信息就是一样的。</p>
@@ -327,7 +334,7 @@
 
 <p>有时想在<code>shell</code>或者其他程序中生成一些伪数据，是不是一定要写一个<code>Python</code>脚本呢？别急——<code>Faker</code>提供了一个命令行工具，估计可以应对大部分场景了：</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -346,25 +353,26 @@
 <span class='line-number'>17</span>
 <span class='line-number'>18</span>
 <span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ faker address
-</span><span class='line'>968 Bahringer Garden Apt. 722Kristinaland, NJ 09890
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>faker address
+</span><span class='line'><span class="m">968</span> Bahringer Garden Apt. 722Kristinaland, NJ 09890
 </span><span class='line'>
-</span><span class='line'>$ faker -l de_DE address
-</span><span class='line'>Samira-Niemeier-Allee 5694812 Biedenkopf
+</span><span class='line'><span class="nv">$ </span>faker -l de_DE address
+</span><span class='line'>Samira-Niemeier-Allee <span class="m">5694812</span> Biedenkopf
 </span><span class='line'>
-</span><span class='line'>$ faker profile ssn,birthdate
-</span><span class='line'>{'ssn': u'628-10-1085', 'birthdate': '2008-03-29'}
+</span><span class='line'><span class="nv">$ </span>faker profile ssn,birthdate
+</span><span class='line'><span class="o">{</span><span class="s1">&#39;ssn&#39;</span>: u<span class="s1">&#39;628-10-1085&#39;</span>, <span class="s1">&#39;birthdate&#39;</span>: <span class="s1">&#39;2008-03-29&#39;</span><span class="o">}</span>
 </span><span class='line'>
-</span><span class='line'>$ faker -r=3 -s=";" name
-</span><span class='line'>Willam Kertzmann;
-</span><span class='line'>Josiah Maggio;
-</span><span class='line'>Gayla Schmitt;
+</span><span class='line'><span class="nv">$ </span>faker -r<span class="o">=</span><span class="m">3</span> -s<span class="o">=</span><span class="s2">&quot;;&quot;</span> name
+</span><span class='line'>Willam Kertzmann<span class="p">;</span>
+</span><span class='line'>Josiah Maggio<span class="p">;</span>
+</span><span class='line'>Gayla Schmitt<span class="p">;</span>
 </span><span class='line'>
-</span><span class='line'>$ faker -h
-</span><span class='line'>usage: faker [-h] [--version] [-o output] [-l LOCALE] [-r REPEAT] [-s SEP]
-</span><span class='line'>             [-i [INCLUDE [INCLUDE ...]]]
-</span><span class='line'>             [fake] [fake argument [fake argument ...]]
-</span><span class='line'>...</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'><span class="nv">$ </span>faker -h
+</span><span class='line'>usage: faker <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>--version<span class="o">]</span> <span class="o">[</span>-o output<span class="o">]</span> <span class="o">[</span>-l LOCALE<span class="o">]</span> <span class="o">[</span>-r REPEAT<span class="o">]</span> <span class="o">[</span>-s SEP<span class="o">]</span>
+</span><span class='line'>             <span class="o">[</span>-i <span class="o">[</span>INCLUDE <span class="o">[</span>INCLUDE ...<span class="o">]]]</span>
+</span><span class='line'>             <span class="o">[</span>fake<span class="o">]</span> <span class="o">[</span>fake argument <span class="o">[</span>fake argument ...<span class="o">]]</span>
+</span><span class='line'>...
+</span></code></pre></td></tr></table></div></figure>
 
 </div>
 
@@ -381,7 +389,7 @@
 
 
 
-<time class='entry-date' datetime='2016-12-11T11:43:52+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>11:43 am</span></time>
+<time class='entry-date' datetime='2016-12-11T09:57:52+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>9:57 am</span></time>
       
 
 <span class="categories">
@@ -408,6 +416,8 @@
       
         <a class="basic-alignment left" href="/blog/2016/12/09/python-diao-shi-zhong-duan/" title="Previous Post: Python调试终端">&laquo; Python调试终端</a>
       
+      
+        <a class="basic-alignment right" href="/blog/2016/12/17/da-zao-xuan-ku-de-kai-fa-huan-jing/" title="Next Post: 打造炫酷的开发环境">打造炫酷的开发环境 &raquo;</a>
       
     </p>
   </footer>
@@ -446,6 +456,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/12/17/da-zao-xuan-ku-de-kai-fa-huan-jing/">打造炫酷的开发环境</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/12/11/geng-you-ya-di-zao-ce-shi-shu-ju/">更优雅地造测试数据</a>
       </li>
     
@@ -459,10 +473,6 @@
     
       <li class="post">
         <a href="/blog/2016/12/07/shi-yong-gdb-tiao-shi-python-cheng-xu/">使用gdb调试Python程序</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/11/07/yi-wen-shen-ru-li-jie-linux-tcp-backlog/">[译文]深入理解Linux TCP Backlog</a>
       </li>
     
   </ul>

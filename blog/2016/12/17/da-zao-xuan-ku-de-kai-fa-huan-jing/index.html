@@ -1,0 +1,418 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>打造炫酷的开发环境 - fasionchan</title>
+  <meta name="author" content="陈彦霏">
+
+  
+  <meta name="description" content="无图无真相，这篇文章的主要目的是打造如下所示的终端开发环境，涉及terminal、shell以及editor等，着重于配色。 terminal不必多说，iTerm2是Mac下的不二选择，不解释了。如果你在windows上开发，推荐使用Putty，当然了跟iTerm2不是同个级别的东西。 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://blog.fasionchan.com/blog/2016/12/17/da-zao-xuan-ku-de-kai-fa-huan-jing/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="fasionchan" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//cdn.staticfile.org/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">fasionchan</a></h1>
+  
+    <h2>读万卷书，行万里路，品万味肴，撸万行码。</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="blog.fasionchan.com">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/books">Books</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">打造炫酷的开发环境</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2016-12-17T21:20:34+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>9:20 pm</span></time>
+        
+        
+           | <a href="#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>无图无真相，这篇文章的主要目的是打造如下所示的终端开发环境，涉及<code>terminal</code>、<code>shell</code>以及<code>editor</code>等，着重于配色。</p>
+
+<p><img src="/images/zsh.png"></p>
+
+<!--more-->
+
+
+<p><code>terminal</code>不必多说，<code>iTerm2</code>是<code>Mac</code>下的不二选择，不解释了。如果你在<code>windows</code>上开发，推荐使用<code>Putty</code>，当然了跟<code>iTerm2</code>不是同个级别的东西。</p>
+
+<p>关于<code>shell</code>，我之前一直在<code>bash</code>上瞎折腾，认为最普适的就是最好的。毕竟在绝大多数机器环境上，<code>bash</code>唾手可得，不需要额外安装。但是，<code>bash</code>没有足够丰富的现成配置方案可用，自己山寨要花很多精力而且效果也不是很好。<code>zsh</code>就不一样，名字就透着<code>shell</code>终结者的意思。<code>zsh</code>比<code>bash</code>要好用，而且有现成的配置方案，特别是<code>oh-my-zsh</code>，非常好用。</p>
+
+<p><img src="/images/vim.png"></p>
+
+<p>关于<code>editor</code>，向来都有<code>vim</code>或<code>emacs</code>的争议。我只使用过<code>vim</code>，也没法评论。争议是没有必要的，如果都没用过，选一个学一下就是；如果用过其中之一，维持现状即可；想两个都体验一下也行，找到适合自己的才是最重要的。我习惯使用<code>vim</code>，下文便以<code>vim</code>为例好了。</p>
+
+<h1>iTerm2</h1>
+
+<p><code>iTerm2</code>是<code>Mac</code>下一款优秀的终端软件，功能比内置的<code>iTerm</code>强很多。关键是，这款应用还是免费的！赶紧到<a href="https://www%0A.iterm2.com/">www.iterm2.com</a>下载吧！安装后，它是这个样子的：</p>
+
+<p><img src="/images/iterm2-default.png"></p>
+
+<p>呃，颜色货不对版呀！对的，这是<code>iTerm2</code>默认的颜色，别心急，接下来我们来调整配色方案。</p>
+
+<h2>配色</h2>
+
+<p><a href="http://ethanschoonover.com/solarized">solarized</a>是一套好看又不伤眼的配置方案，很多人推荐，目前托管在<a href="https://github.com/altercation/solarized">github</a>上。接下来，我们看看怎么给<code>iTerm2</code>加上<code>solarized</code>配色。</p>
+
+<p>首先，将<code>solarized</code>下载到本地：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>git clone git@github.com:altercation/solarized.git</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到，里面包罗万象，这里我们要使用的是<code>iterm2-colors-solarized</code>目录下的，包括<code>Solarized Dark.itermcolors</code>和<code>Solarized Light.itermcolors</code>两个配置文件。</p>
+
+<p><img src="/images/iterm2-color.png"></p>
+
+<p>打开<code>Preferences-&gt;Profiles-&gt;Color</code>面板，在<code>Color Presets</code>中将以上两个配置方案导入，然后选择<code>Solarized Dark</code>或者<code>Solarized Light</code>即可。一般推荐使用<code>Solarized Dark</code>，<code>Solarized Light</code>有种亮瞎的感觉。配色搞定后，终端是这样子的：</p>
+
+<p><img src="/images/iterm2-solarized.png"></p>
+
+<p>看着这样柔和的颜色，眼睛就不会很容易就累了。</p>
+
+<h1>zsh</h1>
+
+<p><code>shell</code>提示符高亮及<code>git</code>代码状态展示是怎么实现的呢？这就要说到强大的<code>zsh</code>了。不废话，<code>Mac</code>下应该是内置的了；<code>Linux</code>下运行<code>apt-get install zsh</code>即可安装；<code>Windows</code>下烫烫烫烫烫。</p>
+
+<h2>配置</h2>
+
+<p>接下来，用<a href="https://github.com/robbyrussell/oh-my-zsh">oh-my-zsh</a>来武装<code>zsh</code>，一行命令搞定：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>sh -c "$(wget https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>主题</h2>
+
+<p><code>oh-my-zsh</code>中提供了多套主题可供选择，有不同的输出样式及配色。默认应该是<a href="https://github.com/robbyrussell/oh-my-zsh/wiki/Themes#robbyrussell">robbyrussell</a>，感觉中规中矩没啥亮点。翻看了一下，发现了<a href="https://github.com/robbyrussell/oh-my-zsh/wiki/Themes#agnoster">agnoster</a>主题，感觉非常入眼。</p>
+
+<p>接下来，编辑<code>~/.zshrc</code>，找到变量<code>ZSH_THEME</code>将其赋值改为<code>agnoster</code>即可。操作完毕，发现离目标很近了：</p>
+
+<p><img src="/images/zsh-font-fault.png"></p>
+
+<p>除了有些字体显示异常，什么鬼？</p>
+
+<h2>字体</h2>
+
+<p>为了显示正常，需要安装<code>powerline</code>字体，方法如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>git clone git@github.com:powerline/fonts.git
+</span><span class='line'>cd fonts
+</span><span class='line'>./install</span></code></pre></td></tr></table></div></figure>
+
+
+<p>然后，在<code>iTerm2-&gt;Preferences-&gt;Profiles-&gt;Text</code>面板中将<code>Non-ASCII Font</code>改成<code>Roboto Mono Powerline</code>，显示就正常了！</p>
+
+<p><img src="/images/iterm2-text.png"></p>
+
+<h1>vim</h1>
+
+<p> <code>vim</code>配置这个话题有点大，包括：代码静态检查、高亮、文件树等等。理论上，通过插件，可以将<code>vim</code>打造成一个<code>IDE</code>，后续有空专门介绍一下。这节聚焦在：<code>vim</code>配色主题。</p>
+
+<p>这里还是使用<code>solarized</code>配色方案：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>mkdir -p ~/.vim/colors
+</span><span class='line'>cd solarized
+</span><span class='line'>cp vim-colors-solarized/colors/solarized.vim ~/.vim/colors/</span></code></pre></td></tr></table></div></figure>
+
+
+<p>编辑<code>~/.vimrc</code>文件，加上：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>syntax enable
+</span><span class='line'>set background=dark
+</span><span class='line'>colorscheme solarized</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样，打开<code>vim</code>看到的就是文件开头图片显示的效果了。</p>
+
+<h1>自动化配置</h1>
+
+<p>如果只在自己的电脑上配置，手工操作一遍是没有问题的。但是，现实是，每个人可能都有多个不同的开发环境：自己的<code>PC</code>、公司的<code>PC</code>、线上的机器等等。每台机器都这样手工配置一遍，繁琐而且容易出错，感觉不敢想。</p>
+
+<p>程序猿是一种有懒癌的动物，一件事情绝不重复做第二遍。如果，可以将以上配置操作脚本化，在一个新的机器环境，跑一下脚本就搞定一切，那多好！这就是我维护一个<code>conf</code>代码仓库的初衷。</p>
+
+<p><code>conf</code>提供一个脚本，<code>install</code>用来按照各种配置。比如，运行以下命令，<code>zsh</code>和<code>vim</code>的配置就安装完毕了。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>cd conf
+</span><span class='line'>./install zsh
+</span><span class='line'>./install vim</span></code></pre></td></tr></table></div></figure>
+
+
+<p>当然了，<code>conf</code>完全是按照我个人的喜好定制的，可能并不适合你。尽管如此，你可以参考它打造属于自己的自动化配置工具。<strong>时间应该用来做有趣的事情，而不是浪费在简单的重复中</strong>。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">陈彦霏</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2016-12-17T21:20:34+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>9:20 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/mac/'>mac</a>, <a class='category' href='/blog/categories/vim/'>vim</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.fasionchan.com/blog/2016/12/17/da-zao-xuan-ku-de-kai-fa-huan-jing/" data-via="fasionchan" data-counturl="http://blog.fasionchan.com/blog/2016/12/17/da-zao-xuan-ku-de-kai-fa-huan-jing/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2016/12/11/geng-you-ya-di-zao-ce-shi-shu-ju/" title="Previous Post: 更优雅地造测试数据">&laquo; 更优雅地造测试数据</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+
+  <section>
+    <h1>评论</h1>
+    <div id="comments" aria-live="polite"><div class="ds-thread" data-thread-key="/blog/2016/12/17/da-zao-xuan-ku-de-kai-fa-huan-jing/" data-title="打造炫酷的开发环境" data-url="http://blog.fasionchan.com/blog/2016/12/17/da-zao-xuan-ku-de-kai-fa-huan-jing/"></div>
+<script type="text/javascript">
+	var duoshuoQuery = {short_name:"fasionchan"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+</script>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2016/12/17/da-zao-xuan-ku-de-kai-fa-huan-jing/">打造炫酷的开发环境</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/12/11/geng-you-ya-di-zao-ce-shi-shu-ju/">更优雅地造测试数据</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/12/09/python-diao-shi-zhong-duan/">Python调试终端</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/12/08/mac-xia-ruby-an-zhuang-xiao-jie/">Mac下Ruby安装小结</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/12/07/shi-yong-gdb-tiao-shi-python-cheng-xu/">使用gdb调试Python程序</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/fasionchan">@fasionchan</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'fasionchan',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 - 陈彦霏 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'fasionchan';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.fasionchan.com/blog/2016/12/17/da-zao-xuan-ku-de-kai-fa-huan-jing/';
+        var disqus_url = 'http://blog.fasionchan.com/blog/2016/12/17/da-zao-xuan-ku-de-kai-fa-huan-jing/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?3478328787268b1d31f689bce95b4e2f";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</body>
+</html>

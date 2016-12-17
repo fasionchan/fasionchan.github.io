@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>fasionchan</title>
+  <title>Linux通用IO模型 - fasionchan</title>
   <meta name="author" content="陈彦霏">
 
   
-  <meta name="description" content="无图无真相，这篇文章的主要目的是打造如下所示的终端开发环境，涉及terminal、shell以及editor等，着重于配色。 ">
+  <meta name="description" content="学习Linux系统编程，文件I/O是一个不错的切入点。首先，日常操作中或多或少都使用过文件，有一定的概念；其次，文件I/O可以由几个最最基础的系统调用完成，降低入门理解难度。 基础系统调用 Linux下I/O操作是通用化的，不仅仅可以用来操作文件输入输出，还可以用来操作管道、FIFO、socket &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://blog.fasionchan.com/">
+  <link rel="canonical" href="http://blog.fasionchan.com/blog/2016/09/17/linux-tong-yong-io-mo-xing/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="fasionchan" type="application/atom+xml">
@@ -64,334 +64,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2016/12/17/da-zao-xuan-ku-de-kai-fa-huan-jing/">打造炫酷的开发环境</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-12-17T21:20:34+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>9:20 pm</span></time>
-        
-        
-           | <a href="/blog/2016/12/17/da-zao-xuan-ku-de-kai-fa-huan-jing/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>无图无真相，这篇文章的主要目的是打造如下所示的终端开发环境，涉及<code>terminal</code>、<code>shell</code>以及<code>editor</code>等，着重于配色。</p>
-
-<p><img src="/images/zsh.png"></p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2016/12/17/da-zao-xuan-ku-de-kai-fa-huan-jing/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2016/12/11/geng-you-ya-di-zao-ce-shi-shu-ju/">更优雅地造测试数据</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-12-11T09:57:52+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>9:57 am</span></time>
-        
-        
-           | <a href="/blog/2016/12/11/geng-you-ya-di-zao-ce-shi-shu-ju/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>开发系统时，经常需要一些伪数据用于测试。举个例子，设计一个学生管理系统，测试注册功能，总需要一些用户信息吧。我猜大部分人都会填：用户<code>aaaa</code>，密码<code>1111</code>，手机号码<code>1111</code>……感觉略无追求~</p>
-
-<p>那么有没有办法造一个看上是真的数据呢？肯定是有的——人是活的嘛~</p>
-
-<p>自己造很累，有没有不需要大脑的方法的？还真有，这就是本文要介绍的一个<code>Python</code>模块——<a href="https://pypi.python.org/pypi/fake-factory">Faker</a>。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2016/12/11/geng-you-ya-di-zao-ce-shi-shu-ju/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2016/12/09/python-diao-shi-zhong-duan/">Python调试终端</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-12-09T18:58:43+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>6:58 pm</span></time>
-        
-        
-           | <a href="/blog/2016/12/09/python-diao-shi-zhong-duan/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>后端服务程序开发运营过程中，难免会遇到一些BUG疑难杂症，是日志输出等调试手段无法定位的。
-如有有一个工具，可以连上服务程序，查询服务中间状态或者修改程序变量，势必加速问题定位及解决。</p>
-
-<p>本模块就是您想要的工具~</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2016/12/09/python-diao-shi-zhong-duan/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2016/12/08/mac-xia-ruby-an-zhuang-xiao-jie/">Mac下Ruby安装小结</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-12-08T22:29:43+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:29 pm</span></time>
-        
-        
-           | <a href="/blog/2016/12/08/mac-xia-ruby-an-zhuang-xiao-jie/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>最近，重新拿起博客，发现已有一年多没有动过的<code>Octopress</code>跑不起来了，囧。并不意外，每次<code>Mac</code>一升级，总有一些东西会挂掉，久而久之习惯了。</p>
-
-<p>如何让<code>Octopress</code>重新跑起来呢？重新看安装文档，大头只是安装一个<code>ruby</code>而已。但是，由于对<code>ruby</code>并不熟悉，中间还是踩了个大坑。因此，有必要记一下，免得以后再犯。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2016/12/08/mac-xia-ruby-an-zhuang-xiao-jie/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2016/12/07/shi-yong-gdb-tiao-shi-python-cheng-xu/">使用gdb调试Python程序</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-12-07T22:51:29+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:51 pm</span></time>
-        
-        
-           | <a href="/blog/2016/12/07/shi-yong-gdb-tiao-shi-python-cheng-xu/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>最近在为一个监控系统开发<code>agent</code>，需要支持<code>Linux</code>、<code>FreeBSD</code>及<code>Windows</code>等操作系统。复杂的线上环境，带来了一系列诡异的问题，尽管代码上线前在为数不少的测试机器验证过。</p>
-
-<p><code>Python</code>程序吐<code>coredump</code>文件怎么办？很多人都会想到<code>gdb</code>加载<code>coredump</code>文件，然后查看信号及堆栈信息，以此分析原因。堆栈信息在调试中非常有用，但是别忘了，你写的是<code>Python</code>代码，但是<code>gdb</code>给你的是<code>C</code>堆栈信息！似乎没啥鸟用！难道要撸<code>Python</code>源码然后分析各种核心数据结构吗？有什么方式可以查看到<code>Python</code>堆栈信息吗？</p>
-
-<p>还遇到过另一个问题，一个<code>Python</code>进程突然间陷入死循环，所有其他线程都调度不到。遇到这种情况，首先可能需要知道死循环到底在干什么。如何获悉呢？可能用<code>strace</code>跟一下系统调用可以看出一点端倪。但是一个堆栈信息更为具体更有说服力，就算是只有<code>C</code>堆栈信息有时也是足以说明问题的。</p>
-
-<p><code>gdb</code>就可以解决以上难题(其实远不止)，接下来，我们一起看看具体要怎么操作吧~</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2016/12/07/shi-yong-gdb-tiao-shi-python-cheng-xu/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2016/11/07/yi-wen-shen-ru-li-jie-linux-tcp-backlog/">[译文]深入理解Linux TCP Backlog</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-11-07T21:57:09+08:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>9:57 pm</span></time>
-        
-        
-           | <a href="/blog/2016/11/07/yi-wen-shen-ru-li-jie-linux-tcp-backlog/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>当应用程序调用<code>listen</code>系统调用让一个<code>socket</code>进入<code>LISTEN</code>状态时，需要指定一个参数<code>backlog</code>。这个<code>backlog</code>参数经常被描述为，新连接队列的长度限制。</p>
-
-<p><img src="http://upload-images.jianshu.io/upload_images/2740477-d1ebcbbc58e3b9f3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="tcp-state-diagram.png" /></p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2016/11/07/yi-wen-shen-ru-li-jie-linux-tcp-backlog/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2016/10/23/zi-ji-fa-bu-python-bao/">自己发布Python包</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-10-23T18:50:04+08:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2016</span></span> <span class='time'>6:50 pm</span></time>
-        
-        
-           | <a href="/blog/2016/10/23/zi-ji-fa-bu-python-bao/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h1>注册</h1>
-
-<p>先在<code>Python</code>官网注册一个账号，地址是：<a href="https://pypi.python.org/pypi">https://pypi.python.org/pypi</a>。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2016/10/23/zi-ji-fa-bu-python-bao/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2016/09/20/linux-wen-jian-miao-shu-fu/">Linux文件描述符</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-09-20T22:16:26+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>20</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>10:16 pm</span></time>
-        
-        
-           | <a href="/blog/2016/09/20/linux-wen-jian-miao-shu-fu/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>在<a href="http://www.jianshu.com/p/5357d72ef17d">Linux通用I/O模型</a>中，<code>I/O</code>操作系列函数(系统调用)都是围绕一个叫做文件描述符的整数展开。这不禁让人产生疑问：这个整数代表什么？一个数值代表一个文件吗？随便传一个整数进去调用可以吗？</p>
-
-<p>解答以上疑问，需要更深入学习——文件描述符(File Descriptor)。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2016/09/20/linux-wen-jian-miao-shu-fu/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2016/09/17/linux-tong-yong-io-mo-xing/">Linux通用IO模型</a></h1>
+      <h1 class="entry-title">Linux通用IO模型</h1>
     
     
       <p class="meta">
@@ -403,14 +81,14 @@
 <time class='entry-date' datetime='2016-09-17T21:54:29+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>9:54 pm</span></time>
         
         
-           | <a href="/blog/2016/09/17/linux-tong-yong-io-mo-xing/#comments">Comments</a>
+           | <a href="#comments">Comments</a>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p>学习<code>Linux</code>系统编程，文件I/O是一个不错的切入点。首先，日常操作中或多或少都使用过文件，有一定的概念；其次，文件I/O可以由几个最最基础的系统调用完成，降低入门理解难度。</p>
+<div class="entry-content"><p>学习<code>Linux</code>系统编程，文件I/O是一个不错的切入点。首先，日常操作中或多或少都使用过文件，有一定的概念；其次，文件I/O可以由几个最最基础的系统调用完成，降低入门理解难度。</p>
 
 <h1>基础系统调用</h1>
 
@@ -634,63 +312,80 @@
 </span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
+  
+
+<span class="byline author vcard">Posted by <span class="fn">陈彦霏</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2016-09-17T21:54:29+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2016</span></span> <span class='time'>9:54 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/io/'>io</a>, <a class='category' href='/blog/categories/linux/'>linux</a>
+  
+</span>
+
+
+    </p>
     
-      <h1 class="entry-title"><a href="/blog/2015/04/11/wei-guan-scrapy-pa-chong-kuang-jia/">围观Scrapy爬虫框架</a></h1>
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.fasionchan.com/blog/2016/09/17/linux-tong-yong-io-mo-xing/" data-via="fasionchan" data-counturl="http://blog.fasionchan.com/blog/2016/09/17/linux-tong-yong-io-mo-xing/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
+
     
-    
-      <p class="meta">
-        
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/04/11/wei-guan-scrapy-pa-chong-kuang-jia/" title="Previous Post: 围观Scrapy爬虫框架">&laquo; 围观Scrapy爬虫框架</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2016/09/20/linux-wen-jian-miao-shu-fu/" title="Next Post: Linux文件描述符">Linux文件描述符 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 
-
-
-<time class='entry-date' datetime='2015-04-11T11:22:24+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>11:22 am</span></time>
-        
-        
-           | <a href="/blog/2015/04/11/wei-guan-scrapy-pa-chong-kuang-jia/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>对于Scrapy这个爬虫框架，先前也是知道有这么个东西存在，仅此而已。最近在面试时，发现很多人写过Python爬虫采集数据，所用的框架几乎都是Scrapy。今天刚好闲着没事做，就来玩玩Scrapy呗。</p>
-
-<h2>简介</h2>
-
-<h2>框架</h2>
-
-<p><img src="/images/scrapy.png"></p>
+  <section>
+    <h1>评论</h1>
+    <div id="comments" aria-live="polite"><div class="ds-thread" data-thread-key="/blog/2016/09/17/linux-tong-yong-io-mo-xing/" data-title="Linux通用IO模型" data-url="http://blog.fasionchan.com/blog/2016/09/17/linux-tong-yong-io-mo-xing/"></div>
+<script type="text/javascript">
+	var duoshuoQuery = {short_name:"fasionchan"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+</script>
+</div>
+  </section>
 
 </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/04/11/wei-guan-scrapy-pa-chong-kuang-jia/">Read on &rarr;</a>
-    </footer>
-  
 
-
-    </article>
-  
-  <div class="pagination">
-    
-      <a class="prev" href="/posts/2">&larr; Older</a>
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
-</div>
 <aside class="sidebar">
   
     <section>
@@ -756,6 +451,7 @@
   
 </aside>
 
+
     </div>
   </div>
   <footer role="contentinfo"><p>
@@ -770,7 +466,10 @@
       var disqus_shortname = 'fasionchan';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.fasionchan.com/blog/2016/09/17/linux-tong-yong-io-mo-xing/';
+        var disqus_url = 'http://blog.fasionchan.com/blog/2016/09/17/linux-tong-yong-io-mo-xing/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

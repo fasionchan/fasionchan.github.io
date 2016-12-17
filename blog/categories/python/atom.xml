@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Python | fasionchan]]></title>
   <link href="http://blog.fasionchan.com/blog/categories/python/atom.xml" rel="self"/>
   <link href="http://blog.fasionchan.com/"/>
-  <updated>2016-12-11T11:47:44+08:00</updated>
+  <updated>2016-12-17T21:42:05+08:00</updated>
   <id>http://blog.fasionchan.com/</id>
   <author>
     <name><![CDATA[陈彦霏]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[更优雅地造测试数据]]></title>
     <link href="http://blog.fasionchan.com/blog/2016/12/11/geng-you-ya-di-zao-ce-shi-shu-ju/"/>
-    <updated>2016-12-11T11:43:52+08:00</updated>
+    <updated>2016-12-11T09:57:52+08:00</updated>
     <id>http://blog.fasionchan.com/blog/2016/12/11/geng-you-ya-di-zao-ce-shi-shu-ju</id>
     <content type="html"><![CDATA[<p>开发系统时，经常需要一些伪数据用于测试。举个例子，设计一个学生管理系统，测试注册功能，总需要一些用户信息吧。我猜大部分人都会填：用户<code>aaaa</code>，密码<code>1111</code>，手机号码<code>1111</code>……感觉略无追求~</p>
 
@@ -38,7 +38,7 @@
 
 <p>生成数据前需要先初始化一个生成器，有两种方式可以完成：①用<code>faker.Factory.create()</code>；②用<code>faker.Faker()</code>。</p>
 
-<pre><code>from faker import Factory
+<pre><code class="python 快速入手">from faker import Factory
 fake = Factory.create()
 
 # OR
@@ -57,7 +57,7 @@ fake.text()
 
 <p>看看自动化的威力！批量生成，每次都是随机的哦！</p>
 
-<pre><code>for _ in range(0, 10):
+<pre><code class="python 批量生成">for _ in range(0, 10):
     print fake.name()
 
 # Adaline Reichel
@@ -78,7 +78,7 @@ fake.text()
 
 <p>但是，重点来了——<code>Faker</code>还支持本地化，真是天地良心！一起来看看怎么生成中文信息吧：</p>
 
-<pre><code>from faker import Factory
+<pre><code class="python 本地化">from faker import Factory
 fake = Factory.create('zh_CN')
 
 for _ in range(0, 10):
@@ -116,7 +116,7 @@ for _ in range(0, 10):
 
 <p><code>Faker</code>已经提供了足够丰富的信息生成，包括名字、手机号、邮箱地址、邮编等等。尽管如此，可能还是没有办法满足你的需求。这时，你可以自己动手，丰衣足食。下面，我们通过一个例子看看怎么扩展<code>Faker</code>的功能吧：</p>
 
-<pre><code>from faker import Faker
+<pre><code class="python 功能扩展">from faker import Faker
 fake = Faker()
 
 # first, import a similar Provider or use the default one
@@ -138,7 +138,7 @@ fake.foo()
 
 <p><code>Faker</code>随机生成由<code>random.Random</code>驱动。其中，<code>.random</code>属性返回<code>random.Random</code>对象。通过对该对象的操作，可以实现自定义的行为。</p>
 
-<pre><code>from faker import Faker
+<pre><code class="python 随机对象">from faker import Faker
 fake = Faker()
 fake.random
 fake.random.getstate()
@@ -146,7 +146,7 @@ fake.random.getstate()
 
 <p>那么，可以实现什么自定义呢？举个例子，我们可以设置<code>seed</code>。<code>seed</code>在随机数生成逻辑中什么作用，估计大家都清楚。比如，通过给定<code>seed</code>可以控制每次生成的内容都是一样的：</p>
 
-<pre><code>from faker import Faker
+<pre><code class="python 设置seed">from faker import Faker
 fake = Faker()
 faker.random.seed(4321)
 print fake.name()
@@ -155,7 +155,7 @@ print fake.name()
 
 <p>还有等价写法哦：</p>
 
-<pre><code>from faker import Faker
+<pre><code class="python 设置seed">from faker import Faker
 fake = Faker()
 fake.seed(4321)
 print fake.name()
@@ -168,7 +168,7 @@ print fake.name()
 
 <p>有时想在<code>shell</code>或者其他程序中生成一些伪数据，是不是一定要写一个<code>Python</code>脚本呢？别急——<code>Faker</code>提供了一个命令行工具，估计可以应对大部分场景了：</p>
 
-<pre><code>$ faker address
+<pre><code class="bash">$ faker address
 968 Bahringer Garden Apt. 722Kristinaland, NJ 09890
 
 $ faker -l de_DE address

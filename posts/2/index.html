@@ -9,7 +9,7 @@
   <meta name="author" content="陈彦霏">
 
   
-  <meta name="description" content="Keep Alive 在某些网络环境下，SSH会话空闲一小段时间后就会断掉。可能是因为中间有个NAT网关，检查到空闲TCP连接后便无情Kill。一暂停操作SSH连接就断实在不能忍！ SSH有个配置选项，每隔一段时间就发一个空包使TCP连接保持活跃，这样连接就不会无故断掉了。这个选项就是： &hellip;">
+  <meta name="description" content="首先，用ulimit -n看看是不是文件描述符设置过小而被打满：发现设置值是65536，这是10000个并发不可能用满的。当然，大部分服务器上都是采用默认配置1024，这时就是罪魁祸首了。 backlog太小 各种可能的原因都查了查了， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +66,98 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/03/27/http-ya-li-ce-shi-qian-zai-wen-ti-ruo-gan/">HTTP压力测试潜在问题若干</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-27T16:56:02+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>27</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:56 pm</span></time>
+        
+        
+           | <a href="/blog/2015/03/27/http-ya-li-ce-shi-qian-zai-wen-ti-ruo-gan/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>首先，用<code>ulimit -n</code>看看是不是文件描述符设置过小而被打满：发现设置值是<code>65536</code>，这是<code>10000</code>个并发不可能用满的。当然，大部分服务器上都是采用默认配置<code>1024</code>，这时就是罪魁祸首了。</p>
+
+<h2>backlog太小</h2>
+
+<p>各种可能的原因都查了查了，最后发现是由于底层套接字调用<code>listen</code>时<code>backlog</code>参数太小造成的！<code>listen</code>系统调用的作用是使TCP套接字进行监听状态，<code>backlog</code>是内核维持请求连接队列的个数限制（不包括已经被accept的连接）。我要测试的WEB接口是用基于<code>tornado</code>框架的，绑定端口时<code>backlog</code>默认参数是<code>128</code>，很快就被<code>10000</code>个请求给压满了，这就是<code>ab</code>各种超时的主要原因！调大这个参数后问题就解决了~</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/03/25/sui-ji-wen-duan-sheng-cheng/">随机文段生成</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-25T20:40:54+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>8:40 pm</span></time>
+        
+        
+           | <a href="/blog/2015/03/25/sui-ji-wen-duan-sheng-cheng/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>我们经常需要拷贝一些文字作为Demo填充，特别是做页面时，每次都到网上去找觉得挺麻烦的。很多时候我们也需要一个随机的信息流，比如模拟后台日志输出。Python下<a href="https://pypi.python.org/pypi/loremipsum/">loremipsum</a>就可以很好地完成这个工作，安装很简单：<code>pip install loremipsum</code>。使用示例如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&gt;&gt;&gt; import loremipsum
+</span><span class='line'>&gt;&gt;&gt; dir(loremipsum)
+</span><span class='line'>['DictionaryError', 'Generator', 'SampleError', '_GENERATOR', '__all__', '__author__', '__builtins__', '__classifiers__', '__copyright__', '__doc__', '__docformat__', '__file__', '__keywords__', '__name__', '__package__', '__path__', '__version__', 'generate_paragraph', 'generate_paragraphs', 'generate_sentence', 'generate_sentences', 'generator', 'get_paragraph', 'get_paragraphs', 'get_sentence', 'get_sentences']
+</span><span class='line'>&gt;&gt;&gt;
+</span><span class='line'>&gt;&gt;&gt; # 生成一个随机句子
+</span><span class='line'>&gt;&gt;&gt; print loremipsum.get_sentence()
+</span><span class='line'>Purus neque fames vivamus.
+</span><span class='line'>&gt;&gt;&gt;
+</span><span class='line'>&gt;&gt;&gt; # 生成一个随机段落
+</span><span class='line'>&gt;&gt;&gt; print loremipsum.get_paragraph(10)
+</span><span class='line'>Lorem ipsum. Vitae massa aenean mi pulvinar montes tortor felis feugiat. Morbi risus. Etiam class tortor parturient volutpat dolor a integer mollis. Neque felis. Fusce ipsum massa dui purus penatibus phasellus fusce phasellus cursus. Felis augue nunc egestas natoque dictum dolor mus. Massa metus donec eni nibh habitasse ut tortor mi orci aliquet risus in. Lorem augue per tellus convallis facilisi eu purus suspendisse. Velit purus sem felis tincidunt cras. Fusce neque luctus magnis fusce. Class dolor egestas hac eleifend tincidunt. Lacus neque ligula sollicitudin facilisis tortor inceptos non id nunc.</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -248,6 +340,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2016/12/17/da-zao-xuan-ku-de-kai-fa-huan-jing/">打造炫酷的开发环境</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/12/11/geng-you-ya-di-zao-ce-shi-shu-ju/">更优雅地造测试数据</a>
       </li>
     
@@ -261,10 +357,6 @@
     
       <li class="post">
         <a href="/blog/2016/12/07/shi-yong-gdb-tiao-shi-python-cheng-xu/">使用gdb调试Python程序</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/11/07/yi-wen-shen-ru-li-jie-linux-tcp-backlog/">[译文]深入理解Linux TCP Backlog</a>
       </li>
     
   </ul>
