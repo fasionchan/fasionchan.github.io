@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://blog.fasionchan.com/blog/2017/03/09/yi-wen-mongodb-wiredtiger-yin-qing-tiao-you-ji-qiao/</loc>
+    <lastmod>2017-03-09T18:44:40+08:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>http://blog.fasionchan.com/blog/2016/12/17/da-zao-xuan-ku-de-kai-fa-huan-jing/</loc>
     <lastmod>2016-12-17T21:20:34+08:00</lastmod>
     <priority>0.8</priority>
@@ -82,25 +87,25 @@
   </url>
   <url>
     <loc>http://blog.fasionchan.com/blog/archives/</loc>
-    <lastmod>2016-12-17T21:42:05+08:00</lastmod>
+    <lastmod>2017-03-09T18:58:12+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://blog.fasionchan.com/</loc>
-    <lastmod>2016-12-17T21:42:05+08:00</lastmod>
+    <lastmod>2017-03-09T18:58:12+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>http://blog.fasionchan.com/books/</loc>
-    <lastmod>2016-12-17T21:42:05+08:00</lastmod>
+    <lastmod>2017-03-09T18:58:12+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://blog.fasionchan.com/me/</loc>
-    <lastmod>2016-12-17T21:42:05+08:00</lastmod>
+    <lastmod>2017-03-09T18:58:12+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>

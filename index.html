@@ -9,7 +9,9 @@
   <meta name="author" content="陈彦霏">
 
   
-  <meta name="description" content="无图无真相，这篇文章的主要目的是打造如下所示的终端开发环境，涉及terminal、shell以及editor等，着重于配色。 ">
+  <meta name="description" content="MongoDB从3.0开始引入可插拔存储引擎的概念。
+当前，有不少存储引擎可供选择：MMAPV1、WiredTiger、MongoRocks、TokuSE等等。
+每个存储引擎都有自己的优势，你需要根据性能要求及应用特征挑选最适合的一个。 从3.2.x开始，WiredTiger成为默认的存储引擎。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +68,57 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2017/03/09/yi-wen-mongodb-wiredtiger-yin-qing-tiao-you-ji-qiao/">【译文】MongoDB WiredTiger引擎调优技巧</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2017-03-09T18:44:40+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2017</span></span> <span class='time'>6:44 pm</span></time>
+        
+        
+           | <a href="/blog/2017/03/09/yi-wen-mongodb-wiredtiger-yin-qing-tiao-you-ji-qiao/#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><code>MongoDB</code>从<code>3.0</code>开始引入可插拔存储引擎的概念。
+当前，有不少存储引擎可供选择：<code>MMAPV1</code>、<code>WiredTiger</code>、<code>MongoRocks</code>、<code>TokuSE</code>等等。
+每个存储引擎都有自己的优势，你需要根据性能要求及应用特征挑选最适合的一个。</p>
+
+<p>从<code>3.2.x</code>开始，<code>WiredTiger</code>成为默认的存储引擎。
+最为<code>MongoDB</code>目前最流行的存储引擎，<code>WiredTiger</code>与原先的<code>MMAPV1</code>相比有以下优势：</p>
+
+<ul>
+<li><strong>性能&amp;并发</strong>：在大多数工作负载下，<code>WiredTiger</code>的性能要比<code>MMAPV1</code>高很多。
+<code>WiredTiger</code>引擎为现代多核系统量身定制，更好地发挥多核系统的处理能力。
+<code>MMAPV1</code>引擎使用表级锁，因此，当某个单表上有并发的操作，吞吐将受到限制。
+<code>WiredTiger</code>使用文档级锁，由此带来并发及吞吐的提高。
+对于典型的应用，切到<code>WiredTiger</code>引擎，可带来5-10倍的性能提升。</li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2017/03/09/yi-wen-mongodb-wiredtiger-yin-qing-tiao-you-ji-qiao/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -416,267 +469,11 @@
 
 <p><code>Linux</code>下<code>I/O</code>操作是通用化的，不仅仅可以用来操作文件输入输出，还可以用来操作管道、<code>FIFO</code>、<code>socket</code>、终端设备等。将设备抽象成一个文件，用<code>I/O</code>操作控制设备是类<code>Unix</code>系统一大特色。</p>
 
-<p>最最基础的<code>I/O</code>操作系统调用包括：</p>
-
-<ul>
-<li><strong>fd = open(pathname, flags, mode)</strong></li>
-<li><strong>rlen = read(fd, buf, count)</strong></li>
-<li><strong>wlen = write(fd, buf, count)</strong></li>
-<li><strong>status = close(fd)</strong></li>
-</ul>
-
-
-<p>注意到，相关系统调用都围绕文件描述符<code>fd</code>展开。文件描述符在下节详细介绍。</p>
-
-<p>另外，需要特别提示一下，系统调用函数接口（其实是库函数封装）可以通过<code>man</code>命令查看详细的参数、返回值及用法说明。比如，终端下运行<code>man read</code>，就可以看到<code>read</code>这个系统调用的相关文档说明：</p>
-
-<p><img src="http://upload-images.jianshu.io/upload_images/2740477-bb2610e81244463b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="man open" /></p>
-
-<h1>文件描述符</h1>
-
-<p><code>I/O</code>操作系统调用都以文件描述符(一个非负整数)，指代打开的文件。每个进程都有一个打开文件表，可以理解成一个数组，文件描述符可以理解成数组的下标。相关<code>I/O</code>操作系统调用以文件描述符为参数，便可以通过数组访问定位到指定的文件对象，进而进行<code>I/O</code>操作。</p>
-
-<p>一般情况下，进程的标准输入输出由3个特定的文件描述符指定，列举如下：</p>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">文件描述符</th>
-<th style="text-align:left;">用途</th>
-<th style="text-align:left;">POSIX名称</th>
-<th style="text-align:left;">stdio流</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">0</td>
-<td style="text-align:left;">标准输入</td>
-<td style="text-align:left;">STDIN_FILENO</td>
-<td style="text-align:left;">stdin</td>
-</tr>
-<tr>
-<td style="text-align:left;">1</td>
-<td style="text-align:left;">标准输出</td>
-<td style="text-align:left;">STDOUT_FILENO</td>
-<td style="text-align:left;">stdout</td>
-</tr>
-<tr>
-<td style="text-align:left;">2</td>
-<td style="text-align:left;">标准错误</td>
-<td style="text-align:left;">STDERR_FILENO</td>
-<td style="text-align:left;">stderr</td>
-</tr>
-</tbody>
-</table>
-
-
-<p>正常情况下，程序在开始运行之前，由<code>shell</code>准备好这3个文件描述符。更准确的说法是，程序继承了<code>shell</code>文件描述符的副本，一般是指向<code>shell</code>所在的终端。当然了，可以通过在<code>shell</code>中对输入/输出进行重定向或者在程序启动后关闭并重新打开文件描述符，修改文件描述符指向。</p>
-
-<h1>实战案例</h1>
-
-<h2>读文件</h2>
-
-<p>首先，通过一个例子，探索一下如何通过<code>I/O</code>操作系统调用读取文件内容并输出：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>#include &lt;stdio.h&gt;
-</span><span class='line'>#include &lt;fcntl.h&gt;
-</span><span class='line'>
-</span><span class='line'>int
-</span><span class='line'>main(int argc, char *argv[])
-</span><span class='line'>{
-</span><span class='line'>    // 打开文件
-</span><span class='line'>    int fd = open("a.txt", O_RDONLY);
-</span><span class='line'>    if (-1 == fd)
-</span><span class='line'>    {
-</span><span class='line'>        perror("fail to open a.txt");
-</span><span class='line'>        return -1;
-</span><span class='line'>    }
-</span><span class='line'>
-</span><span class='line'>    // 准备缓冲区并读文件
-</span><span class='line'>    char buf[1024];
-</span><span class='line'>    int rlen = read(fd, buf, sizeof(buf)-1);
-</span><span class='line'>    if (-1 == rlen)
-</span><span class='line'>    {
-</span><span class='line'>        perror("fail to read a.txt");
-</span><span class='line'>        return -2;
-</span><span class='line'>    }
-</span><span class='line'>
-</span><span class='line'>    // 输出内容
-</span><span class='line'>    buf[rlen] = '\0';
-</span><span class='line'>    printf("read %d bytes, which is:\n", rlen);
-</span><span class='line'>    printf("%s\n", buf);
-</span><span class='line'>
-</span><span class='line'>    // 关闭文件
-</span><span class='line'>    int status = close(fd);
-</span><span class='line'>    if (-1 == status)
-</span><span class='line'>    {
-</span><span class='line'>        perror("fail to close a.txt");
-</span><span class='line'>        return -3;
-</span><span class='line'>    }
-</span><span class='line'>
-</span><span class='line'>    return 0;
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>写文件</h2>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>#include &lt;stdio.h&gt;
-</span><span class='line'>#include &lt;string.h&gt;
-</span><span class='line'>#include &lt;fcntl.h&gt;
-</span><span class='line'>
-</span><span class='line'>int
-</span><span class='line'>main(int argc, char *argv[])
-</span><span class='line'>{
-</span><span class='line'>    // 打开文件
-</span><span class='line'>    int fd = open("a.txt", O_WRONLY);
-</span><span class='line'>    if (-1 == fd)
-</span><span class='line'>    {
-</span><span class='line'>        perror("fail to open a.txt");
-</span><span class='line'>        return -1;
-</span><span class='line'>    }
-</span><span class='line'>
-</span><span class='line'>    // 准备数据并写到文件
-</span><span class='line'>    char data[] = "hello, this is line written by write syscall\n";
-</span><span class='line'>    int wlen = write(fd, data, strlen(data));
-</span><span class='line'>    if (-1 == wlen)
-</span><span class='line'>    {
-</span><span class='line'>        perror("fail to read a.txt");
-</span><span class='line'>        return -2;
-</span><span class='line'>    }
-</span><span class='line'>
-</span><span class='line'>    // 输出成功写入字节数
-</span><span class='line'>    printf("write %d bytes of %d total\n", wlen, strlen(data));
-</span><span class='line'>
-</span><span class='line'>    // 关闭文件
-</span><span class='line'>    int status = close(fd);
-</span><span class='line'>    if (-1 == status)
-</span><span class='line'>    {
-</span><span class='line'>        perror("fail to close a.txt");
-</span><span class='line'>        return -3;
-</span><span class='line'>    }
-</span><span class='line'>
-</span><span class='line'>    return 0;
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2015/04/11/wei-guan-scrapy-pa-chong-kuang-jia/">围观Scrapy爬虫框架</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-04-11T11:22:24+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>11:22 am</span></time>
-        
-        
-           | <a href="/blog/2015/04/11/wei-guan-scrapy-pa-chong-kuang-jia/#comments">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>对于Scrapy这个爬虫框架，先前也是知道有这么个东西存在，仅此而已。最近在面试时，发现很多人写过Python爬虫采集数据，所用的框架几乎都是Scrapy。今天刚好闲着没事做，就来玩玩Scrapy呗。</p>
-
-<h2>简介</h2>
-
-<h2>框架</h2>
-
-<p><img src="/images/scrapy.png"></p>
-
 </div>
   
   
     <footer>
-      <a rel="full-article" href="/blog/2015/04/11/wei-guan-scrapy-pa-chong-kuang-jia/">Read on &rarr;</a>
+      <a rel="full-article" href="/blog/2016/09/17/linux-tong-yong-io-mo-xing/">Read on &rarr;</a>
     </footer>
   
 
@@ -698,6 +495,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2017/03/09/yi-wen-mongodb-wiredtiger-yin-qing-tiao-you-ji-qiao/">【译文】MongoDB WiredTiger引擎调优技巧</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2016/12/17/da-zao-xuan-ku-de-kai-fa-huan-jing/">打造炫酷的开发环境</a>
       </li>
     
@@ -711,10 +512,6 @@
     
       <li class="post">
         <a href="/blog/2016/12/08/mac-xia-ruby-an-zhuang-xiao-jie/">Mac下Ruby安装小结</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/12/07/shi-yong-gdb-tiao-shi-python-cheng-xu/">使用gdb调试Python程序</a>
       </li>
     
   </ul>
@@ -759,7 +556,7 @@
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2016 - 陈彦霏 -
+  Copyright &copy; 2017 - 陈彦霏 -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Linux | fasionchan]]></title>
   <link href="http://blog.fasionchan.com/blog/categories/linux/atom.xml" rel="self"/>
   <link href="http://blog.fasionchan.com/"/>
-  <updated>2016-12-17T21:42:05+08:00</updated>
+  <updated>2017-03-09T18:58:12+08:00</updated>
   <id>http://blog.fasionchan.com/</id>
   <author>
     <name><![CDATA[陈彦霏]]></name>
@@ -228,6 +228,9 @@
 <h1>基础系统调用</h1>
 
 <p><code>Linux</code>下<code>I/O</code>操作是通用化的，不仅仅可以用来操作文件输入输出，还可以用来操作管道、<code>FIFO</code>、<code>socket</code>、终端设备等。将设备抽象成一个文件，用<code>I/O</code>操作控制设备是类<code>Unix</code>系统一大特色。</p>
+
+<!--more-->
+
 
 <p>最最基础的<code>I/O</code>操作系统调用包括：</p>
 

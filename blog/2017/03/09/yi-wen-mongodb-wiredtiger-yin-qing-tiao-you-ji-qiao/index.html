@@ -1,0 +1,476 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>【译文】MongoDB WiredTiger引擎调优技巧 - fasionchan</title>
+  <meta name="author" content="陈彦霏">
+
+  
+  <meta name="description" content="MongoDB从3.0开始引入可插拔存储引擎的概念。
+当前，有不少存储引擎可供选择：MMAPV1、WiredTiger、MongoRocks、TokuSE等等。
+每个存储引擎都有自己的优势，你需要根据性能要求及应用特征挑选最适合的一个。 从3.2.x开始，WiredTiger成为默认的存储引擎。 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://blog.fasionchan.com/blog/2017/03/09/yi-wen-mongodb-wiredtiger-yin-qing-tiao-you-ji-qiao/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="fasionchan" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//cdn.staticfile.org/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">fasionchan</a></h1>
+  
+    <h2>读万卷书，行万里路，品万味肴，撸万行码。</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="blog.fasionchan.com">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/books">Books</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">【译文】MongoDB WiredTiger引擎调优技巧</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2017-03-09T18:44:40+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2017</span></span> <span class='time'>6:44 pm</span></time>
+        
+        
+           | <a href="#comments">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p><code>MongoDB</code>从<code>3.0</code>开始引入可插拔存储引擎的概念。
+当前，有不少存储引擎可供选择：<code>MMAPV1</code>、<code>WiredTiger</code>、<code>MongoRocks</code>、<code>TokuSE</code>等等。
+每个存储引擎都有自己的优势，你需要根据性能要求及应用特征挑选最适合的一个。</p>
+
+<p>从<code>3.2.x</code>开始，<code>WiredTiger</code>成为默认的存储引擎。
+最为<code>MongoDB</code>目前最流行的存储引擎，<code>WiredTiger</code>与原先的<code>MMAPV1</code>相比有以下优势：</p>
+
+<ul>
+<li><strong>性能&amp;并发</strong>：在大多数工作负载下，<code>WiredTiger</code>的性能要比<code>MMAPV1</code>高很多。
+<code>WiredTiger</code>引擎为现代多核系统量身定制，更好地发挥多核系统的处理能力。
+<code>MMAPV1</code>引擎使用表级锁，因此，当某个单表上有并发的操作，吞吐将受到限制。
+<code>WiredTiger</code>使用文档级锁，由此带来并发及吞吐的提高。
+对于典型的应用，切到<code>WiredTiger</code>引擎，可带来5-10倍的性能提升。</li>
+</ul>
+
+
+<!--more-->
+
+
+<ul>
+<li><p><strong>压缩&amp;加密</strong>：<code>MMAPV1</code>引擎要求数据在内存和在磁盘的形式一致(map磁盘内存映射)。
+因此，它并不支持压缩和加密。<code>WiredTiger</code>并没有这层限制，可以更好地支持。</p></li>
+<li><p><strong>索引前缀压缩</strong>：<code>WiredTiger</code>存储索引时使用前缀压缩——相同的前缀只存一次。
+由此带来的效果是：索引更小了，对物理内存使用也更少了。</p></li>
+</ul>
+
+
+<p>接下来，我会展示几个用来调优<code>WiredTiger</code>引擎性能的关键参数。</p>
+
+<h1>调优Cache Size</h1>
+
+<p><code>WiredTiger</code>最重要的调优参数就是<code>cache</code>规模。
+默认，<code>MongoDB</code>从<code>3.x</code>开始会保留可用物理内存的50%(<code>3.2</code>是60%)作为数据<code>cache</code>。
+虽然，默认的设置可以应对大部分的应用，通过调节为特定应用找到最佳配置值还是非常值得的。
+<code>cache</code>的规模必须足够大，以便保存应用整个工作集(working set)。</p>
+
+<p>除了这个<code>cache</code>，<code>MongoDB</code>在做诸如聚合、排序、连接管理等操作时需要额外的内存。
+因此，必须确保有足够的内存可供使用，否则，<code>MongoDB</code>进程有被<code>OOM killer</code>杀死的风险。</p>
+
+<p>调节这个参数，首先要理解在默认配置下，<code>cache</code>的使用情况。运行以下命令，可以获得<code>cache</code>统计：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>db.serverStatus().wiredTiger.cache</span></code></pre></td></tr></table></div></figure>
+
+
+<p>命令输出结果例子如下：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{
+</span><span class='line'>   "tracked dirty bytes in the cache" : 409861,
+</span><span class='line'>   "tracked bytes belonging to internal pages in the cache" : 738956332,
+</span><span class='line'>   "bytes currently in the cache" : 25769360777,
+</span><span class='line'>   "tracked bytes belonging to leaf pages in the cache" : 31473298388,
+</span><span class='line'>   "maximum bytes configured" : 32212254720,
+</span><span class='line'>   "tracked bytes belonging to overflow pages in the cache" : 0,
+</span><span class='line'>   "bytes read into cache" : 29628550664,
+</span><span class='line'>   "bytes written from cache" : 34634778285,
+</span><span class='line'>   "pages evicted by application threads" : 0,
+</span><span class='line'>   "checkpoint blocked page eviction" : 102,
+</span><span class='line'>   "unmodified pages evicted" : 333277,
+</span><span class='line'>   "page split during eviction deepened the tree" : 0,
+</span><span class='line'>   "modified pages evicted" : 437117,
+</span><span class='line'>   "pages selected for eviction unable to be evicted" : 44825,
+</span><span class='line'>   "pages evicted because they exceeded the in-memory maximum" : 74,
+</span><span class='line'>   "pages evicted because they had chains of deleted items" : 33725,
+</span><span class='line'>   "failed eviction of pages that exceeded the in-memory maximum" : 1518,
+</span><span class='line'>   "hazard pointer blocked page eviction" : 34814,
+</span><span class='line'>   "internal pages evicted" : 21623,
+</span><span class='line'>   "maximum page size at eviction" : 10486876,
+</span><span class='line'>   "eviction server candidate queue empty when topping up" : 8235,
+</span><span class='line'>   "eviction server candidate queue not empty when topping up" : 3020,
+</span><span class='line'>   "eviction server evicting pages" : 191708,
+</span><span class='line'>   "eviction server populating queue, but not evicting pages" : 2996,
+</span><span class='line'>   "eviction server unable to reach eviction goal" : 0,
+</span><span class='line'>   "pages split during eviction" : 8821,
+</span><span class='line'>   "pages walked for eviction" : 157970002,
+</span><span class='line'>   "eviction worker thread evicting pages" : 563015,
+</span><span class='line'>   "in-memory page splits" : 52,
+</span><span class='line'>   "percentage overhead" : 8,
+</span><span class='line'>   "tracked dirty pages in the cache" : 9,
+</span><span class='line'>   "pages currently held in the cache" : 1499798,
+</span><span class='line'>   "pages read into cache" : 2260232,
+</span><span class='line'>   "pages written from cache" : 3018846
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>第一个要关注的数值试，<code>cache</code>中脏数据的百分比。
+如果这个百分比比较高，那么调大<code>cache</code>规模很有可能可以提升性能。
+如果应用是重读的，可再关注<code>bytes read into cache</code>这个指标。
+如果这个指标比较高，那么调大<code>cache</code>规模很有可能可以提升读性能。</p>
+
+<p>调节<code>cache</code>规模不一定非得重启服务，我们可以动态调整：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>db.adminCommand( { "setParameter": 1, "wiredTigerEngineRuntimeConfig": "cache_size=xxG"})</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果你想让调整在重启后也有效，那么你需要将配置文件也相应调整一下。</p>
+
+<h1>控制Read/Write Tickets</h1>
+
+<p>WiredTiger使用<code>tickets</code>来控制可以同时被存储引擎处理的读/写操作数。
+默认值是128，在大部分情况下表现良好。
+如果这个值经常掉到0，所有后续操作将会被排队等待。
+例如，观察到读<code>tickets</code>下降，系统可能有大量长耗时的操作(未索引操作)。
+如果你想找出有哪些慢操作，可以用一些第三方工具。
+你可以根据系统需要和性能影响上下调节<code>tickets</code>。</p>
+
+<p>运行以下命令可以确认<code>tickets</code>的使用情况：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>db.serverStatus().wiredTiger.concurrentTransactions</span></code></pre></td></tr></table></div></figure>
+
+
+<p>下面是一个输出例子：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{
+</span><span class='line'>   "write" : {
+</span><span class='line'>      "out" : 0,
+</span><span class='line'>      "available" : 128,
+</span><span class='line'>      "totalTickets" : 128
+</span><span class='line'>   },
+</span><span class='line'>   "read" : {
+</span><span class='line'>      "out" : 3,
+</span><span class='line'>      "available" : 128,
+</span><span class='line'>      "totalTickets" : 128
+</span><span class='line'>   }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>同样，可以动态调节<code>tickets</code>：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>db.adminCommand( { setParameter: 1, wiredTigerConcurrentReadTransactions: xx } )
+</span><span class='line'>db.adminCommand( { setParameter: 1, wiredTigerConcurrentWriteTransactions: xx } )</span></code></pre></td></tr></table></div></figure>
+
+
+<p>一旦做出调整，注意要观察系统的性能监控确保影响是符合预期的。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">陈彦霏</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2017-03-09T18:44:40+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2017</span></span> <span class='time'>6:44 pm</span></time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="//twitter.com/share" class="twitter-share-button" data-url="http://blog.fasionchan.com/blog/2017/03/09/yi-wen-mongodb-wiredtiger-yin-qing-tiao-you-ji-qiao/" data-via="fasionchan" data-counturl="http://blog.fasionchan.com/blog/2017/03/09/yi-wen-mongodb-wiredtiger-yin-qing-tiao-you-ji-qiao/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2016/12/17/da-zao-xuan-ku-de-kai-fa-huan-jing/" title="Previous Post: 打造炫酷的开发环境">&laquo; 打造炫酷的开发环境</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+
+  <section>
+    <h1>评论</h1>
+    <div id="comments" aria-live="polite"><div class="ds-thread" data-thread-key="/blog/2017/03/09/yi-wen-mongodb-wiredtiger-yin-qing-tiao-you-ji-qiao/" data-title="【译文】MongoDB WiredTiger引擎调优技巧" data-url="http://blog.fasionchan.com/blog/2017/03/09/yi-wen-mongodb-wiredtiger-yin-qing-tiao-you-ji-qiao/"></div>
+<script type="text/javascript">
+	var duoshuoQuery = {short_name:"fasionchan"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+</script>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2017/03/09/yi-wen-mongodb-wiredtiger-yin-qing-tiao-you-ji-qiao/">【译文】MongoDB WiredTiger引擎调优技巧</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/12/17/da-zao-xuan-ku-de-kai-fa-huan-jing/">打造炫酷的开发环境</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/12/11/geng-you-ya-di-zao-ce-shi-shu-ju/">更优雅地造测试数据</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/12/09/python-diao-shi-zhong-duan/">Python调试终端</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/12/08/mac-xia-ruby-an-zhuang-xiao-jie/">Mac下Ruby安装小结</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/fasionchan">@fasionchan</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'fasionchan',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2017 - 陈彦霏 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'fasionchan';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.fasionchan.com/blog/2017/03/09/yi-wen-mongodb-wiredtiger-yin-qing-tiao-you-ji-qiao/';
+        var disqus_url = 'http://blog.fasionchan.com/blog/2017/03/09/yi-wen-mongodb-wiredtiger-yin-qing-tiao-you-ji-qiao/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = '//platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?3478328787268b1d31f689bce95b4e2f";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</body>
+</html>
