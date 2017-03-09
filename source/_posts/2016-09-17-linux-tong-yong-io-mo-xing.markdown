@@ -4,6 +4,7 @@ title: "Linux通用IO模型"
 date: 2016-09-17 21:54:29 +0800
 comments: true
 categories: Linux IO
+keywords: linux,syscall,io,系统调用
 ---
 
 学习`Linux`系统编程，文件I/O是一个不错的切入点。首先，日常操作中或多或少都使用过文件，有一定的概念；其次，文件I/O可以由几个最最基础的系统调用完成，降低入门理解难度。
@@ -11,6 +12,8 @@ categories: Linux IO
 # 基础系统调用
 
 `Linux`下`I/O`操作是通用化的，不仅仅可以用来操作文件输入输出，还可以用来操作管道、`FIFO`、`socket`、终端设备等。将设备抽象成一个文件，用`I/O`操作控制设备是类`Unix`系统一大特色。
+
+<!--more-->
 
 最最基础的`I/O`操作系统调用包括：
 

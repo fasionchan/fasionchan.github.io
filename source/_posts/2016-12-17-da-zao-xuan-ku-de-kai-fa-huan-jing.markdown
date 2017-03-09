@@ -3,7 +3,8 @@ layout: post
 title: "打造炫酷的开发环境"
 date: 2016-12-17 21:20:34 +0800
 comments: true
-categories: Mac Vim
+categories: Mac Vim Zsh
+keywords: iterm2,solarized,vim,mac,zsh,oh-my-zsh
 ---
 
 无图无真相，这篇文章的主要目的是打造如下所示的终端开发环境，涉及`terminal`、`shell`以及`editor`等，着重于配色。
