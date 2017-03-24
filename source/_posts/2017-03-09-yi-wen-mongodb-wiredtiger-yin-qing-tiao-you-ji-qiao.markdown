@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "【译文】MongoDB WiredTiger引擎调优技巧"
+title: "[译文]MongoDB WiredTiger引擎调优技巧"
 date: 2017-03-09 18:44:40 +0800
 comments: true
 categories: MongoDB WiredTiger
