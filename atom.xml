@@ -4,7 +4,7 @@
   <title><![CDATA[fasionchan]]></title>
   <link href="http://blog.fasionchan.com/atom.xml" rel="self"/>
   <link href="http://blog.fasionchan.com/"/>
-  <updated>2017-06-08T13:06:01+08:00</updated>
+  <updated>2017-06-14T11:46:31+08:00</updated>
   <id>http://blog.fasionchan.com/</id>
   <author>
     <name><![CDATA[陈彦霏]]></name>
@@ -12,6 +12,286 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Linux内核模块]]></title>
+    <link href="http://blog.fasionchan.com/blog/2017/06/14/linux-nei-he-mo-kuai/"/>
+    <updated>2017-06-14T11:37:33+08:00</updated>
+    <id>http://blog.fasionchan.com/blog/2017/06/14/linux-nei-he-mo-kuai</id>
+    <content type="html"><![CDATA[<p>Linux内核管理着一台计算机的所有资源，为上层应用程序提供统一的编程接口(系统调用)，屏蔽底层设备的差异。
+由于不同用户物理设备以及对内核功能需求的差异性，需要一种类似插件的运行机制——编写插件实现所需功能，然后嵌入到内核中，与内核形成一个整体。</p>
+
+<p><strong>Linux内核模块</strong>便是这样的插件。作为Linux内核的扩展手段，可以在运行时动态加载和卸载。
+那么，一个内核模块是怎么编写的呢？与普通程序编写有什么区别呢？</p>
+
+<p>程序开发经常以<code>hello world</code>程序入门，因为这是最简单的。
+本文也通过一个最简单的内核模块，演示如何一步步编写一个内核模块。</p>
+
+<!--more-->
+
+
+<h1>结构</h1>
+
+<p>内核模块与普通程序不同，没有执行流。
+可以这样理解，内核模块实现一些函数，作为回调函数注册到内核中。
+在内核加载/卸载时，或者其他应用程序调用系统调用时，注册的回调函数才得到调用。</p>
+
+<p>有两个最基本的回调函数<code>init</code>和<code>exit</code>，分别由<code>module_init</code>和<code>module_exit</code>登记，分别在模块加载和卸载的时候执行。
+下面实现的<code>hello world</code>内核模块，将只实现这两个最基本的函数。</p>
+
+<p>内核模块支持参数，用户借此控制内核模块的行为。
+参数有默认值，可以在加载时指定，也可以在通过<code>proc</code>伪文件系统等手段动态修改。</p>
+
+<p>此外，内核模块还需要带一些描述信息，包括许可证、作者、描述以及版本等等。
+描述信息由<code>MODULE_</code>系列宏指定，<code>modinfo</code>等命令可以展示这些信息。</p>
+
+<h1>编码</h1>
+
+<p>开干了！新建一个文件，<code>hello.c</code>用于实现一个玩具型内核模块——<code>hello</code>模块。</p>
+
+<p><code>hello</code>模块只实现<code>init</code>和<code>exit</code>函数，分别在加载和卸载时往内核日志输出一条记录。
+同时，也演示了参数的使用方式——通过参数控制日志输出内容。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * FileName:   hello.c</span>
+</span><span class='line'><span class="cm"> * Author:     Chen Yanfei</span>
+</span><span class='line'><span class="cm"> * @contact:   fasionchan@gmail.com</span>
+</span><span class='line'><span class="cm"> * @version:   $Id$</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> * Description:</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> * Changelog:</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> **/</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 引入相关内核头文件</span>
+</span><span class='line'><span class="cp">#include &lt;linux/module.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 内核模块信息，包括许可证、作者、描述和版本等</span>
+</span><span class='line'><span class="n">MODULE_LICENSE</span><span class="p">(</span><span class="s">&quot;GPL&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="n">MODULE_AUTHOR</span><span class="p">(</span><span class="s">&quot;Fasion Chan&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="n">MODULE_DESCRIPTION</span><span class="p">(</span><span class="s">&quot;An hello worlk module for demonstration&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="n">MODULE_VERSION</span><span class="p">(</span><span class="s">&quot;1.0&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 内核模块参数，加载时指定或者动态指定，以此控制模块行为</span>
+</span><span class='line'><span class="k">static</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span> <span class="o">=</span> <span class="s">&quot;world&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="n">module_param</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">charp</span><span class="p">,</span> <span class="n">S_IRUGO</span><span class="p">);</span>
+</span><span class='line'><span class="n">MODULE_PARM_DESC</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;Whom this module say hello to&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 初始化函数，在加载时调用，分配资源准备执行环境</span>
+</span><span class='line'><span class="c1">// 这里只是往内核日志输出一行记录</span>
+</span><span class='line'><span class="k">static</span> <span class="kt">int</span> <span class="n">__init</span> <span class="nf">hello_init</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">&quot;HELLO: Hello %s, this is hello module speaking</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 清理函数，在卸载时调用，回收资源销毁执行环境</span>
+</span><span class='line'><span class="k">static</span> <span class="kt">void</span> <span class="n">__exit</span> <span class="nf">hello_exit</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">printk</span><span class="p">(</span><span class="n">KERN_INFO</span> <span class="s">&quot;HELLO: Goodbye %s&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// 登记初始化函数及清理函数</span>
+</span><span class='line'><span class="n">module_init</span><span class="p">(</span><span class="n">hello_init</span><span class="p">);</span>
+</span><span class='line'><span class="n">module_exit</span><span class="p">(</span><span class="n">hello_exit</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>编译</h1>
+
+<p>内核模块代码已经写好了，怎样知道写得对不对呢？编译运行一下不就知道了？
+可问题是如何编译呢？跟普通程序一样吗？用<code>gcc</code>来编译？</p>
+
+<p>没错，内核模块用<code>gcc</code>来编译，但不会直接运行<code>gcc</code>。
+我们需要先准备一个<code>Makefile</code>，内容如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">obj</span><span class="o">-</span><span class="n">m</span><span class="o">+=</span><span class="n">hello</span><span class="p">.</span><span class="n">o</span>
+</span><span class='line'>
+</span><span class='line'><span class="nl">all</span><span class="p">:</span>
+</span><span class='line'>  <span class="n">make</span> <span class="o">-</span><span class="n">C</span> <span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">modules</span><span class="o">/</span><span class="err">$</span><span class="p">(</span><span class="n">shell</span> <span class="n">uname</span> <span class="o">-</span><span class="n">r</span><span class="p">)</span><span class="o">/</span><span class="n">build</span><span class="o">/</span> <span class="n">M</span><span class="o">=</span><span class="err">$</span><span class="p">(</span><span class="n">PWD</span><span class="p">)</span> <span class="n">modules</span>
+</span><span class='line'>
+</span><span class='line'><span class="nl">clean</span><span class="p">:</span>
+</span><span class='line'>  <span class="n">make</span> <span class="o">-</span><span class="n">C</span> <span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">modules</span><span class="o">/</span><span class="err">$</span><span class="p">(</span><span class="n">shell</span> <span class="n">uname</span> <span class="o">-</span><span class="n">r</span><span class="p">)</span><span class="o">/</span><span class="n">build</span><span class="o">/</span> <span class="n">M</span><span class="o">=</span><span class="err">$</span><span class="p">(</span><span class="n">PWD</span><span class="p">)</span> <span class="n">modules</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>好了之后，我们再命令行下运行<code>make</code>即可：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="err">$</span> <span class="n">ls</span>
+</span><span class='line'><span class="n">hello</span><span class="p">.</span><span class="n">c</span>  <span class="n">Makefile</span>
+</span><span class='line'><span class="err">$</span> <span class="n">make</span>
+</span><span class='line'><span class="n">make</span> <span class="o">-</span><span class="n">C</span> <span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">modules</span><span class="o">/</span><span class="mf">3.16.0</span><span class="o">-</span><span class="mi">4</span><span class="o">-</span><span class="n">amd64</span><span class="o">/</span><span class="n">build</span><span class="o">/</span> <span class="n">M</span><span class="o">=/</span><span class="n">home</span><span class="o">/</span><span class="n">fasion</span><span class="o">/</span><span class="n">hello</span> <span class="n">modules</span>
+</span><span class='line'><span class="n">make</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">:</span> <span class="n">Entering</span> <span class="n">directory</span> <span class="err">&#39;</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">linux</span><span class="o">-</span><span class="n">headers</span><span class="o">-</span><span class="mf">3.16.0</span><span class="o">-</span><span class="mi">4</span><span class="o">-</span><span class="n">amd64</span><span class="err">&#39;</span>
+</span><span class='line'><span class="n">make</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">:</span> <span class="n">Entering</span> <span class="n">directory</span> <span class="err">`</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">linux</span><span class="o">-</span><span class="n">headers</span><span class="o">-</span><span class="mf">3.16.0</span><span class="o">-</span><span class="mi">4</span><span class="o">-</span><span class="n">amd64</span><span class="err">&#39;</span>
+</span><span class='line'>  <span class="n">CC</span> <span class="p">[</span><span class="n">M</span><span class="p">]</span>  <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">fasion</span><span class="o">/</span><span class="n">hello</span><span class="o">/</span><span class="n">hello</span><span class="p">.</span><span class="n">o</span>
+</span><span class='line'>  <span class="n">Building</span> <span class="n">modules</span><span class="p">,</span> <span class="n">stage</span> <span class="mf">2.</span>
+</span><span class='line'>  <span class="n">MODPOST</span> <span class="mi">1</span> <span class="n">modules</span>
+</span><span class='line'>  <span class="n">CC</span>      <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">fasion</span><span class="o">/</span><span class="n">hello</span><span class="o">/</span><span class="n">hello</span><span class="p">.</span><span class="n">mod</span><span class="p">.</span><span class="n">o</span>
+</span><span class='line'>  <span class="n">LD</span> <span class="p">[</span><span class="n">M</span><span class="p">]</span>  <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">fasion</span><span class="o">/</span><span class="n">hello</span><span class="o">/</span><span class="n">hello</span><span class="p">.</span><span class="n">ko</span>
+</span><span class='line'><span class="n">make</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">:</span> <span class="n">Leaving</span> <span class="n">directory</span> <span class="err">&#39;</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">linux</span><span class="o">-</span><span class="n">headers</span><span class="o">-</span><span class="mf">3.16.0</span><span class="o">-</span><span class="mi">4</span><span class="o">-</span><span class="n">amd64</span><span class="err">&#39;</span>
+</span><span class='line'><span class="err">$</span> <span class="n">ls</span>
+</span><span class='line'><span class="n">hello</span><span class="p">.</span><span class="n">c</span>  <span class="n">hello</span><span class="p">.</span><span class="n">ko</span>  <span class="n">hello</span><span class="p">.</span><span class="n">mod</span><span class="p">.</span><span class="n">c</span>  <span class="n">hello</span><span class="p">.</span><span class="n">mod</span><span class="p">.</span><span class="n">o</span>  <span class="n">hello</span><span class="p">.</span><span class="n">o</span>  <span class="n">Makefile</span>  <span class="n">modules</span><span class="p">.</span><span class="n">order</span>  <span class="n">Module</span><span class="p">.</span><span class="n">symvers</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>看到<code>hello.ko</code>文件生成，意味着编译大功告成了！
+该文件就是二进制内核模块目标文件，其他文件的作用不再讨论了。</p>
+
+<p>顺便提一句，<code>Makefile</code>中分成<code>all</code>和<code>clean</code>两节。
+其中<code>all</code>用来编译，<code>clean</code>用来清理编译环境：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="err">$</span> <span class="n">make</span> <span class="n">clean</span>
+</span><span class='line'><span class="n">make</span> <span class="o">-</span><span class="n">C</span> <span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">modules</span><span class="o">/</span><span class="mf">3.16.0</span><span class="o">-</span><span class="mi">4</span><span class="o">-</span><span class="n">amd64</span><span class="o">/</span><span class="n">build</span><span class="o">/</span> <span class="n">M</span><span class="o">=/</span><span class="n">home</span><span class="o">/</span><span class="n">fasion</span><span class="o">/</span><span class="n">hello</span> <span class="n">clean</span>
+</span><span class='line'><span class="n">make</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">:</span> <span class="n">Entering</span> <span class="n">directory</span> <span class="err">&#39;</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">linux</span><span class="o">-</span><span class="n">headers</span><span class="o">-</span><span class="mf">3.16.0</span><span class="o">-</span><span class="mi">4</span><span class="o">-</span><span class="n">amd64</span><span class="err">&#39;</span>
+</span><span class='line'><span class="n">make</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">:</span> <span class="n">Entering</span> <span class="n">directory</span> <span class="err">`</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">linux</span><span class="o">-</span><span class="n">headers</span><span class="o">-</span><span class="mf">3.16.0</span><span class="o">-</span><span class="mi">4</span><span class="o">-</span><span class="n">amd64</span><span class="err">&#39;</span>
+</span><span class='line'>  <span class="n">CLEAN</span>   <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">fasion</span><span class="o">/</span><span class="n">hello</span><span class="o">/</span><span class="p">.</span><span class="n">tmp_versions</span>
+</span><span class='line'>  <span class="n">CLEAN</span>   <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">fasion</span><span class="o">/</span><span class="n">hello</span><span class="o">/</span><span class="n">Module</span><span class="p">.</span><span class="n">symvers</span>
+</span><span class='line'><span class="n">make</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">:</span> <span class="n">Leaving</span> <span class="n">directory</span> <span class="err">&#39;</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">linux</span><span class="o">-</span><span class="n">headers</span><span class="o">-</span><span class="mf">3.16.0</span><span class="o">-</span><span class="mi">4</span><span class="o">-</span><span class="n">amd64</span><span class="err">&#39;</span>
+</span><span class='line'><span class="err">$</span> <span class="n">ls</span>
+</span><span class='line'><span class="n">hello</span><span class="p">.</span><span class="n">c</span>  <span class="n">Makefile</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>可以看到，运行了<code>make clean</code>后，所有编译生成的文件都清理掉了，只剩源码文件和<code>Makefile</code>。</p>
+
+<h1>运行</h1>
+
+<p>内核模块编译完成后，要怎么使用呢？跟普通程序直接运行不同，内核模块需要加载到内核里面发挥作用。使用<code>insmod</code>命令加载内核模块：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="err">$</span> <span class="n">ls</span>
+</span><span class='line'><span class="n">hello</span><span class="p">.</span><span class="n">c</span>  <span class="n">hello</span><span class="p">.</span><span class="n">ko</span>  <span class="n">hello</span><span class="p">.</span><span class="n">mod</span><span class="p">.</span><span class="n">c</span>  <span class="n">hello</span><span class="p">.</span><span class="n">mod</span><span class="p">.</span><span class="n">o</span>  <span class="n">hello</span><span class="p">.</span><span class="n">o</span>  <span class="n">Makefile</span>  <span class="n">modules</span><span class="p">.</span><span class="n">order</span>  <span class="n">Module</span><span class="p">.</span><span class="n">symvers</span>
+</span><span class='line'><span class="err">$</span> <span class="n">sudo</span> <span class="n">insmod</span> <span class="n">hello</span><span class="p">.</span><span class="n">ko</span>
+</span><span class='line'><span class="err">$</span> <span class="n">dmesg</span>
+</span><span class='line'><span class="p">[</span>   <span class="mf">14.226777</span><span class="p">]</span> <span class="mo">00</span><span class="o">:</span><span class="mo">00</span><span class="o">:</span><span class="mf">00.000718</span> <span class="n">main</span>     <span class="n">OS</span> <span class="nl">Product</span><span class="p">:</span> <span class="n">Linux</span>
+</span><span class='line'><span class="p">[</span>   <span class="mf">14.226814</span><span class="p">]</span> <span class="mo">00</span><span class="o">:</span><span class="mo">00</span><span class="o">:</span><span class="mf">00.000779</span> <span class="n">main</span>     <span class="n">OS</span> <span class="nl">Release</span><span class="p">:</span> <span class="mf">3.16.0</span><span class="o">-</span><span class="mi">4</span><span class="o">-</span><span class="n">amd64</span>
+</span><span class='line'><span class="p">[</span>   <span class="mf">14.226845</span><span class="p">]</span> <span class="mo">00</span><span class="o">:</span><span class="mo">00</span><span class="o">:</span><span class="mf">00.000814</span> <span class="n">main</span>     <span class="n">OS</span> <span class="nl">Version</span><span class="p">:</span> <span class="err">#</span><span class="mi">1</span> <span class="n">SMP</span> <span class="n">Debian</span> <span class="mf">3.16.7</span><span class="o">-</span><span class="n">ckt20</span><span class="o">-</span><span class="mi">1</span><span class="o">+</span><span class="n">deb8u4</span> <span class="p">(</span><span class="mi">2016</span><span class="o">-</span><span class="mo">02</span><span class="o">-</span><span class="mi">29</span><span class="p">)</span>
+</span><span class='line'><span class="p">[</span>   <span class="mf">14.226873</span><span class="p">]</span> <span class="mo">00</span><span class="o">:</span><span class="mo">00</span><span class="o">:</span><span class="mf">00.000844</span> <span class="n">main</span>     <span class="n">OS</span> <span class="n">Service</span> <span class="nl">Pack</span><span class="p">:</span> <span class="err">#</span><span class="mi">1</span> <span class="n">SMP</span> <span class="n">Debian</span> <span class="mf">3.16.7</span><span class="o">-</span><span class="n">ckt20</span><span class="o">-</span><span class="mi">1</span><span class="o">+</span><span class="n">deb8u4</span> <span class="p">(</span><span class="mi">2016</span><span class="o">-</span><span class="mo">02</span><span class="o">-</span><span class="mi">29</span><span class="p">)</span>
+</span><span class='line'><span class="p">[</span>   <span class="mf">14.226912</span><span class="p">]</span> <span class="mo">00</span><span class="o">:</span><span class="mo">00</span><span class="o">:</span><span class="mf">00.000872</span> <span class="n">main</span>     <span class="nl">Executable</span><span class="p">:</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">VBoxGuestAdditions</span><span class="o">-</span><span class="mf">5.0.8</span><span class="o">/</span><span class="n">sbin</span><span class="o">/</span><span class="n">VBoxService</span>
+</span><span class='line'><span class="mo">00</span><span class="o">:</span><span class="mo">00</span><span class="o">:</span><span class="mf">00.000873</span> <span class="n">main</span>     <span class="n">Process</span> <span class="nl">ID</span><span class="p">:</span> <span class="mi">716</span>
+</span><span class='line'><span class="mo">00</span><span class="o">:</span><span class="mo">00</span><span class="o">:</span><span class="mf">00.000874</span> <span class="n">main</span>     <span class="n">Package</span> <span class="nl">type</span><span class="p">:</span> <span class="n">LINUX_64BITS_GENERIC</span>
+</span><span class='line'><span class="p">[</span>   <span class="mf">14.232015</span><span class="p">]</span> <span class="mo">00</span><span class="o">:</span><span class="mo">00</span><span class="o">:</span><span class="mf">00.005962</span> <span class="n">main</span>     <span class="mf">5.0.8</span> <span class="n">r103449</span> <span class="n">started</span><span class="p">.</span> <span class="n">Verbose</span> <span class="n">level</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'><span class="p">[</span> <span class="mf">4368.359895</span><span class="p">]</span> <span class="nl">HELLO</span><span class="p">:</span> <span class="n">Hello</span> <span class="n">world</span><span class="p">,</span> <span class="n">this</span> <span class="n">is</span> <span class="n">hello</span> <span class="n">module</span> <span class="n">speaking</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>内核模块加载后，用<code>dmesg</code>命令看到，内核模块初始化时输出的一条内核日志。</p>
+
+<p>加载内核模块时怎么指定参数的值呢？下面演示移除内核模块，并以<code>fasion</code>为<code>name</code>参数值重新挂载：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="err">$</span> <span class="n">sudo</span> <span class="n">rmmod</span> <span class="n">hello</span>
+</span><span class='line'><span class="err">$</span> <span class="n">sudo</span> <span class="n">insmod</span> <span class="n">hello</span><span class="p">.</span><span class="n">ko</span> <span class="n">name</span><span class="o">=</span><span class="n">fasion</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>操作完成后，用<code>dmesg</code>可以看到以下内核日志：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="p">[</span> <span class="mf">4368.359895</span><span class="p">]</span> <span class="nl">HELLO</span><span class="p">:</span> <span class="n">Hello</span> <span class="n">world</span><span class="p">,</span> <span class="n">this</span> <span class="n">is</span> <span class="n">hello</span> <span class="n">module</span> <span class="n">speaking</span>
+</span><span class='line'><span class="p">[</span> <span class="mf">4812.067761</span><span class="p">]</span> <span class="nl">HELLO</span><span class="p">:</span> <span class="n">Goodbye</span> <span class="n">world</span>
+</span><span class='line'><span class="p">[</span> <span class="mf">4841.011892</span><span class="p">]</span> <span class="nl">HELLO</span><span class="p">:</span> <span class="n">Hello</span> <span class="n">fasion</span><span class="p">,</span> <span class="n">this</span> <span class="n">is</span> <span class="n">hello</span> <span class="n">module</span> <span class="n">speaking</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>第二次挂载时，<code>name</code>参数的值不是默认值<code>world</code>，而是<code>fasion</code>了。</p>
+
+<p>跟内核模块相关还有<code>insmod</code>、<code>rmmod</code>、<code>lsmod</code>、<code>modinfo</code>、<code>modprobe</code>等命令，用法请参考<code>man</code>文档。</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[[译文]MongoDB WiredTiger引擎调优技巧]]></title>
