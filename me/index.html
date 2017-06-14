@@ -9,7 +9,7 @@
   <meta name="author" content="陈彦霏">
 
   
-  <meta name="description" content=" 我 Jan 8th, 2015 11:30 am Jan 8th, 2015 11:30 am Recent Posts Linux内核模块 [译文]MongoDB WiredTiger引擎调优技巧 打造炫酷的开发环境 更优雅地造测试数据 Python调试终端 ">
+  <meta name="description" content="我 Jan 8th, 2015 11:30 am Jan 8th, 2015 11:30 am Recent Posts Linux内核模块 [译文]MongoDB WiredTiger引擎调优技巧 打造炫酷的开发环境 更优雅地造测试数据 Python调试终端 GitHub Repos &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -133,6 +133,35 @@
       </li>
     
   </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating&#8230;</li>
+  </ul>
+  
+  <a href="https://github.com/fasionchan">@fasionchan</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'fasionchan',
+            count: 1,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
 </section>
 
 
