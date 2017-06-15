@@ -91,38 +91,43 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>http://blog.fasionchan.com/blog/2010/06/15/linux-bian-cheng-huan-jing-da-jian-c-slash-c-plus-plus/</loc>
+    <lastmod>2010-06-15T17:17:42+08:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>http://blog.fasionchan.com/blog/archives/</loc>
-    <lastmod>2017-06-14T21:07:23+08:00</lastmod>
+    <lastmod>2017-06-15T17:29:57+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://blog.fasionchan.com/</loc>
-    <lastmod>2017-06-14T21:07:23+08:00</lastmod>
+    <lastmod>2017-06-15T17:29:57+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>http://blog.fasionchan.com/me/</loc>
-    <lastmod>2017-06-14T21:07:23+08:00</lastmod>
+    <lastmod>2017-06-15T17:29:57+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://blog.fasionchan.com/books/</loc>
-    <lastmod>2017-06-14T21:07:23+08:00</lastmod>
+    <lastmod>2017-06-15T17:29:57+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://blog.fasionchan.com/me/profession.html</loc>
-    <lastmod>2017-06-14T21:07:23+08:00</lastmod>
+    <lastmod>2017-06-15T17:29:57+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>http://blog.fasionchan.com/me/resume.html</loc>
-    <lastmod>2017-06-14T21:07:23+08:00</lastmod>
+    <lastmod>2017-06-15T17:29:57+08:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
