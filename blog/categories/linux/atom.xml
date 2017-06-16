@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Linux | fasionchan]]></title>
   <link href="http://blog.fasionchan.com/blog/categories/linux/atom.xml" rel="self"/>
   <link href="http://blog.fasionchan.com/"/>
-  <updated>2017-06-15T17:32:29+08:00</updated>
+  <updated>2017-06-16T15:05:20+08:00</updated>
   <id>http://blog.fasionchan.com/</id>
   <author>
     <name><![CDATA[陈彦霏]]></name>
@@ -12,6 +12,120 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Procfs伪文件系统原理]]></title>
+    <link href="http://blog.fasionchan.com/blog/2017/06/16/procfswei-wen-jian-xi-tong-yuan-li/"/>
+    <updated>2017-06-16T14:58:23+08:00</updated>
+    <id>http://blog.fasionchan.com/blog/2017/06/16/procfswei-wen-jian-xi-tong-yuan-li</id>
+    <content type="html"><![CDATA[<p><code>Linux</code>系统<code>/proc</code>目录下，有一些特殊的目录和文件，用来展示或者设置内核数据。例如，<code>/proc/meminfo</code>展示系统内存信息：</p>
+
+<pre><code>$ cat /proc/meminfo
+MemTotal:         506160 kB
+MemFree:           73528 kB
+MemAvailable:     335160 kB
+Buffers:           54756 kB
+Cached:           162888 kB
+SwapCached:            0 kB
+Active:           247648 kB
+Inactive:          96840 kB
+Active(anon):     127044 kB
+Inactive(anon):     4332 kB
+Active(file):     120604 kB
+Inactive(file):    92508 kB
+Unevictable:           0 kB
+Mlocked:               0 kB
+SwapTotal:             0 kB
+SwapFree:              0 kB
+Dirty:               104 kB
+Writeback:             0 kB
+AnonPages:        126824 kB
+Mapped:            14412 kB
+Shmem:              4532 kB
+Slab:              70608 kB
+SReclaimable:      59128 kB
+SUnreclaim:        11480 kB
+KernelStack:        2928 kB
+PageTables:         3028 kB
+NFS_Unstable:          0 kB
+Bounce:                0 kB
+WritebackTmp:          0 kB
+CommitLimit:      253080 kB
+Committed_AS:     530132 kB
+VmallocTotal:   34359738367 kB
+VmallocUsed:        5536 kB
+VmallocChunk:   34359731707 kB
+HardwareCorrupted:     0 kB
+AnonHugePages:         0 kB
+HugePages_Total:       0
+HugePages_Free:        0
+HugePages_Rsvd:        0
+HugePages_Surp:        0
+Hugepagesize:       2048 kB
+DirectMap4k:       69568 kB
+DirectMap2M:      454656 kB
+</code></pre>
+
+<p>这些数据随着系统的变化动态调整，感觉好神奇！</p>
+
+<!--more-->
+
+
+<p>还有一些文件，直接跟一些内核变量映射。除了可以读出数据，还可以更新数据呢。例如，<code>/proc/sys/net/ipv4/ip_forward</code>用来控制<code>IP</code>包转发，设置为<code>1</code>则是是启用转发：</p>
+
+<pre><code>$ cat /proc/sys/net/ipv4/ip_forward
+0
+echo "1" &gt; /proc/sys/net/ipv4/ip_forward
+$ cat /proc/sys/net/ipv4/ip_forward
+1
+</code></pre>
+
+<p>那么，这些文件本质是什么呢？是真正的文件吗？</p>
+
+<h2>来龙去脉</h2>
+
+<p>系统用户和程序(进程)经常需要某些内核信息，该怎么获得呢？</p>
+
+<p>以<code>/proc/sys/net/ipv4/ip_forward</code>为例，内核里有一个变量用来控制协议栈是否转发<code>IP</code>包。系统用户要控制转发是否开启，就需要去设置这个内核变量。怎么设置呢？要知道用户空间可是没有办法直接访问内核空间的。</p>
+
+<p>可以考虑实现一个新的系统调用——<code>int set_ip_forward(int value)</code>。然而，天呀有好多这样或那样的场景，这样系统调用表是要爆炸的！而且这种方式用起来也麻烦，需要实现一个专用的命令，调用这个系统调用完成设置。</p>
+
+<p>有没有更通用的方式呢？其实，让这个系统调用更加通用化，也是一种思路——<code>int set_kernel_value(char *path, void *value)</code>。这样一个系统调用就搞定了一些列设置要求，但是还是没有解决调用麻烦的问题。</p>
+
+<p>如果，可以将内核数据伪装成一个文件，用<code>read</code>系统调用获取；用<code>write</code>系统调用设置不就完美了吗？这样，有现成的命令可以直接使用，比如用<code>cat</code>来获取，用<code>echo</code>来设置！</p>
+
+<p>那么内核有办法做到吗？</p>
+
+<p>办法肯定是有的。最直观的想法是，在内核处理<code>read</code>的代码进行控制，让<code>read</code>直接从内核数据中拷贝，而不是磁盘。当然了，内核黑客们不会写这么恶心的代码，而是抽象了一层——<code>VFS</code>。</p>
+
+<h2>VFS</h2>
+
+<p><code>Linux</code>支持各种各样的文件系统，光<code>ext</code>系列就有：<code>ext2</code>、<code>ext3</code>、<code>ext4</code>。内核如何实现不同文件系统差异性的呢？</p>
+
+<p>答案是，内核抽象了<code>VFS</code>接口。跟面向对象编程中的接口有点类似，具体的文件系统按照各自的方式分别实现(多态)。</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/2740477-e2afa3b8415de815.gif?imageMogr2/auto-orient/strip" alt="archi_VFS-eng.gif" /></p>
+
+<p>如上图所示，不同的文件系统以各自的方式实现处理接口，如<code>read</code>和<code>write</code>等等。这些处理接口被封装成结构一致的结构体注册。这样，同样的系统调用，在不同的文件系统下，由不同的函数处理。</p>
+
+<p>因此，完全有可能实现一个假的文件系统，就叫<code>procfs</code>，读写分别映射为变量的读出和写入。</p>
+
+<h2>流程</h2>
+
+<p>最后，图解说明访问<code>/proc</code>下文件的整个流程：</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/2740477-d7d7a62d6c2c427d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="procfs" /></p>
+
+<ol>
+<li>用户进程发起一个系统调用<code>read</code>；</li>
+<li>内核<code>VFS</code>根据文件描述符找出操作描述体；</li>
+<li>内核从描述体取出<code>read</code>处理函数指针；</li>
+<li>内核执行该处理函数；</li>
+<li>处理函数读出内核变量并拷贝到用户态空间；</li>
+</ol>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Linux内核模块]]></title>
@@ -554,128 +668,6 @@ main(int argc, char *argv[])
     return 0;
 }
 </code></pre>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Linux编程环境搭建——C/C++]]></title>
-    <link href="http://blog.fasionchan.com/blog/2010/06/15/linux-bian-cheng-huan-jing-da-jian-c-slash-c-plus-plus/"/>
-    <updated>2010-06-15T17:17:42+08:00</updated>
-    <id>http://blog.fasionchan.com/blog/2010/06/15/linux-bian-cheng-huan-jing-da-jian-c-slash-c-plus-plus</id>
-    <content type="html"><![CDATA[<blockquote><p>本文是面向初学者的入门型教程，高手请忽略~</p>
-
-<p>本文是面向初学者的入门型教程，高手请忽略~</p>
-
-<p>本文是面向初学者的入门型教程，高手请忽略~</p></blockquote>
-
-<p>计算机专业都有开展编程课吧，但大部分院校都是基于<code>Windows</code>平台的，包括<code>VC</code>、<code>VS</code>等等。这样的<code>IDE</code>用多了，人容易“傻”——编程可不是非得要用<code>IDE</code>！再说了，<code>IDE</code>按钮按多了，都不知道编程的本质是啥。</p>
-
-<p>很多人想学<code>Linux</code>，摆脱<code>Windows</code>的枷锁，可是老师不教呀，作业怎么办！</p>
-
-<p>莫慌，我们先来看看，在<code>Linux</code>下，怎样进行<code>C</code>语言程序开发吧~</p>
-
-<!--more-->
-
-
-<h2>工具</h2>
-
-<p>工欲善其事，便先利其器。在<code>Linux</code>编程，我们需要哪些工具呢？</p>
-
-<p>编程其实无非就是几个步骤：</p>
-
-<ul>
-<li>首先要能编辑代码并保存吧？也就是说需要一个编辑器，最简单的像记事本都可以。<code>Linux</code>下推荐用<code>vim</code>或者<code>emacs</code>，这两个都是属于学习曲线比较陡的利器(掌握后可以各种出神入化)。初学者也可以试试<code>nano</code>，简单易用。</li>
-<li>代码写完后，怎么生成可执行程序呢(编译)？这时候，需要用到编译器。不同系统不同语言编译器也不尽相同。<code>Linux</code>下编译<code>C</code>代码，需要用到<code>gcc</code>；编译<code>C++</code>代码，需要用到<code>g++</code>。</li>
-</ul>
-
-
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">环节</th>
-<th style="text-align:left;">可用工具</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">编辑</td>
-<td style="text-align:left;">vim/emacs/nano</td>
-</tr>
-<tr>
-<td style="text-align:left;">编译</td>
-<td style="text-align:left;">gcc/g++</td>
-</tr>
-</tbody>
-</table>
-
-
-<p>下面，以<code>Ubuntu</code>为例，介绍一下如何安装这些工具：</p>
-
-<h3>安装编译器</h3>
-
-<p><code>Ubuntu</code>下使用<code>apt</code>进行装包：</p>
-
-<pre><code>$ apt-get install gcc
-</code></pre>
-
-<h2>编辑代码</h2>
-
-<p><code>shell</code>下，运行<code>nano test.c</code>，开始编辑<code>test.c</code>文件：</p>
-
-<p><img src="http://upload-images.jianshu.io/upload_images/2740477-4bde234e7ec313c2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png" /></p>
-
-<p>这时候出现以上界面，这时候便可以开始输入了。</p>
-
-<p>代码编辑后如何保存呢？请注意下方操作提示条，这时可以清楚知道按<code>ctrl+x</code>保存文件；按<code>ctrl+x</code>退出<code>nano</code>程序。</p>
-
-<p>接下来请输入以下代码，保存并退出：</p>
-
-<pre><code class="c">#include &lt;stdio.h&gt;
-
-int main(int args, char *argv[])
-{
-    printf("Hello world\n");
-
-    return 0;
-}
-</code></pre>
-
-<p>这时候，在当前目录下可以看到<code>test.c</code>文件了：</p>
-
-<pre><code>$ ls
-test.c
-</code></pre>
-
-<h2>编译</h2>
-
-<p>接下来是编译环节，运行以下命令：</p>
-
-<pre><code>$ gcc -o test test.c
-</code></pre>
-
-<p>这个命令的意思是，运行<code>gcc</code>命令，编译<code>test.c</code>文件；<code>-o</code>表示将可执行文件保存为<code>test</code>。不出意外，在当前目录下可以看到一个名为<code>test</code>的可执行文件。</p>
-
-<pre><code>$ ls
-test test.c
-</code></pre>
-
-<h2>运行</h2>
-
-<p>直接运行可执行文件，就可以看到程序输出的<code>Hello world</code>了：</p>
-
-<pre><code>$ ./test
-Hello world
-</code></pre>
-
-<h2>下一步</h2>
-
-<p>看到这里，你已经掌握了<code>Linux</code>下<code>C</code>程序开发的过程！<code>C++</code>也是类似的，将<code>gcc</code>换成<code>g++</code>即可。</p>
-
-<p>当然了，<code>Hello world</code>只是用来演示，并没有什么作用。万里长征算是迈出第一步，接下来更有挑战性的程序在等着你！</p>
-
-<p>另外，调试也是开发中非常重要的一环，本文暂未介绍。<code>Linux</code>一般使用<code>gdb</code>进行调试，这是一个功能非常强大的工作，后续有机会818。</p>
-
-<p><img src="http://upload-images.jianshu.io/upload_images/2740477-ec903564f7bfd9be.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/200" alt="欢迎加入玩转Linux" /></p>
 ]]></content>
   </entry>
   
