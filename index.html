@@ -9,36 +9,7 @@
   <meta name="author" content="陈彦霏">
 
   
-  <meta name="description" content="Linux系统/proc目录下，有一些特殊的目录和文件，用来展示或者设置内核数据。例如，/proc/meminfo展示系统内存信息： 1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30 &hellip;">
+  <meta name="description" content="跳表是一种可以替代平衡树的数据结构。跳表追求的是概率性平衡，而不是严格平衡。因此，跟平衡二叉树相比，跳表的插入和删除操作要简单得多，执行也更快。 二叉树可以用来实现字典和有序表等抽象数据结构。在元素随机插入的场景，二叉树可以很好应对。然而，在有序插入的情况下，二叉树就退化了(链表)，性能非常差。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -96,6 +67,45 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2017/06/17/yi-wen-tiao-biao-yi-zhong-ping-heng-shu-de-gai-lu-xing-ti-dai-pin/">[译文]跳表：一种平衡树的概率性替代品</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2017-06-17T16:33:32+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2017</span></span> <span class='time'>4:33 pm</span></time>
+        
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p> <strong>跳表</strong>是一种可以替代<strong>平衡树</strong>的数据结构。跳表追求的是概率性平衡，而不是严格平衡。因此，跟平衡二叉树相比，跳表的<strong>插入</strong>和<strong>删除</strong>操作要简单得多，执行也更快。</p>
+
+<p>二叉树可以用来实现字典和有序表等抽象数据结构。在元素随机插入的场景，二叉树可以很好应对。然而，在有序插入的情况下，二叉树就退化了(链表)，性能非常差。如果有办法对待插入元素进行随机排列，二叉树大概率可以运行良好。大部分情况下，插入是在线进行的，因此随机排列并不具有可行性。平衡树在操作时对树结构进行调整以满足平衡条件，因此获得理想性能。</p>
+
+<p>跳表是一种概率性可行的平衡二叉树替代数据结构。跳表通过一个<strong>随机数生成器</strong>实现平衡。虽然跳表最坏情况下(<code>worst-case</code>)性能也很差，但是没有任何输入序列必然会导致最坏情况发生(这点类似划分元素(<code>pivot point</code>)随机选定的<strong>快排</strong>)。跳表极度不平衡发生的概率非常低(一个包含<code>250</code>个元素的字典，一次查找需要花<code>3</code>倍期望时间的概率小于百万分之一)。跳表平衡概率跟随机插入的二叉树差不多，好处是插入顺序不要求随机。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2017/06/17/yi-wen-tiao-biao-yi-zhong-ping-heng-shu-de-gai-lu-xing-ti-dai-pin/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -544,43 +554,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2016/10/23/zi-ji-fa-bu-python-bao/">自己发布Python包</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2016-10-23T18:50:04+08:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2016</span></span> <span class='time'>6:50 pm</span></time>
-        
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h1>注册</h1>
-
-<p>先在<code>Python</code>官网注册一个账号，地址是：<a href="https://pypi.python.org/pypi">https://pypi.python.org/pypi</a>。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2016/10/23/zi-ji-fa-bu-python-bao/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -596,6 +569,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2017/06/17/yi-wen-tiao-biao-yi-zhong-ping-heng-shu-de-gai-lu-xing-ti-dai-pin/">[译文]跳表：一种平衡树的概率性替代品</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2017/06/16/procfswei-wen-jian-xi-tong-yuan-li/">Procfs伪文件系统原理</a>
       </li>
     
@@ -609,10 +586,6 @@
     
       <li class="post">
         <a href="/blog/2016/12/17/da-zao-xuan-ku-de-kai-fa-huan-jing/">打造炫酷的开发环境</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2016/12/11/geng-you-ya-di-zao-ce-shi-shu-ju/">更优雅地造测试数据</a>
       </li>
     
   </ul>

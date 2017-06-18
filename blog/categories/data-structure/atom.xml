@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Data Structure | fasionchan]]></title>
+  <link href="http://blog.fasionchan.com/blog/categories/data-structure/atom.xml" rel="self"/>
+  <link href="http://blog.fasionchan.com/"/>
+  <updated>2017-06-18T10:54:05+08:00</updated>
+  <id>http://blog.fasionchan.com/</id>
+  <author>
+    <name><![CDATA[陈彦霏]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[[译文]跳表：一种平衡树的概率性替代品]]></title>
+    <link href="http://blog.fasionchan.com/blog/2017/06/17/yi-wen-tiao-biao-yi-zhong-ping-heng-shu-de-gai-lu-xing-ti-dai-pin/"/>
+    <updated>2017-06-17T16:33:32+08:00</updated>
+    <id>http://blog.fasionchan.com/blog/2017/06/17/yi-wen-tiao-biao-yi-zhong-ping-heng-shu-de-gai-lu-xing-ti-dai-pin</id>
+    <content type="html"><![CDATA[<p> <strong>跳表</strong>是一种可以替代<strong>平衡树</strong>的数据结构。跳表追求的是概率性平衡，而不是严格平衡。因此，跟平衡二叉树相比，跳表的<strong>插入</strong>和<strong>删除</strong>操作要简单得多，执行也更快。</p>
+
+<p>二叉树可以用来实现字典和有序表等抽象数据结构。在元素随机插入的场景，二叉树可以很好应对。然而，在有序插入的情况下，二叉树就退化了(链表)，性能非常差。如果有办法对待插入元素进行随机排列，二叉树大概率可以运行良好。大部分情况下，插入是在线进行的，因此随机排列并不具有可行性。平衡树在操作时对树结构进行调整以满足平衡条件，因此获得理想性能。</p>
+
+<p>跳表是一种概率性可行的平衡二叉树替代数据结构。跳表通过一个<strong>随机数生成器</strong>实现平衡。虽然跳表最坏情况下(<code>worst-case</code>)性能也很差，但是没有任何输入序列必然会导致最坏情况发生(这点类似划分元素(<code>pivot point</code>)随机选定的<strong>快排</strong>)。跳表极度不平衡发生的概率非常低(一个包含<code>250</code>个元素的字典，一次查找需要花<code>3</code>倍期望时间的概率小于百万分之一)。跳表平衡概率跟随机插入的二叉树差不多，好处是插入顺序不要求随机。</p>
+
+<!--more-->
+
+
+<p>实现概率性平衡比严格控制平衡要简单得多。对很多应用来说，跳表用起来比平衡树更自然，而且算法更简单。跳表算法简单性意味着更容易实现，而且与平衡树和自适应树相比有常数倍数的性能提升。跳表在空间上也比较高效。平均每个元素只需要额外耗费个2指针(甚至可以配置得更低)，并不需要在每个节点上都存与平衡和优先级相关的数据。</p>
+
+<h2>结构</h2>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/2740477-7dc366ea883cf19b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png" /></p>
+
+<p>搜索一个链表时，我们需要遍历每个节点(如图 1a)。如果列表是有序的，偶数节点另存一个指向下一个偶数节点的指针(如图 1b)，我们只需要检查最多<code>(n/2)+1</code>个节点(<code>n</code>是链表规模)。如果序号为<code>4</code>的倍数的节点都有一个往前跳<code>4</code>步的节点，那么最多只需要检查<code>(n/4)+2</code>次。如果，序号为<code>2^i</code>的节点有一个向前跳<code>2^i</code>步的指针，那么则需要检查<code>log2 n</code>次了！这种数据结构可以用来做快速搜索，但是插入和删除并没有可行性。</p>
+
+<p>有<code>k</code>个前进指针的节点成为<code>k</code>层节点。如果第<code>2^i</code>个节点有一个向前跳<code>2^i</code>步的指针，那么每层节点数满足以下关系：第<code>1</code>层有<code>50%</code>的节点；第<code>2</code>层有<code>25%</code>的节点；第<code>3</code>层有<code>12.5%</code>的节点；以此类推。假设每层的比例还是一样，但是节点随机选择，会怎样呢(图 1e)？节点第<code>i</code>个前进指针不严格跳<code>2^i</code>步，而是可以跳任意步。由于不需要维持特殊条件，插入节点层数随机生成，插入和删除只需要做<strong>局部修改</strong>。极端情况下，有些层次分布会导致极差的性能，不过接下来我们会看到这种情况非常罕见。这种数据结构在链表的基础上加上额外指针以跳过一些中间节点，因此命名为<strong>跳表</strong>。</p>
+
+<h2>算法</h2>
+
+<p>这小节介绍用于<strong>搜索</strong>、<strong>插入</strong>、<strong>删除</strong>的算法。<strong>搜索</strong>操作返回与给定键(<code>key</code>)关联的值(<code>value</code>)，键不存在时则失败。<strong>插入</strong>操作将给定键关联到新的值，如果键不存在则插入新的节点。<strong>删除</strong>操作删除给定键。另外，类似<strong>最小键</strong>和<strong>下一键</strong>这类操作实现起来也非常简单。</p>
+
+<p>每个元素由一个节点表示，层次由节点在插入时随机选定，与已有元素无关。层次为<code>i</code>的节点拥有<code>i</code>个前进指针，下标分别是<code>1</code>至<code>i</code>。节点不需要存储层数。选定一个合适的常量<code>MaxLevel</code>，层数在这个范围内。跳表的层数时当前所有节点层数的最大值，或者当跳表为空是，层数为<code>1</code>。用一个头向量存储从层次<code>1</code>到<code>MaxLevel</code>的向前指针。指针高于当前跳表层数的部分直接指向<code>NIL</code>。</p>
+
+<h3>初始化</h3>
+
+<p>约定<code>NIL</code>元素，其键比所有合法建都大(上限)。跳表的任意层都以<code>NIL</code>结尾。新的跳表初始化成层数只有<code>1</code>，并且所有表头所有前进指针都指向<code>NIL</code>。</p>
+
+<h3>查找</h3>
+
+<p>查找某个元素时，需要逐层遍历所有键不超过给定键的节点。如果当前层前进节点已经不符合条件了，往下一层开始遍历。当遍历进行到第<code>1</code>层时，下一个节点就是目标节点(如存在)。</p>
+
+<pre><code>Search(list, searchKey)
+    x := list-&gt;header
+
+    for i := list-&gt;level downto 1 do
+        while x-&gt;forward[i]-&gt;key &lt; searchKey do
+            x = x-&gt;forward[i]
+
+    x := x-&gt;forward[1]
+
+    if x-&gt;key = searchKey
+    then
+        return x-&gt;value
+    else
+        return failure
+</code></pre>
+
+<h3>插入/删除</h3>
+
+<p><strong>插入</strong>或者<strong>删除</strong>节点，只需先执行搜索操作(图 3)，然后视情况重新拼接。伪代码如下所示：</p>
+
+<pre><code>Insert(list, searchKey, newValue)
+    local update[1..MaxLevel]
+    x := list-header
+
+    for i := list-&gt;level downto 1 do
+        while x-&gt;forward[i]-&gt;key &lt; searchKey do
+            x := x-&gt;forward[i]
+        update[i] := x
+
+    x := x-&gt;forward[i]
+
+    if x-&gt;key = searchKey then
+        x-&gt;value := newValue
+    else
+        lvl := randomLevel()
+        if lvl &gt; list-&gt;level then
+            for i := list-&gt;level+1 to lvl do
+                update[i] := list-&gt;header
+            list-&gt;level = lvl
+        x := makeNode(lvl, searchKey, value)
+        for i := 1 to lvl do
+            x-&gt;forward[i] = update[i]-&gt;forward[i]
+            update[i]-&gt;forward[i] := x
+</code></pre>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/2740477-4c9045f1819efd42.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png" /></p>
+
+<p>图3展示了搜索过程。注意到，搜索的过程中维护了一个名为<code>update</code>的向量，在每次降层搜索时更新。搜索完成后，<code>update</code>刚好记录了各层在操作位置(图中环)左边最近的节点：</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">元素</th>
+<th style="text-align:left;">节点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">update[1]</td>
+<td style="text-align:left;">12</td>
+</tr>
+<tr>
+<td style="text-align:left;">update[2]</td>
+<td style="text-align:left;">9</td>
+</tr>
+<tr>
+<td style="text-align:left;">update[3]</td>
+<td style="text-align:left;">6</td>
+</tr>
+<tr>
+<td style="text-align:left;">update[4]</td>
+<td style="text-align:left;">6</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>如果插入时生成了一个比当前最大层更大的层数，则需要更新跳表层数并且初始化<code>update</code>向量对应部分。</p>
+
+<p>接下来，看看删除操作的伪代码：</p>
+
+<pre><code>Delete(list, searchKey)
+    local update[1..MaxLevel]
+    x := list-header
+
+    for i := list-&gt;level downto 1 do
+        while x-&gt;forward[i]-&gt;key &lt; searchKey do
+            x := x-&gt;forward[i]
+        update[i] := x
+
+    x := x-&gt;forward[i]
+
+    if x-&gt;key &lt; searchKey then
+        for i := 1 to list-&gt;level do
+            if update[i]-&gt;forward[i] != x then break
+            update[i]-&gt;forward[i] = x-&gt;forward[i]
+
+        free(x)
+
+        while list-&gt;level &gt; 1 and list-&gt;header-&gt;forward[list-&gt;level] = NIL do
+            list-&gt;level := list-&gt;level - 1
+</code></pre>
+
+<p>在每次删除时，需要检查被删除节点是否是最大层节点。如果是，需要对跳表层数做对应调整。</p>
+
+<h3>随机函数</h3>
+
+<p>接下来，需啊确定一个随机数生成函数，其概率分布使得第<code>i</code>层中有<code>50%</code>的节点同时数据第<code>i+1</code>层。先抛开具体数值，我们在讨论一个分数<code>p</code>，对于有<code>i</code>层指针的节点中<code>p</code>部分，同时拥有<code>i+1</code>层指针。以下便是一个非常理想的随机数生成函数，随机层数生成与跳表元素及规模无关：</p>
+
+<pre><code>randomLevel()
+    lvl := 1
+    while random() &lt; p and lvl &lt; MaxLevel do
+        lvl := lvl + 1
+    return lvl
+</code></pre>
+]]></content>
+  </entry>
+  
+</feed>

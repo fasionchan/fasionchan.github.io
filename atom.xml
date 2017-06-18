@@ -4,7 +4,7 @@
   <title><![CDATA[fasionchan]]></title>
   <link href="http://blog.fasionchan.com/atom.xml" rel="self"/>
   <link href="http://blog.fasionchan.com/"/>
-  <updated>2017-06-16T15:24:23+08:00</updated>
+  <updated>2017-06-18T10:54:05+08:00</updated>
   <id>http://blog.fasionchan.com/</id>
   <author>
     <name><![CDATA[陈彦霏]]></name>
@@ -12,6 +12,224 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[[译文]跳表：一种平衡树的概率性替代品]]></title>
+    <link href="http://blog.fasionchan.com/blog/2017/06/17/yi-wen-tiao-biao-yi-zhong-ping-heng-shu-de-gai-lu-xing-ti-dai-pin/"/>
+    <updated>2017-06-17T16:33:32+08:00</updated>
+    <id>http://blog.fasionchan.com/blog/2017/06/17/yi-wen-tiao-biao-yi-zhong-ping-heng-shu-de-gai-lu-xing-ti-dai-pin</id>
+    <content type="html"><![CDATA[<p> <strong>跳表</strong>是一种可以替代<strong>平衡树</strong>的数据结构。跳表追求的是概率性平衡，而不是严格平衡。因此，跟平衡二叉树相比，跳表的<strong>插入</strong>和<strong>删除</strong>操作要简单得多，执行也更快。</p>
+
+<p>二叉树可以用来实现字典和有序表等抽象数据结构。在元素随机插入的场景，二叉树可以很好应对。然而，在有序插入的情况下，二叉树就退化了(链表)，性能非常差。如果有办法对待插入元素进行随机排列，二叉树大概率可以运行良好。大部分情况下，插入是在线进行的，因此随机排列并不具有可行性。平衡树在操作时对树结构进行调整以满足平衡条件，因此获得理想性能。</p>
+
+<p>跳表是一种概率性可行的平衡二叉树替代数据结构。跳表通过一个<strong>随机数生成器</strong>实现平衡。虽然跳表最坏情况下(<code>worst-case</code>)性能也很差，但是没有任何输入序列必然会导致最坏情况发生(这点类似划分元素(<code>pivot point</code>)随机选定的<strong>快排</strong>)。跳表极度不平衡发生的概率非常低(一个包含<code>250</code>个元素的字典，一次查找需要花<code>3</code>倍期望时间的概率小于百万分之一)。跳表平衡概率跟随机插入的二叉树差不多，好处是插入顺序不要求随机。</p>
+
+<!--more-->
+
+
+<p>实现概率性平衡比严格控制平衡要简单得多。对很多应用来说，跳表用起来比平衡树更自然，而且算法更简单。跳表算法简单性意味着更容易实现，而且与平衡树和自适应树相比有常数倍数的性能提升。跳表在空间上也比较高效。平均每个元素只需要额外耗费个2指针(甚至可以配置得更低)，并不需要在每个节点上都存与平衡和优先级相关的数据。</p>
+
+<h2>结构</h2>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/2740477-7dc366ea883cf19b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png" /></p>
+
+<p>搜索一个链表时，我们需要遍历每个节点(如图 1a)。如果列表是有序的，偶数节点另存一个指向下一个偶数节点的指针(如图 1b)，我们只需要检查最多<code>(n/2)+1</code>个节点(<code>n</code>是链表规模)。如果序号为<code>4</code>的倍数的节点都有一个往前跳<code>4</code>步的节点，那么最多只需要检查<code>(n/4)+2</code>次。如果，序号为<code>2^i</code>的节点有一个向前跳<code>2^i</code>步的指针，那么则需要检查<code>log2 n</code>次了！这种数据结构可以用来做快速搜索，但是插入和删除并没有可行性。</p>
+
+<p>有<code>k</code>个前进指针的节点成为<code>k</code>层节点。如果第<code>2^i</code>个节点有一个向前跳<code>2^i</code>步的指针，那么每层节点数满足以下关系：第<code>1</code>层有<code>50%</code>的节点；第<code>2</code>层有<code>25%</code>的节点；第<code>3</code>层有<code>12.5%</code>的节点；以此类推。假设每层的比例还是一样，但是节点随机选择，会怎样呢(图 1e)？节点第<code>i</code>个前进指针不严格跳<code>2^i</code>步，而是可以跳任意步。由于不需要维持特殊条件，插入节点层数随机生成，插入和删除只需要做<strong>局部修改</strong>。极端情况下，有些层次分布会导致极差的性能，不过接下来我们会看到这种情况非常罕见。这种数据结构在链表的基础上加上额外指针以跳过一些中间节点，因此命名为<strong>跳表</strong>。</p>
+
+<h2>算法</h2>
+
+<p>这小节介绍用于<strong>搜索</strong>、<strong>插入</strong>、<strong>删除</strong>的算法。<strong>搜索</strong>操作返回与给定键(<code>key</code>)关联的值(<code>value</code>)，键不存在时则失败。<strong>插入</strong>操作将给定键关联到新的值，如果键不存在则插入新的节点。<strong>删除</strong>操作删除给定键。另外，类似<strong>最小键</strong>和<strong>下一键</strong>这类操作实现起来也非常简单。</p>
+
+<p>每个元素由一个节点表示，层次由节点在插入时随机选定，与已有元素无关。层次为<code>i</code>的节点拥有<code>i</code>个前进指针，下标分别是<code>1</code>至<code>i</code>。节点不需要存储层数。选定一个合适的常量<code>MaxLevel</code>，层数在这个范围内。跳表的层数时当前所有节点层数的最大值，或者当跳表为空是，层数为<code>1</code>。用一个头向量存储从层次<code>1</code>到<code>MaxLevel</code>的向前指针。指针高于当前跳表层数的部分直接指向<code>NIL</code>。</p>
+
+<h3>初始化</h3>
+
+<p>约定<code>NIL</code>元素，其键比所有合法建都大(上限)。跳表的任意层都以<code>NIL</code>结尾。新的跳表初始化成层数只有<code>1</code>，并且所有表头所有前进指针都指向<code>NIL</code>。</p>
+
+<h3>查找</h3>
+
+<p>查找某个元素时，需要逐层遍历所有键不超过给定键的节点。如果当前层前进节点已经不符合条件了，往下一层开始遍历。当遍历进行到第<code>1</code>层时，下一个节点就是目标节点(如存在)。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Search(list, searchKey)
+</span><span class='line'>    x := list-&gt;header
+</span><span class='line'>
+</span><span class='line'>    for i := list-&gt;level downto 1 do
+</span><span class='line'>        while x-&gt;forward[i]-&gt;key &lt; searchKey do
+</span><span class='line'>            x = x-&gt;forward[i]
+</span><span class='line'>
+</span><span class='line'>    x := x-&gt;forward[1]
+</span><span class='line'>
+</span><span class='line'>    if x-&gt;key = searchKey
+</span><span class='line'>    then
+</span><span class='line'>        return x-&gt;value
+</span><span class='line'>    else
+</span><span class='line'>        return failure</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>插入/删除</h3>
+
+<p><strong>插入</strong>或者<strong>删除</strong>节点，只需先执行搜索操作(图 3)，然后视情况重新拼接。伪代码如下所示：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Insert(list, searchKey, newValue)
+</span><span class='line'>    local update[1..MaxLevel]
+</span><span class='line'>    x := list-header
+</span><span class='line'>
+</span><span class='line'>    for i := list-&gt;level downto 1 do
+</span><span class='line'>        while x-&gt;forward[i]-&gt;key &lt; searchKey do
+</span><span class='line'>            x := x-&gt;forward[i]
+</span><span class='line'>        update[i] := x
+</span><span class='line'>
+</span><span class='line'>    x := x-&gt;forward[i]
+</span><span class='line'>
+</span><span class='line'>    if x-&gt;key = searchKey then
+</span><span class='line'>        x-&gt;value := newValue
+</span><span class='line'>    else
+</span><span class='line'>        lvl := randomLevel()
+</span><span class='line'>        if lvl &gt; list-&gt;level then
+</span><span class='line'>            for i := list-&gt;level+1 to lvl do
+</span><span class='line'>                update[i] := list-&gt;header
+</span><span class='line'>            list-&gt;level = lvl
+</span><span class='line'>        x := makeNode(lvl, searchKey, value)
+</span><span class='line'>        for i := 1 to lvl do
+</span><span class='line'>            x-&gt;forward[i] = update[i]-&gt;forward[i]
+</span><span class='line'>            update[i]-&gt;forward[i] := x</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="http://upload-images.jianshu.io/upload_images/2740477-4c9045f1819efd42.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png" /></p>
+
+<p>图3展示了搜索过程。注意到，搜索的过程中维护了一个名为<code>update</code>的向量，在每次降层搜索时更新。搜索完成后，<code>update</code>刚好记录了各层在操作位置(图中环)左边最近的节点：</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">元素</th>
+<th style="text-align:left;">节点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">update[1]</td>
+<td style="text-align:left;">12</td>
+</tr>
+<tr>
+<td style="text-align:left;">update[2]</td>
+<td style="text-align:left;">9</td>
+</tr>
+<tr>
+<td style="text-align:left;">update[3]</td>
+<td style="text-align:left;">6</td>
+</tr>
+<tr>
+<td style="text-align:left;">update[4]</td>
+<td style="text-align:left;">6</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>如果插入时生成了一个比当前最大层更大的层数，则需要更新跳表层数并且初始化<code>update</code>向量对应部分。</p>
+
+<p>接下来，看看删除操作的伪代码：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Delete(list, searchKey)
+</span><span class='line'>    local update[1..MaxLevel]
+</span><span class='line'>    x := list-header
+</span><span class='line'>
+</span><span class='line'>    for i := list-&gt;level downto 1 do
+</span><span class='line'>        while x-&gt;forward[i]-&gt;key &lt; searchKey do
+</span><span class='line'>            x := x-&gt;forward[i]
+</span><span class='line'>        update[i] := x
+</span><span class='line'>
+</span><span class='line'>    x := x-&gt;forward[i]
+</span><span class='line'>
+</span><span class='line'>    if x-&gt;key &lt; searchKey then
+</span><span class='line'>        for i := 1 to list-&gt;level do
+</span><span class='line'>            if update[i]-&gt;forward[i] != x then break
+</span><span class='line'>            update[i]-&gt;forward[i] = x-&gt;forward[i]
+</span><span class='line'>
+</span><span class='line'>        free(x)
+</span><span class='line'>
+</span><span class='line'>        while list-&gt;level &gt; 1 and list-&gt;header-&gt;forward[list-&gt;level] = NIL do
+</span><span class='line'>            list-&gt;level := list-&gt;level - 1</span></code></pre></td></tr></table></div></figure>
+
+
+<p>在每次删除时，需要检查被删除节点是否是最大层节点。如果是，需要对跳表层数做对应调整。</p>
+
+<h3>随机函数</h3>
+
+<p>接下来，需啊确定一个随机数生成函数，其概率分布使得第<code>i</code>层中有<code>50%</code>的节点同时数据第<code>i+1</code>层。先抛开具体数值，我们在讨论一个分数<code>p</code>，对于有<code>i</code>层指针的节点中<code>p</code>部分，同时拥有<code>i+1</code>层指针。以下便是一个非常理想的随机数生成函数，随机层数生成与跳表元素及规模无关：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>randomLevel()
+</span><span class='line'>    lvl := 1
+</span><span class='line'>    while random() &lt; p and lvl &lt; MaxLevel do
+</span><span class='line'>        lvl := lvl + 1
+</span><span class='line'>    return lvl</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Procfs伪文件系统原理]]></title>
@@ -2443,149 +2661,6 @@
 <h2>常见问题</h2>
 
 <p>自定义域名配置<code>CNAME</code>不生效，查了很久发现是<code>Jekyll</code>失效引起的。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Linux编程环境搭建——C/C++]]></title>
-    <link href="http://blog.fasionchan.com/blog/2010/06/15/linux-bian-cheng-huan-jing-da-jian-c-slash-c-plus-plus/"/>
-    <updated>2010-06-15T17:17:42+08:00</updated>
-    <id>http://blog.fasionchan.com/blog/2010/06/15/linux-bian-cheng-huan-jing-da-jian-c-slash-c-plus-plus</id>
-    <content type="html"><![CDATA[<blockquote><p>本文是面向初学者的入门型教程，高手请忽略~</p>
-
-<p>本文是面向初学者的入门型教程，高手请忽略~</p>
-
-<p>本文是面向初学者的入门型教程，高手请忽略~</p></blockquote>
-
-<p>计算机专业都有开展编程课吧，但大部分院校都是基于<code>Windows</code>平台的，包括<code>VC</code>、<code>VS</code>等等。这样的<code>IDE</code>用多了，人容易“傻”——编程可不是非得要用<code>IDE</code>！再说了，<code>IDE</code>按钮按多了，都不知道编程的本质是啥。</p>
-
-<p>很多人想学<code>Linux</code>，摆脱<code>Windows</code>的枷锁，可是老师不教呀，作业怎么办！</p>
-
-<p>莫慌，我们先来看看，在<code>Linux</code>下，怎样进行<code>C</code>语言程序开发吧~</p>
-
-<!--more-->
-
-
-<h2>工具</h2>
-
-<p>工欲善其事，便先利其器。在<code>Linux</code>编程，我们需要哪些工具呢？</p>
-
-<p>编程其实无非就是几个步骤：</p>
-
-<ul>
-<li>首先要能编辑代码并保存吧？也就是说需要一个编辑器，最简单的像记事本都可以。<code>Linux</code>下推荐用<code>vim</code>或者<code>emacs</code>，这两个都是属于学习曲线比较陡的利器(掌握后可以各种出神入化)。初学者也可以试试<code>nano</code>，简单易用。</li>
-<li>代码写完后，怎么生成可执行程序呢(编译)？这时候，需要用到编译器。不同系统不同语言编译器也不尽相同。<code>Linux</code>下编译<code>C</code>代码，需要用到<code>gcc</code>；编译<code>C++</code>代码，需要用到<code>g++</code>。</li>
-</ul>
-
-
-<table>
-<thead>
-<tr>
-<th style="text-align:left;">环节</th>
-<th style="text-align:left;">可用工具</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left;">编辑</td>
-<td style="text-align:left;">vim/emacs/nano</td>
-</tr>
-<tr>
-<td style="text-align:left;">编译</td>
-<td style="text-align:left;">gcc/g++</td>
-</tr>
-</tbody>
-</table>
-
-
-<p>下面，以<code>Ubuntu</code>为例，介绍一下如何安装这些工具：</p>
-
-<h3>安装编译器</h3>
-
-<p><code>Ubuntu</code>下使用<code>apt</code>进行装包：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ apt-get install gcc</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>编辑代码</h2>
-
-<p><code>shell</code>下，运行<code>nano test.c</code>，开始编辑<code>test.c</code>文件：</p>
-
-<p><img src="http://upload-images.jianshu.io/upload_images/2740477-4bde234e7ec313c2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png" /></p>
-
-<p>这时候出现以上界面，这时候便可以开始输入了。</p>
-
-<p>代码编辑后如何保存呢？请注意下方操作提示条，这时可以清楚知道按<code>ctrl+x</code>保存文件；按<code>ctrl+x</code>退出<code>nano</code>程序。</p>
-
-<p>接下来请输入以下代码，保存并退出：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">args</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello world</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这时候，在当前目录下可以看到<code>test.c</code>文件了：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="err">$</span> <span class="n">ls</span>
-</span><span class='line'><span class="n">test</span><span class="p">.</span><span class="n">c</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>编译</h2>
-
-<p>接下来是编译环节，运行以下命令：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="err">$</span> <span class="n">gcc</span> <span class="o">-</span><span class="n">o</span> <span class="n">test</span> <span class="n">test</span><span class="p">.</span><span class="n">c</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这个命令的意思是，运行<code>gcc</code>命令，编译<code>test.c</code>文件；<code>-o</code>表示将可执行文件保存为<code>test</code>。不出意外，在当前目录下可以看到一个名为<code>test</code>的可执行文件。</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="err">$</span> <span class="n">ls</span>
-</span><span class='line'><span class="n">test</span> <span class="n">test</span><span class="p">.</span><span class="n">c</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>运行</h2>
-
-<p>直接运行可执行文件，就可以看到程序输出的<code>Hello world</code>了：</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="err">$</span> <span class="p">.</span><span class="o">/</span><span class="n">test</span>
-</span><span class='line'><span class="n">Hello</span> <span class="n">world</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>下一步</h2>
-
-<p>看到这里，你已经掌握了<code>Linux</code>下<code>C</code>程序开发的过程！<code>C++</code>也是类似的，将<code>gcc</code>换成<code>g++</code>即可。</p>
-
-<p>当然了，<code>Hello world</code>只是用来演示，并没有什么作用。万里长征算是迈出第一步，接下来更有挑战性的程序在等着你！</p>
-
-<p>另外，调试也是开发中非常重要的一环，本文暂未介绍。<code>Linux</code>一般使用<code>gdb</code>进行调试，这是一个功能非常强大的工作，后续有机会818。</p>
-
-<p><img src="http://upload-images.jianshu.io/upload_images/2740477-ec903564f7bfd9be.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/200" alt="欢迎加入玩转Linux" /></p>
 ]]></content>
   </entry>
   
