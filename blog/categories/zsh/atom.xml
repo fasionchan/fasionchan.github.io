@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Zsh | fasionchan]]></title>
   <link href="http://blog.fasionchan.com/blog/categories/zsh/atom.xml" rel="self"/>
   <link href="http://blog.fasionchan.com/"/>
-  <updated>2017-06-18T11:11:19+08:00</updated>
+  <updated>2017-06-18T11:40:45+08:00</updated>
   <id>http://blog.fasionchan.com/</id>
   <author>
     <name><![CDATA[陈彦霏]]></name>
@@ -20,7 +20,7 @@
     <id>http://blog.fasionchan.com/blog/2016/12/17/da-zao-xuan-ku-de-kai-fa-huan-jing</id>
     <content type="html"><![CDATA[<p>无图无真相，这篇文章的主要目的是打造如下所示的终端开发环境，涉及<code>terminal</code>、<code>shell</code>以及<code>editor</code>等，着重于配色。</p>
 
-<p>{% img /images/zsh.png %}</p>
+<p><img src="/images/zsh.png"></p>
 
 <!--more-->
 
@@ -29,7 +29,7 @@
 
 <p>关于<code>shell</code>，我之前一直在<code>bash</code>上瞎折腾，认为最普适的就是最好的。毕竟在绝大多数机器环境上，<code>bash</code>唾手可得，不需要额外安装。但是，<code>bash</code>没有足够丰富的现成配置方案可用，自己山寨要花很多精力而且效果也不是很好。<code>zsh</code>就不一样，名字就透着<code>shell</code>终结者的意思。<code>zsh</code>比<code>bash</code>要好用，而且有现成的配置方案，特别是<code>oh-my-zsh</code>，非常好用。</p>
 
-<p>{% img /images/vim.png %}</p>
+<p><img src="/images/vim.png"></p>
 
 <p>关于<code>editor</code>，向来都有<code>vim</code>或<code>emacs</code>的争议。我只使用过<code>vim</code>，也没法评论。争议是没有必要的，如果都没用过，选一个学一下就是；如果用过其中之一，维持现状即可；想两个都体验一下也行，找到适合自己的才是最重要的。我习惯使用<code>vim</code>，下文便以<code>vim</code>为例好了。</p>
 
@@ -37,7 +37,7 @@
 
 <p><code>iTerm2</code>是<code>Mac</code>下一款优秀的终端软件，功能比内置的<code>iTerm</code>强很多。关键是，这款应用还是免费的！赶紧到<a href="https://www%0A.iterm2.com/">www.iterm2.com</a>下载吧！安装后，它是这个样子的：</p>
 
-<p>{% img /images/iterm2-default.png %}</p>
+<p><img src="/images/iterm2-default.png"></p>
 
 <p>呃，颜色货不对版呀！对的，这是<code>iTerm2</code>默认的颜色，别心急，接下来我们来调整配色方案。</p>
 
@@ -52,11 +52,11 @@
 
 <p>可以看到，里面包罗万象，这里我们要使用的是<code>iterm2-colors-solarized</code>目录下的，包括<code>Solarized Dark.itermcolors</code>和<code>Solarized Light.itermcolors</code>两个配置文件。</p>
 
-<p>{% img /images/iterm2-color.png %}</p>
+<p><img src="/images/iterm2-color.png"></p>
 
 <p>打开<code>Preferences-&gt;Profiles-&gt;Color</code>面板，在<code>Color Presets</code>中将以上两个配置方案导入，然后选择<code>Solarized Dark</code>或者<code>Solarized Light</code>即可。一般推荐使用<code>Solarized Dark</code>，<code>Solarized Light</code>有种亮瞎的感觉。配色搞定后，终端是这样子的：</p>
 
-<p>{% img /images/iterm2-solarized.png %}</p>
+<p><img src="/images/iterm2-solarized.png"></p>
 
 <p>看着这样柔和的颜色，眼睛就不会很容易就累了。</p>
 
@@ -77,7 +77,7 @@
 
 <p>接下来，编辑<code>~/.zshrc</code>，找到变量<code>ZSH_THEME</code>将其赋值改为<code>agnoster</code>即可。操作完毕，发现离目标很近了：</p>
 
-<p>{% img /images/zsh-font-fault.png %}</p>
+<p><img src="/images/zsh-font-fault.png"></p>
 
 <p>除了有些字体显示异常，什么鬼？</p>
 
@@ -92,7 +92,7 @@ cd fonts
 
 <p>然后，在<code>iTerm2-&gt;Preferences-&gt;Profiles-&gt;Text</code>面板中将<code>Non-ASCII Font</code>改成<code>Roboto Mono Powerline</code>，显示就正常了！</p>
 
-<p>{% img /images/iterm2-text.png %}</p>
+<p><img src="/images/iterm2-text.png"></p>
 
 <h1>vim</h1>
 
