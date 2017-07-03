@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Kernel | fasionchan]]></title>
   <link href="http://blog.fasionchan.com/blog/categories/kernel/atom.xml" rel="self"/>
   <link href="http://blog.fasionchan.com/"/>
-  <updated>2017-07-03T14:46:52+08:00</updated>
+  <updated>2017-07-03T15:45:15+08:00</updated>
   <id>http://blog.fasionchan.com/</id>
   <author>
     <name><![CDATA[陈彦霏]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Procfs伪文件系统原理]]></title>
-    <link href="http://blog.fasionchan.com/blog/2017/06/16/procfswei-wen-jian-xi-tong-yuan-li/"/>
+    <link href="http://blog.fasionchan.com/blog/2017/06/16/procfs-wei-wen-jian-xi-tong-yuan-li/"/>
     <updated>2017-06-16T14:58:23+08:00</updated>
-    <id>http://blog.fasionchan.com/blog/2017/06/16/procfswei-wen-jian-xi-tong-yuan-li</id>
+    <id>http://blog.fasionchan.com/blog/2017/06/16/procfs-wei-wen-jian-xi-tong-yuan-li</id>
     <content type="html"><![CDATA[<p><code>Linux</code>系统<code>/proc</code>目录下，有一些特殊的目录和文件，用来展示或者设置内核数据。例如，<code>/proc/meminfo</code>展示系统内存信息：</p>
 
 <pre><code>$ cat /proc/meminfo
