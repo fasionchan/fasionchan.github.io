@@ -1,0 +1,248 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>手游数据平台 - fasionchan</title>
+  <meta name="author" content="陈彦霏">
+
+  
+  <meta name="description" content="手游数据平台 Mar 25th, 2017 11:30 am 手游app在玩家登陆前，有不少高价值的数据需要搜集，包括：用户行为数据以及推广渠道效果数据等等。
+收集并分析这部分数据，对于完善app操作体验以及优化游戏推广策略意义非凡。
+然而，由于玩家未登录，难以通过游戏数据通道进行上传。
+因此， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://blog.fasionchan.com/me/projects/drpf.html">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="fasionchan" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//cdn.staticfile.org/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">fasionchan</a></h1>
+  
+    <h2>读万卷书，行万里路，品万味肴，撸万行码。</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="blog.fasionchan.com">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/books">Books</a></li>
+  <li><a href="/me/index.html">Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article role="article">
+  
+  <header>
+    <h1 class="entry-title">手游数据平台</h1>
+    <p class="meta">
+
+
+
+
+<time class='entry-date' datetime='2017-03-25T11:30:00+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2017</span></span> <span class='time'>11:30 am</span></time></p>
+  </header>
+  
+  <p>手游<code>app</code>在玩家登陆前，有不少高价值的数据需要搜集，包括：<strong>用户行为数据</strong>以及<strong>推广渠道效果数据</strong>等等。
+收集并分析这部分数据，对于完善<code>app</code>操作体验以及优化游戏推广策略意义非凡。
+然而，由于玩家未登录，难以通过游戏数据通道进行上传。
+因此，需要设计一套不依赖游戏逻辑的通用数据收集方案，这就是<strong>手游数据平台</strong>。</p>
+
+<h1>架构</h1>
+
+<p>数据提交采用最通用的<code>HTTP</code>协议，以此实现比较高的适应性。
+数据提交后，最终由分布式计算集群处理，包括：<code>Storm</code>和<code>Spark</code>等。
+因此，平台需要提供一些<code>HTTP</code>服务器，完成数据的接收并实时推送给后端计算集群。
+整个数据平台最终框架如下：</p>
+
+<p><img src="/images/drpf.png"></p>
+
+<h2>HTTP 服务器</h2>
+
+<p><code>HTTP</code>是核心接收逻辑所在，负责高效处理<code>HTTP</code>请求，校验数据并按照业务逻辑要求格式化数据并发送到<code>Kafka</code>消息队列集群。</p>
+
+<p>由于玩家未完成登录验证，接收服务不能完全信任一个请求。
+为此，我设计了一个简单的<strong>数据校验</strong>方案：手游<code>SDK</code>将待提交数据几个关键字段以及一个<code>key</code>组装起来算一个<strong>哈希签名</strong>。
+服务端接到数据后，按照同样的算法，对比验证。
+由于<code>key</code>保存在<code>SDK</code>中，因此无法应对<strong>逆向破解</strong>(反编译)。</p>
+
+<h2>Kafka</h2>
+
+<p>在接收服务和计算服务之间，有一个<code>Kafka</code>集群承接逻辑上的解耦。
+这意味着，就算后端计算机群需要进行维护操作，也不影响接收服务正常服务。
+另外，消息队列的引入也完成了<strong>负载调节</strong>，负载峰值到达时，数据可以暂时在消息队列中停留，等待后续处理。</p>
+
+<p><code>Kafka</code>采用集群式部署，由<code>Zookeeper</code>进行集群状态管理。
+消息以<code>topic</code>进行划分，为了提高单个<code>topic</code>的吞吐，<code>Kafka</code>进一步将<code>topic</code>划分成多个<code>partition</code>。
+每个<code>partition</code>可以配置多个副本，分散在集群不同机器上，这样可靠性也得到保障。</p>
+
+<h2>LVS 高可用/负载均衡</h2>
+
+<p><code>HTTP</code>服务器需要实现可靠和可扩展，多机器部署不可避免。
+在<code>HTTP</code>服务器之前，使用<code>LVS</code>作为<strong>高可用</strong>和<strong>负载均衡</strong>方案。
+<code>LVS</code>节点负责对<code>HTTP</code>服务进行健康检查，将请求转发到可用的<code>HTTP</code>服务器上。</p>
+
+<p>与其他方案相比，采用<code>LVS</code>有以下优势：</p>
+
+<ul>
+<li>内核转发，降低用户/内核态切换开销；</li>
+<li><code>HTTP</code>服务器直接回包，减轻<code>LVS</code>节点压力；</li>
+</ul>
+
+
+<h2>DNS 负载均衡</h2>
+
+<p>由于<code>LVS</code>单节点处理能力也存在上限(如千兆网卡)，而且单点无法应对机房网络异常这样大粒度的故障。
+这时候，需要提供多套服务，多个接入<code>IP</code>，最好是跨机房的(<strong>异地多活</strong>)。
+由于计算机群只部署在数据中心机房，需要一个数据同步模块<code>Syncer</code>从其他机房的消息队列同步数据。</p>
+
+<p>如上架构图，<code>LVS</code>-<code>HTTP</code>-<code>Kafka</code>服务部署了两套，在两个不同的机房，提供两个不同的接入<code>IP</code>。
+通过<code>DNS</code>，将服务随机解析到接入<code>IP</code>上，以此实现水平扩展。
+在某个机房服务不可用时，可以通过修改<code>DNS</code>配置，快速完成服务接入切换(由于DNS缓存有小段时间不可用)。</p>
+
+<p>此外，还可以用该架构实现类似<code>CDN</code>的服务接入效果。
+例如，在美国<code>aws</code>上部署一套服务，将美国地区的<code>DNS</code>解析过去，这样美国用户提交数据就更可靠快捷了。
+<code>Syncer</code>在通过跨国公网往国内同步数据时，还可以通过<strong>数据压缩</strong>等方式进行优化。</p>
+
+  
+    <footer>
+      <p class="meta">
+        
+        
+
+
+
+
+<time class='entry-date' datetime='2017-03-25T11:30:00+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2017</span></span> <span class='time'>11:30 am</span></time>
+        
+      </p>
+      
+        <div class="sharing">
+  
+  
+  
+</div>
+
+      
+    </footer>
+  
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2017/06/17/yi-wen-tiao-biao-yi-zhong-ping-heng-shu-de-gai-lu-xing-ti-dai-pin/">[译文]跳表：一种平衡树的概率性替代品</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/06/16/procfs-wei-wen-jian-xi-tong-yuan-li/">Procfs伪文件系统原理</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/06/14/linux-nei-he-mo-kuai/">Linux内核模块</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/03/09/yi-wen-mongodb-wiredtiger-yin-qing-tiao-you-ji-qiao/">[译文]MongoDB WiredTiger引擎调优技巧</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/12/17/da-zao-xuan-ku-de-kai-fa-huan-jing/">打造炫酷的开发环境</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li>
+        <a href="https://github.com/fasionchan/tcpstat">tcpstat</a>
+        <p>按状态统计系统TCP连接数(内核模块)</p>
+    </li>
+  </ul>
+  <a href="https://github.com/fasionchan">@fasionchan</a> on GitHub
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2017 - 陈彦霏 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?3478328787268b1d31f689bce95b4e2f";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</body>
+</html>
