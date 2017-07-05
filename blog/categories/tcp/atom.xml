@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Tcp | fasionchan]]></title>
   <link href="http://blog.fasionchan.com/blog/categories/tcp/atom.xml" rel="self"/>
   <link href="http://blog.fasionchan.com/"/>
-  <updated>2017-07-05T18:48:29+08:00</updated>
+  <updated>2017-07-05T19:22:12+08:00</updated>
   <id>http://blog.fasionchan.com/</id>
   <author>
     <name><![CDATA[陈彦霏]]></name>
@@ -134,7 +134,7 @@
     <id>http://blog.fasionchan.com/blog/2015/06/05/tan-tan-tcp-time-wait-zhuang-tai</id>
     <content type="html"><![CDATA[<p>学过<code>TCP</code>协议的童鞋对以下状态变迁图应该不陌生，本文着重讨论<code>TIME_WAIT</code>状态。</p>
 
-<p><img src="/images/2015/tcp-state-machine.gif"></p>
+<p>{% img /images/2015/tcp-state-machine.gif %}</p>
 
 <p>从图中可以清楚看到：主动关闭的一端最终会进入<code>TIME_WAIT</code>状态，并维持<code>2*MSL</code>时间，一般情况下为<code>240</code>秒。
 那么，为什么需要<code>TIME_WAIT</code>状态呢？为什么需要持续<code>2*MSL</code>时长呢？其中有什么特别的考虑吗？</p>
@@ -160,7 +160,7 @@
 
 <p>肯定不是的。服务端也有很多场景会发起主动关闭，最常见的应该是类似<code>nginx</code>之类的反向代理了。</p>
 
-<p><img src="/images/2015/nginx-forward.png"></p>
+<p>{% img /images/2015/nginx-forward.png %}</p>
 
 <p>如上图，<code>Web</code>服务经常按照业务逻辑进行划分并独立部署，前端采用<code>Nginx</code>做统一接入以及负载均衡。
 对<code>Web</code>服务器来说(黄色部分)，<code>Nginx</code>服务器为客户端。在<code>Nginx</code>转发请求完成后，主动关闭不可避免。
