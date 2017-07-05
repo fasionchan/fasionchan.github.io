@@ -1,0 +1,309 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>谈谈TCP TIME_WAIT状态 - fasionchan</title>
+  <meta name="author" content="陈彦霏">
+
+  
+  <meta name="description" content="学过TCP协议的童鞋对以下状态变迁图应该不陌生，本文着重讨论TIME_WAIT状态。 从图中可以清楚看到：主动关闭的一端最终会进入TIME_WAIT状态，并维持2*MSL时间，一般情况下为240秒。
+那么，为什么需要TIME_WAIT状态呢？为什么需要持续2*MSL时长呢？其中有什么特别的考虑吗 &hellip;">
+  <meta name="keywords" content="linux, tcp, timewait">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://blog.fasionchan.com/blog/2015/06/05/tan-tan-tcp-time-wait-zhuang-tai/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="fasionchan" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//cdn.staticfile.org/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">fasionchan</a></h1>
+  
+    <h2>读万卷书，行万里路，品万味肴，撸万行码。</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="blog.fasionchan.com">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/books">Books</a></li>
+  <li><a href="/me/index.html">Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">谈谈TCP TIME_WAIT状态</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-06-05T21:16:18+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>9:16 pm</span></time>
+        
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>学过<code>TCP</code>协议的童鞋对以下状态变迁图应该不陌生，本文着重讨论<code>TIME_WAIT</code>状态。</p>
+
+<p><img src="/images/2015/tcp-state-machine.gif"></p>
+
+<p>从图中可以清楚看到：主动关闭的一端最终会进入<code>TIME_WAIT</code>状态，并维持<code>2*MSL</code>时间，一般情况下为<code>240</code>秒。
+那么，为什么需要<code>TIME_WAIT</code>状态呢？为什么需要持续<code>2*MSL</code>时长呢？其中有什么特别的考虑吗？</p>
+
+<h2>作用</h2>
+
+<p>从上图可以看到，进入<code>TIME_WAIT</code>状态前，收到对端<code>FIN</code>包并且回复<code>ACK</code>包。
+网络是不可靠的，也就是说最后这个<code>ACK</code>包可能被中间链路丢掉了。
+对端协议栈在还有收到<code>ACK</code>包的情况下，将重传<code>FIN</code>包，本端需要对<code>FIN</code>包进行相应。
+如果此时连接资源已经回收，系统只能响应<code>RST</code>包，这时对端就会认为是异常退出。
+因此，保留<code>TIME_WAIT</code>状态套接字并维持一段时间，就可以正确响应对端重传的<code>FIN</code>包，让<code>TCP</code>连接优雅关闭。</p>
+
+<p>另一场景是，对端可能还有<code>FIN</code>包还在网络逗留(延迟)。
+如果新连接复用旧连接的所有要素(包括地址-端口对、<code>TCP</code>序列号)，旧连接迟到的<code>FIN</code>将<strong>终止新连接</strong>！
+当然了，这个场景出现的概率比较低，但还是存在。</p>
+
+<h2>问题</h2>
+
+<p>当一个系统主动关闭大量<code>TCP</code>连接时，由于<code>2MSL</code>存在，将产生大量的<code>TIME_WAIT</code>状态连接。
+<code>TCP</code>连接需要消耗一定的系统资源，因此，极端情况下将导致活跃连接<strong>响应速度下降</strong>甚至<strong>停止服务</strong>。</p>
+
+<p>发起主动关闭的一端一般是客户端，这时候意味着服务端可以高枕无忧呢？</p>
+
+<p>肯定不是的。服务端也有很多场景会发起主动关闭，最常见的应该是类似<code>nginx</code>之类的反向代理了。</p>
+
+<p><img src="/images/2015/nginx-forward.png"></p>
+
+<p>如上图，<code>Web</code>服务经常按照业务逻辑进行划分并独立部署，前端采用<code>Nginx</code>做统一接入以及负载均衡。
+对<code>Web</code>服务器来说(黄色部分)，<code>Nginx</code>服务器为客户端。在<code>Nginx</code>转发请求完成后，主动关闭不可避免。
+这样，当系统存在高并发短连接请求时，<code>Nginx</code>服务器上有大量<code>TIME WAIT</code>状态连接存在也就不奇怪了。</p>
+
+<h2>解决方案</h2>
+
+<h3>开启<code>SYN Cookies</code></h3>
+
+<p>当<code>SYN</code>队列溢出时，采用<code>Cookie</code>来处理，继续接受新连接。
+<code>SYN Cookie</code>可以在一定程度防范<code>SYN Flood</code>攻击，详情请参看这里。
+配置选项为<code>net.ipv4.tcp_syncookies</code>，可以采用<code>sysctl</code>或者<code>proc</code>伪文件系统两种方式设置。</p>
+
+<p><strong><code>sysctl</code>方式</strong>。编辑文件<code>/etc/sysctl.conf</code>，调整或增加以下行：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>net.ipv4.tcp_syncookies = 1</span></code></pre></td></tr></table></div></figure>
+
+
+<p>调整完成后，运行命令<code>sysctl -p</code>即可生效。</p>
+
+<p><strong><code>proc</code>伪文件系统方式</strong>。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># 查看当前值
+</span><span class='line'>$ cat /proc/sys/net/ipv4/tcp_syncookies
+</span><span class='line'>0
+</span><span class='line'>
+</span><span class='line'># 开启
+</span><span class='line'>$ echo 1 &gt; /proc/sys/net/ipv4/tcp_syncookies
+</span><span class='line'>
+</span><span class='line'># 关闭
+</span><span class='line'>$ echo 0 &gt; /proc/sys/net/ipv4/tcp_syncookies</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>开启TIME_WAIT重用</h3>
+
+<p>开启<code>net.ipv4.tcp_tw_reuse</code>选项，将允许将<code>TIME_WAIT</code>状态<code>socket</code>重新用于新的<code>TCP</code>连接。
+设置方式也可用通过<code>sysctl</code>和<code>proc</code>伪文件系统方式，请参考上节，下文不在赘述。</p>
+
+<h3>开启TIME_WAIT快速回收</h3>
+
+<p>开启<code>net.ipv4.tcp_tw_recycle</code>选项，快速回收处于<code>TIME_WAIT</code>状态的<code>socket</code>。</p>
+
+<h3>修改FIN超时时间</h3>
+
+<p>修改<code>net.ipv4.tcp_fin_timeout</code>选项。</p>
+
+<h3>扩大外连端口范围</h3>
+
+<p>修改<code>net.ipv4.ip_local_port_range</code>选项。这个选项表示向外连接的端口范围。
+当然了，扩大范围只能缓解问题，无法彻底解决，另外端口也存在最大值<code>65000</code>左右。</p>
+
+<p><code>net.ipv4.tcp_max_syn_backlog</code>，<code>net.ipv4.tcp_max_tw_buckets</code>，<code>net.ipv4.tcp_keepalive_time</code>。</p>
+
+<h3>设置SO_LINGER选项</h3>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">陈彦霏</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-06-05T21:16:18+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>9:16 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/linux/'>linux</a>, <a class='category' href='/blog/categories/tcp/'>tcp</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2015/04/11/wei-guan-scrapy-pa-chong-kuang-jia/" title="Previous Post: 围观Scrapy爬虫框架">&laquo; 围观Scrapy爬虫框架</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2016/09/17/linux-tong-yong-io-mo-xing/" title="Next Post: Linux通用IO模型">Linux通用IO模型 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2017/06/17/yi-wen-tiao-biao-yi-zhong-ping-heng-shu-de-gai-lu-xing-ti-dai-pin/">[译文]跳表：一种平衡树的概率性替代品</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/06/16/procfs-wei-wen-jian-xi-tong-yuan-li/">Procfs伪文件系统原理</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/06/14/linux-nei-he-mo-kuai/">Linux内核模块</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/03/09/yi-wen-mongodb-wiredtiger-yin-qing-tiao-you-ji-qiao/">[译文]MongoDB WiredTiger引擎调优技巧</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/12/17/da-zao-xuan-ku-de-kai-fa-huan-jing/">打造炫酷的开发环境</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li>
+        <a href="https://github.com/fasionchan/tcpstat">tcpstat</a>
+        <p>按状态统计系统TCP连接数(内核模块)</p>
+    </li>
+  </ul>
+  <a href="https://github.com/fasionchan">@fasionchan</a> on GitHub
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2017 - 陈彦霏 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?3478328787268b1d31f689bce95b4e2f";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</body>
+</html>

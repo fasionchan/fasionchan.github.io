@@ -1,0 +1,233 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>监控系统 - fasionchan</title>
+  <meta name="author" content="陈彦霏">
+
+  
+  <meta name="description" content="监控系统 Mar 25th, 2017 11:30 am 架构 agent agent是一个常驻监控客户端，部署在每台受监控服务器上。
+agent核心提供一个插件调度模块和一个长连接通讯(控制)模块，具有以下特点： 插件式设计，提供一个通用插件编写框架，可以灵活扩展(采集)功能； &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://blog.fasionchan.com/me/projects/monitor-passive.html">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="fasionchan" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//cdn.staticfile.org/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">fasionchan</a></h1>
+  
+    <h2>读万卷书，行万里路，品万味肴，撸万行码。</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="blog.fasionchan.com">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/books">Books</a></li>
+  <li><a href="/me/index.html">Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article role="article">
+  
+  <header>
+    <h1 class="entry-title">监控系统</h1>
+    <p class="meta">
+
+
+
+
+<time class='entry-date' datetime='2017-03-25T11:30:00+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2017</span></span> <span class='time'>11:30 am</span></time></p>
+  </header>
+  
+  <h2>架构</h2>
+
+<p><img src="/images/monitor-passive.png" title="监控系统(被动)" ></p>
+
+<h3>agent</h3>
+
+<p><code>agent</code>是一个常驻监控客户端，部署在每台受监控服务器上。
+<code>agent</code>核心提供一个插件调度模块和一个长连接通讯(控制)模块，具有以下特点：</p>
+
+<ul>
+<li><strong>插件式设计</strong>，提供一个通用插件编写框架，可以<strong>灵活扩展</strong>(采集)功能；</li>
+<li>插件开发调试框架，可以不依赖实际运行环境开发；</li>
+<li>插件采用<code>Python</code>包部署，支持<strong>动态加载</strong>和<strong>热更新</strong>；</li>
+<li>插件采用<code>git</code>管理代码，提交后自动打包并发布；</li>
+<li>与控制服务器保存<strong>长连接</strong>，支持心跳保活；</li>
+<li>跨平台，支持<code>Linux</code>、<code>BSD</code>、<code>Windows</code>以及<code>OSX</code>等操作系统；</li>
+<li><code>agent</code>发布新版本后，运行实例<strong>自动升级</strong>；</li>
+<li>自带<code>Python</code>执行环境，不影响宿主；</li>
+<li>运行稳定，占用资源小；</li>
+</ul>
+
+
+<h3>CMDB</h3>
+
+<p><code>CMDB</code>是整个系统的元数据所在，定义了<strong>机器</strong>-<strong>群组</strong>-<strong>服务</strong>-<strong>端口</strong>-<strong>插件</strong>等配置模型。
+通过<code>CMDB</code>可以计算出哪些机器需要运行哪些监控插件监控哪些服务。</p>
+
+<h3>Arbiter</h3>
+
+<p><code>Arbiter</code>是一个全局仲裁器，负责监视<code>Publisher</code>节点的状态，并将机器监控配置进行划分推给健康的<code>Publisher</code>节点。
+<code>Arbiter</code>提供一个接口，供<code>agent</code>查询其需要连接哪个<code>Publisher</code>节点。</p>
+
+<h3>Publisher</h3>
+
+<p><code>Publisher</code>是一个<strong>控制服务器</strong>，为<code>agent</code>提供<strong>配置同步</strong>、<strong>命令下发</strong>以及<strong>数据提交</strong>等服务。
+<code>Publisher</code>以网络域(机房)为单位进行部署，每个域至少部署两个节点，为该域下所有<code>agent</code>提供服务。
+<code>Publisher</code>以长连接连到<code>Aribter</code>模块，<code>Arbiter</code>监视其状态，并把一个域下所有机器的监控配置(以机器为单位)平均划分下发到可用的<code>Publisher</code>上。</p>
+
+<p>在<code>agent</code>用长连接与<code>Publisher</code>保持活跃通讯，<code>Publisher</code>推送其配置信息。
+<code>agent</code>采集到数据后也通过该长连接进行提交，<code>Publisher</code>负责将数据转发到消息队列集群(<code>MQ</code>)。
+系统支持下发一个命令给某台机器上的<code>agent</code>执行，也是通过<code>Publisher</code>转发给<code>agent</code>的。</p>
+
+<h3>DB</h3>
+
+<p>指标数据(时序数据)采用<code>MongoDB</code>做存储。按照数据粒度不同，总共分成4个集群。
+每个集群由<code>5</code>分片(<code>shard</code>)组成，每个分片有<code>3</code>个副本集(<code>replica set</code>)，总共<code>15</code>个<code>mongod</code>实例。
+规模最大的集群每天支撑超过<code>20</code>亿条文档的写入压力，每台数据库实例插入速度超过<code>10000QPS</code>。</p>
+
+  
+    <footer>
+      <p class="meta">
+        
+        
+
+
+
+
+<time class='entry-date' datetime='2017-03-25T11:30:00+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2017</span></span> <span class='time'>11:30 am</span></time>
+        
+      </p>
+      
+        <div class="sharing">
+  
+  
+  
+</div>
+
+      
+    </footer>
+  
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2017/06/17/yi-wen-tiao-biao-yi-zhong-ping-heng-shu-de-gai-lu-xing-ti-dai-pin/">[译文]跳表：一种平衡树的概率性替代品</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/06/16/procfs-wei-wen-jian-xi-tong-yuan-li/">Procfs伪文件系统原理</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/06/14/linux-nei-he-mo-kuai/">Linux内核模块</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/03/09/yi-wen-mongodb-wiredtiger-yin-qing-tiao-you-ji-qiao/">[译文]MongoDB WiredTiger引擎调优技巧</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/12/17/da-zao-xuan-ku-de-kai-fa-huan-jing/">打造炫酷的开发环境</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li>
+        <a href="https://github.com/fasionchan/tcpstat">tcpstat</a>
+        <p>按状态统计系统TCP连接数(内核模块)</p>
+    </li>
+  </ul>
+  <a href="https://github.com/fasionchan">@fasionchan</a> on GitHub
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2017 - 陈彦霏 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?3478328787268b1d31f689bce95b4e2f";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</body>
+</html>
