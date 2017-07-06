@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Tcp | fasionchan]]></title>
   <link href="http://blog.fasionchan.com/blog/categories/tcp/atom.xml" rel="self"/>
   <link href="http://blog.fasionchan.com/"/>
-  <updated>2017-07-05T19:22:12+08:00</updated>
+  <updated>2017-07-06T14:36:17+08:00</updated>
   <id>http://blog.fasionchan.com/</id>
   <author>
     <name><![CDATA[陈彦霏]]></name>
@@ -134,7 +134,7 @@
     <id>http://blog.fasionchan.com/blog/2015/06/05/tan-tan-tcp-time-wait-zhuang-tai</id>
     <content type="html"><![CDATA[<p>学过<code>TCP</code>协议的童鞋对以下状态变迁图应该不陌生，本文着重讨论<code>TIME_WAIT</code>状态。</p>
 
-<p>{% img /images/2015/tcp-state-machine.gif %}</p>
+<p><img src="/images/2015/tcp-state-machine.gif"></p>
 
 <p>从图中可以清楚看到：主动关闭的一端最终会进入<code>TIME_WAIT</code>状态，并维持<code>2*MSL</code>时间，一般情况下为<code>240</code>秒。
 那么，为什么需要<code>TIME_WAIT</code>状态呢？为什么需要持续<code>2*MSL</code>时长呢？其中有什么特别的考虑吗？</p>
@@ -160,7 +160,7 @@
 
 <p>肯定不是的。服务端也有很多场景会发起主动关闭，最常见的应该是类似<code>nginx</code>之类的反向代理了。</p>
 
-<p>{% img /images/2015/nginx-forward.png %}</p>
+<p><img src="/images/2015/nginx-forward.png"></p>
 
 <p>如上图，<code>Web</code>服务经常按照业务逻辑进行划分并独立部署，前端采用<code>Nginx</code>做统一接入以及负载均衡。
 对<code>Web</code>服务器来说(黄色部分)，<code>Nginx</code>服务器为客户端。在<code>Nginx</code>转发请求完成后，主动关闭不可避免。
@@ -215,6 +215,55 @@ $ echo 0 &gt; /proc/sys/net/ipv4/tcp_syncookies
 <p><code>net.ipv4.tcp_max_syn_backlog</code>，<code>net.ipv4.tcp_max_tw_buckets</code>，<code>net.ipv4.tcp_keepalive_time</code>。</p>
 
 <h3>设置SO_LINGER选项</h3>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[TCP设计精髓]]></title>
+    <link href="http://blog.fasionchan.com/blog/2012/09/06/tcp-she-ji-jing-sui/"/>
+    <updated>2012-09-06T13:16:57+08:00</updated>
+    <id>http://blog.fasionchan.com/blog/2012/09/06/tcp-she-ji-jing-sui</id>
+    <content type="html"><![CDATA[<p><code>TCP</code>是在不可靠的网络层之上，实现的一种面向连接的可靠的传输层协议。
+为了实现可靠性并尽量优化传输效率，<code>TCP</code>作者们考虑到方方面面，并设计了一系列巧妙的算法。</p>
+
+<h2>纳格算法</h2>
+
+<p>纳格算法(<code>Nagle's algoritm</code>)，主要思想是以减少发送量来增进<code>TCP/IP</code>网络的性能。</p>
+
+<p>先来看一个场景——<strong>小数据包问题</strong>：
+在远程终端操作中(<code>telnet</code>)，客户端所输入的每一个字符源源不断发送给服务端，服务端再根据输入内容进行回传显示。
+这时，有大量的小数据包产生，很多都是只有一个字节(或者若干个字节)。
+众所周知，<code>TCP</code>数据包头部就有<code>40</code>字节(<code>TCP</code>和<code>IPv4</code>各占<code>20</code>字节)。
+这意味着，<code>41</code>字节的数据包只有<code>1</code>字节的有用信息，效率何等低下！
+如果<code>TCP</code>立即发送应用产生的小数据包，那么慢速网络或者拥塞的环境下，情况将变得更糟糕。</p>
+
+<p>那么，有什么办法可以解决这个问题吗？显而易见的做法是，对待发送数据进行合并之后再行提交。
+这就是纳格算法的主要思想：
+如果上次提交的数据还未收到对端确认，先持续缓冲数据包，直到一定大小才提交；
+收到确认后，马上发送缓冲区中的数据包，不管数量是多少。</p>
+
+<pre><code>if 缓冲区非空
+    if 窗口大小 &gt;= MSS and 缓冲数据 &gt;= MSS
+        理解发送MSS大小的分组
+    else
+        if 还有数据待确认
+            继续缓冲数据(延迟发送)
+        else
+            理解发送数据
+</code></pre>
+
+<h2>捎带确认</h2>
+
+<p><code>TCP</code>连接的两端进行通信，<code>A</code>给<code>B</code>发送一段数据，<code>B</code>需要确认数据收到(<code>ACK</code>)。
+<code>B</code>每次收到数据立即回复<code>ACK</code>包，代价有点大，<code>40</code>个字节的<code>TCP</code>分组就为了告诉对方，”我已经收到数据了！“。
+如果<code>B</code>刚好有数据需要发送，那么将<code>ACK</code>放在数据分组里(其实<code>ACK</code>只是一个标志位)捎带过去岂不更好？
+因此，将<code>ACK</code>延迟到需要发送数据时才发送出去，可以<strong>零成本</strong>完成数据确认。</p>
+
+<p>如果<code>B</code>不发送数据，那该咋整呢？长时间不回复<code>ACK</code>，对端该重传数据了，那更糟！
+事实上，<code>TCP</code>会启动一个定时器，大概是<code>200ms</code>。
+在这段时间内，如果有新数据分组要发送，那<code>ACK</code>刚好借这趟便车。
+否则，<code>TCP</code>会回复一个独立的<code>ACK</code>包，这也是没有办法的事情了。
+当然了，定时器选定也比较考究，需要足够长以便等到数据分组便车，但又不能太长导致对端重传数据。</p>
 ]]></content>
   </entry>
   

@@ -5,12 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>监控系统 - fasionchan</title>
+  <title>监控系统(被动) - fasionchan</title>
   <meta name="author" content="陈彦霏">
 
   
-  <meta name="description" content="监控系统 Mar 25th, 2017 11:30 am 架构 agent agent是一个常驻监控客户端，部署在每台受监控服务器上。
-agent核心提供一个插件调度模块和一个长连接通讯(控制)模块，具有以下特点： 插件式设计，提供一个通用插件编写框架，可以灵活扩展(采集)功能； &hellip;">
+  <meta name="description" content="监控系统(被动) Mar 25th, 2017 11:30 am 这是一套全新设计的监控系统，为游戏部所有服务器和线上服务提供状态监视、指标采集、异常检测/告警以及数据报表等服务。
+系统分被动监控以及主动监控两部分，下面介绍的是被动监控部分，侧重于指标数据的收集分析应用。 架构 agent &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -70,7 +70,7 @@ agent核心提供一个插件调度模块和一个长连接通讯(控制)模块�
 <article role="article">
   
   <header>
-    <h1 class="entry-title">监控系统</h1>
+    <h1 class="entry-title">监控系统(被动)</h1>
     <p class="meta">
 
 
@@ -79,14 +79,17 @@ agent核心提供一个插件调度模块和一个长连接通讯(控制)模块�
 <time class='entry-date' datetime='2017-03-25T11:30:00+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>25</span><span class='date-suffix'>th</span>, <span class='date-year'>2017</span></span> <span class='time'>11:30 am</span></time></p>
   </header>
   
-  <h2>架构</h2>
+  <p>这是一套全新设计的监控系统，为游戏部所有服务器和线上服务提供<strong>状态监视</strong>、<strong>指标采集</strong>、<strong>异常检测/告警</strong>以及<strong>数据报表</strong>等服务。
+系统分<strong>被动监控</strong>以及<strong><a href="/me/projects/monitor-active.html">主动监控</a></strong>两部分，下面介绍的是被动监控部分，侧重于指标数据的收集分析应用。</p>
 
-<p><img src="/images/monitor-passive.png" title="监控系统(被动)" ></p>
+<h2>架构</h2>
+
+<p><img src="/images/projects/monitor-passive.png" title="监控系统(被动)" ></p>
 
 <h3>agent</h3>
 
 <p><code>agent</code>是一个常驻监控客户端，部署在每台受监控服务器上。
-<code>agent</code>核心提供一个插件调度模块和一个长连接通讯(控制)模块，具有以下特点：</p>
+<code>agent</code>核心提供一个<strong>插件调度模块</strong>和一个<strong>长连接通讯(控制)模块</strong>，具有以下特点：</p>
 
 <ul>
 <li><strong>插件式设计</strong>，提供一个通用插件编写框架，可以<strong>灵活扩展</strong>(采集)功能；</li>
@@ -121,11 +124,20 @@ agent核心提供一个插件调度模块和一个长连接通讯(控制)模块�
 <code>agent</code>采集到数据后也通过该长连接进行提交，<code>Publisher</code>负责将数据转发到消息队列集群(<code>MQ</code>)。
 系统支持下发一个命令给某台机器上的<code>agent</code>执行，也是通过<code>Publisher</code>转发给<code>agent</code>的。</p>
 
+<p><img src="/images/projects/monitor-publisher.png"></p>
+
+<p>上图是<code>Publisher</code>节点架构图，绿色部分为<code>Publisher</code>服务实例，进程协作关系如下：</p>
+
+<p><code>Main</code>主进程与<code>Arbiter</code>保持长连接通讯，接受状态监控，接收<code>Aribter</code>推送配置。
+主进程启动后创建工作进程<code>Worker</code>系列，并监视其运行状态，并将配置划分(IP哈希)推送。
+主进程监听服务端口，接受<code>agent</code>长连接，对新连接进行身份验证后，将文件描述符发给负责的工作进程(IP哈希)。
+<code>Worker</code>接到新的文件描述符后(新<code>agent</code>连接)，为其提供配置推送，命令下发，数据转发等连接控制服务。</p>
+
 <h3>DB</h3>
 
 <p>指标数据(时序数据)采用<code>MongoDB</code>做存储。按照数据粒度不同，总共分成4个集群。
 每个集群由<code>5</code>分片(<code>shard</code>)组成，每个分片有<code>3</code>个副本集(<code>replica set</code>)，总共<code>15</code>个<code>mongod</code>实例。
-规模最大的集群每天支撑超过<code>20</code>亿条文档的写入压力，每台数据库实例插入速度超过<code>10000QPS</code>。</p>
+规模最大的集群每天支撑超过<code>20</code>亿条文档的写入压力，每台数据库实例插入速度超过<strong><code>1</code>万<code>QPS</code></strong>。</p>
 
   
     <footer>

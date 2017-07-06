@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>fasionchan</title>
+  <title>TCP设计精髓 - fasionchan</title>
   <meta name="author" content="陈彦霏">
 
   
-  <meta name="description" content=" ">
+  <meta name="description" content="TCP是在不可靠的网络层之上，实现的一种面向连接的可靠的传输层协议。
+为了实现可靠性并尽量优化传输效率，TCP作者们考虑到方方面面，并设计了一系列巧妙的算法。 纳格算法 纳格算法(Nagle's algoritm)，主要思想是以减少发送量来增进TCP/IP网络的性能。 先来看一个场景—— &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://blog.fasionchan.com/posts/3/">
+  <link rel="canonical" href="http://blog.fasionchan.com/blog/2012/09/06/tcp-she-ji-jing-sui/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="fasionchan" type="application/atom+xml">
@@ -65,80 +66,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2015/01/18/yong-hei-ke-de-fang-shi-xie-bo-ke/">用黑客的方式写博客</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-01-18T15:34:34+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:34 pm</span></time>
-        
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><img src="/images/gitpress.png"></p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2015/01/18/yong-hei-ke-de-fang-shi-xie-bo-ke/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/07/05/li-jie-cfs-diao-du-suan-fa/">理解CFS调度算法</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-07-05T09:33:26+08:00'><span class='date'><span class='date-month'>Jul</span> <span class='date-day'>5</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>9:33 am</span></time>
-        
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><code>Completely Fair Scheduler</code>(<code>CFS</code>)，即<strong>完全公平调度器</strong>，是<code>Linux</code>内核从<code>2.6.23</code>版本开始引入的进程调度器。</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2012/09/06/tcp-she-ji-jing-sui/">TCP设计精髓</a></h1>
+      <h1 class="entry-title">TCP设计精髓</h1>
     
     
       <p class="meta">
@@ -155,7 +88,7 @@
   </header>
 
 
-  <div class="entry-content"><p><code>TCP</code>是在不可靠的网络层之上，实现的一种面向连接的可靠的传输层协议。
+<div class="entry-content"><p><code>TCP</code>是在不可靠的网络层之上，实现的一种面向连接的可靠的传输层协议。
 为了实现可靠性并尽量优化传输效率，<code>TCP</code>作者们考虑到方方面面，并设计了一系列巧妙的算法。</p>
 
 <h2>纳格算法</h2>
@@ -205,65 +138,53 @@
 否则，<code>TCP</code>会回复一个独立的<code>ACK</code>包，这也是没有办法的事情了。
 当然了，定时器选定也比较考究，需要足够长以便等到数据分组便车，但又不能太长导致对端重传数据。</p>
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
+  
+
+<span class="byline author vcard">Posted by <span class="fn">陈彦霏</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2012-09-06T13:16:57+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>6</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>1:16 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/tcp/'>tcp</a>
+  
+</span>
+
+
+    </p>
     
-      <h1 class="entry-title"><a href="/blog/2010/06/15/linux-bian-cheng-huan-jing-da-jian-c-slash-c-plus-plus/">Linux编程环境搭建——C/C++</a></h1>
+      <div class="sharing">
+  
+  
+  
+</div>
+
     
-    
-      <p class="meta">
-        
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2010/06/15/linux-bian-cheng-huan-jing-da-jian-c-slash-c-plus-plus/" title="Previous Post: Linux编程环境搭建——C/C++">&laquo; Linux编程环境搭建——C/C++</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/07/05/li-jie-cfs-diao-du-suan-fa/" title="Next Post: 理解CFS调度算法">理解CFS调度算法 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
 
-
-
-
-<time class='entry-date' datetime='2010-06-15T17:17:42+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2010</span></span> <span class='time'>5:17 pm</span></time>
-        
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><blockquote><p>本文是面向初学者的入门型教程，高手请忽略~</p>
-
-<p>本文是面向初学者的入门型教程，高手请忽略~</p>
-
-<p>本文是面向初学者的入门型教程，高手请忽略~</p></blockquote>
-
-<p>计算机专业都有开展编程课吧，但大部分院校都是基于<code>Windows</code>平台的，包括<code>VC</code>、<code>VS</code>等等。这样的<code>IDE</code>用多了，人容易“傻”——编程可不是非得要用<code>IDE</code>！再说了，<code>IDE</code>按钮按多了，都不知道编程的本质是啥。</p>
-
-<p>很多人想学<code>Linux</code>，摆脱<code>Windows</code>的枷锁，可是老师不教呀，作业怎么办！</p>
-
-<p>莫慌，我们先来看看，在<code>Linux</code>下，怎样进行<code>C</code>语言程序开发吧~</p>
 
 </div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2010/06/15/linux-bian-cheng-huan-jing-da-jian-c-slash-c-plus-plus/">Read on &rarr;</a>
-    </footer>
-  
 
-
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-    <a class="next" href="/posts/2">Newer &rarr;</a>
-    
-  </div>
-</div>
 <aside class="sidebar">
   
     <section>
@@ -309,6 +230,7 @@
 
   
 </aside>
+
 
     </div>
   </div>

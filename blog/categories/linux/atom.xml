@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Linux | fasionchan]]></title>
   <link href="http://blog.fasionchan.com/blog/categories/linux/atom.xml" rel="self"/>
   <link href="http://blog.fasionchan.com/"/>
-  <updated>2017-07-05T19:22:12+08:00</updated>
+  <updated>2017-07-06T14:36:17+08:00</updated>
   <id>http://blog.fasionchan.com/</id>
   <author>
     <name><![CDATA[陈彦霏]]></name>
@@ -446,7 +446,7 @@ $ sudo insmod hello.ko name=fasion
 
 <p>这3个数据结构之间的关系如下图所示：</p>
 
-<p>{% img /images/fd-inode-diagram.png %}</p>
+<p><img src="/images/fd-inode-diagram.png"></p>
 
 <h2>文件描述符表</h2>
 
