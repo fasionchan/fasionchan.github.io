@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Kernel | fasionchan]]></title>
   <link href="http://blog.fasionchan.com/blog/categories/kernel/atom.xml" rel="self"/>
   <link href="http://blog.fasionchan.com/"/>
-  <updated>2017-07-06T14:36:17+08:00</updated>
+  <updated>2017-07-11T20:52:29+08:00</updated>
   <id>http://blog.fasionchan.com/</id>
   <author>
     <name><![CDATA[陈彦霏]]></name>
@@ -304,15 +304,6 @@ $ sudo insmod hello.ko name=fasion
 <p>第二次挂载时，<code>name</code>参数的值不是默认值<code>world</code>，而是<code>fasion</code>了。</p>
 
 <p>跟内核模块相关还有<code>insmod</code>、<code>rmmod</code>、<code>lsmod</code>、<code>modinfo</code>、<code>modprobe</code>等命令，用法请参考<code>man</code>文档。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[理解CFS调度算法]]></title>
-    <link href="http://blog.fasionchan.com/blog/2014/07/05/li-jie-cfs-diao-du-suan-fa/"/>
-    <updated>2014-07-05T09:33:26+08:00</updated>
-    <id>http://blog.fasionchan.com/blog/2014/07/05/li-jie-cfs-diao-du-suan-fa</id>
-    <content type="html"><![CDATA[<p><code>Completely Fair Scheduler</code>(<code>CFS</code>)，即<strong>完全公平调度器</strong>，是<code>Linux</code>内核从<code>2.6.23</code>版本开始引入的进程调度器。</p>
 ]]></content>
   </entry>
   
