@@ -1,0 +1,485 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Nginx - fasionchan</title>
+  <meta name="author" content="陈彦霏">
+
+  
+  <meta name="description" content="Nginx Jan 8th, 2014 10:30 am 使用入门 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+# 安装nginx
+apt-get install nginx # 启动nginx
+service &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://blog.fasionchan.com/snippets/nginx.html">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="fasionchan" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//cdn.staticfile.org/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">fasionchan</a></h1>
+  
+    <h2>读万卷书，行万里路，品万味肴，撸万行码。</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="sitesearch" value="blog.fasionchan.com">
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/snippets">Snippets</a></li>
+  <li><a href="/books">Books</a></li>
+  <li><a href="/me/index.html">Me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article role="article">
+  
+  <header>
+    <h1 class="entry-title">Nginx</h1>
+    <p class="meta">
+
+
+
+
+<time class='entry-date' datetime='2014-01-08T10:30:00+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>10:30 am</span></time></p>
+  </header>
+  
+  <h2>使用入门</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># 安装nginx</span>
+</span><span class='line'>apt-get install nginx
+</span><span class='line'>
+</span><span class='line'><span class="c"># 启动nginx</span>
+</span><span class='line'>service nginx start
+</span><span class='line'>
+</span><span class='line'><span class="c"># 停止nginx</span>
+</span><span class='line'>service nginx stop
+</span><span class='line'>
+</span><span class='line'><span class="c"># 重启nginx</span>
+</span><span class='line'>service nginx restart
+</span><span class='line'>
+</span><span class='line'><span class="c"># 重新加载配置</span>
+</span><span class='line'>service nginx reload
+</span><span class='line'>
+</span><span class='line'><span class="c"># 强制重新加载配置</span>
+</span><span class='line'>service nginx force-reload
+</span><span class='line'>
+</span><span class='line'><span class="c"># 查看nginx运行状态</span>
+</span><span class='line'>service nginx status
+</span><span class='line'>
+</span><span class='line'><span class="c"># 测试配置(合法性)</span>
+</span><span class='line'>service nginx configtest
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>配置</h2>
+
+<h3>反向代理</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>server <span class="o">{</span>
+</span><span class='line'>    <span class="c"># 监听端口</span>
+</span><span class='line'>    listen 80<span class="p">;</span>
+</span><span class='line'>    <span class="c"># 代理对外域名</span>
+</span><span class='line'>    server_name proxy-site.com<span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    location / <span class="o">{</span>
+</span><span class='line'>        <span class="c"># 转向服务器</span>
+</span><span class='line'>        proxy_pass http://dest-site.com<span class="p">;</span>
+</span><span class='line'>        proxy_redirect default<span class="p">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># 服务器集群及权重(可选)</span>
+</span><span class='line'>upstream dest-site.com <span class="o">{</span>
+</span><span class='line'>    server 10.0.0.1:80 <span class="nv">weight</span><span class="o">=</span>1<span class="p">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>静态资源缓存</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>server <span class="o">{</span>
+</span><span class='line'>    listen 80<span class="p">;</span>
+</span><span class='line'>    server_name some-site.com<span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    root /some/path/to/site<span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># 缓存图片</span>
+</span><span class='line'>    location ~ <span class="se">\.</span><span class="o">(</span>jpg<span class="p">|</span>png<span class="p">|</span>jpeg<span class="p">|</span>bmp<span class="p">|</span>gif<span class="p">|</span>swf<span class="o">)</span><span class="nv">$ </span><span class="o">{</span>
+</span><span class='line'>        root /some/path/to/site/images<span class="p">;</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span>-f <span class="nv">$request_filename</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            expires 7d<span class="p">;</span>
+</span><span class='line'>            <span class="nb">break</span><span class="p">;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># 缓存样式</span>
+</span><span class='line'>    location ~ <span class="se">\.</span><span class="o">(</span>css<span class="o">)</span><span class="nv">$ </span><span class="o">{</span>
+</span><span class='line'>        root /some/path/to/site/css<span class="p">;</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span>-f <span class="nv">$request_filename</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            expires 3d<span class="p">;</span>
+</span><span class='line'>            <span class="nb">break</span><span class="p">;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># 缓存脚本</span>
+</span><span class='line'>    location ~ <span class="se">\.</span><span class="o">(</span>js<span class="o">)</span><span class="nv">$ </span><span class="o">{</span>
+</span><span class='line'>        root /some/path/to/site/js<span class="p">;</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span>-f <span class="nv">$request_filename</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            expires 1d<span class="p">;</span>
+</span><span class='line'>            <span class="nb">break</span><span class="p">;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>变量</h3>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">变量名</th>
+<th style="text-align:left;">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">$args</td>
+<td style="text-align:left;">请求中的参数</td>
+</tr>
+<tr>
+<td style="text-align:left;">$content_length</td>
+<td style="text-align:left;">HTTP请求头Content-Length</td>
+</tr>
+<tr>
+<td style="text-align:left;">$content_type</td>
+<td style="text-align:left;">HTTP请求头Content-Type</td>
+</tr>
+<tr>
+<td style="text-align:left;">$document_root</td>
+<td style="text-align:left;">root路径</td>
+</tr>
+<tr>
+<td style="text-align:left;">\$document_uri</td>
+<td style="text-align:left;">同$request_uri</td>
+</tr>
+<tr>
+<td style="text-align:left;">$limit_rate</td>
+<td style="text-align:left;">连接速率限制</td>
+</tr>
+<tr>
+<td style="text-align:left;">$remote_addr</td>
+<td style="text-align:left;">客户端地址</td>
+</tr>
+<tr>
+<td style="text-align:left;">$remote_port</td>
+<td style="text-align:left;">客户端端口</td>
+</tr>
+<tr>
+<td style="text-align:left;">$remote_user</td>
+<td style="text-align:left;">认证用户名</td>
+</tr>
+<tr>
+<td style="text-align:left;">$request_filename</td>
+<td style="text-align:left;">请求文件路径</td>
+</tr>
+<tr>
+<td style="text-align:left;">$request_body_file</td>
+<td></td>
+</tr>
+<tr>
+<td style="text-align:left;">$request_method</td>
+<td style="text-align:left;">方法</td>
+</tr>
+<tr>
+<td style="text-align:left;">$request_uri</td>
+<td style="text-align:left;">当前URI，只包含主机名后部分</td>
+</tr>
+<tr>
+<td style="text-align:left;">\$query_string</td>
+<td style="text-align:left;">同$args</td>
+</tr>
+<tr>
+<td style="text-align:left;">$schema</td>
+<td style="text-align:left;">协议</td>
+</tr>
+<tr>
+<td style="text-align:left;">$server_addr</td>
+<td style="text-align:left;">服务器地址</td>
+</tr>
+<tr>
+<td style="text-align:left;">$server_name</td>
+<td style="text-align:left;">服务器名</td>
+</tr>
+<tr>
+<td style="text-align:left;">$server_port</td>
+<td style="text-align:left;">服务器端口</td>
+</tr>
+<tr>
+<td style="text-align:left;">\$uri</td>
+<td style="text-align:left;">同$request_uri</td>
+</tr>
+</tbody>
+</table>
+
+
+  
+    <footer>
+      <p class="meta">
+        
+        
+
+
+
+
+<time class='entry-date' datetime='2014-01-08T10:30:00+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>8</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>10:30 am</span></time>
+        
+      </p>
+      
+        <div class="sharing">
+  
+  
+  
+</div>
+
+      
+    </footer>
+  
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2017/06/17/yi-wen-tiao-biao-yi-zhong-ping-heng-shu-de-gai-lu-xing-ti-dai-pin/">[译文]跳表：一种平衡树的概率性替代品</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/06/16/procfs-wei-wen-jian-xi-tong-yuan-li/">Procfs伪文件系统原理</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/06/14/linux-nei-he-mo-kuai/">Linux内核模块</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2017/03/09/yi-wen-mongodb-wiredtiger-yin-qing-tiao-you-ji-qiao/">[译文]MongoDB WiredTiger引擎调优技巧</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2016/12/17/da-zao-xuan-ku-de-kai-fa-huan-jing/">打造炫酷的开发环境</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li>
+        <a href="https://github.com/fasionchan/tcpstat">tcpstat</a>
+        <p>按状态统计系统TCP连接数(内核模块)</p>
+    </li>
+  </ul>
+  <a href="https://github.com/fasionchan">@fasionchan</a> on GitHub
+</section>
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2017 - 陈彦霏 -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'fasionchan';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.fasionchan.com/snippets/nginx.html';
+        var disqus_url = 'http://blog.fasionchan.com/snippets/nginx.html';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+
+
+
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?3478328787268b1d31f689bce95b4e2f";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</body>
+</html>
